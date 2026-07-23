@@ -22,6 +22,8 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
 import java.security.SecureRandom
@@ -34,6 +36,14 @@ private const val DEFAULT_ATT_MTU = 23
 private const val REQUESTED_ATT_MTU = 517
 private const val ATT_HEADER_SIZE = 3
 private const val SESSION_ID_SIZE = 4
+
+/**
+ * How often the advertised session ID (and, on the OS's own schedule, the underlying BLE MAC/
+ * link-layer address) rotates -- `docs/CRYPTOGRAPHY.md` §7.1's "order of ~15 minutes," so a
+ * passive observer can't trivially correlate this device across time/place by a stable link
+ * identifier. Reasoned, not benchmarked against real tracking-resistance field data.
+ */
+private const val SESSION_ID_ROTATION_INTERVAL_MS = 15 * 60 * 1000L
 
 /**
  * Real `android.bluetooth.*` implementation of [FfiMeshTransport]. Every device runs both GATT
@@ -52,6 +62,16 @@ private const val SESSION_ID_SIZE = 4
  *   [sessionIdIsLower]), validated only for pairs, not larger topologies.
  * - No foreground service -- this only runs while the app is in the foreground.
  * - No BLE-adapter-disabled recovery flow.
+ *
+ * **Link-identifier rotation** (`docs/CRYPTOGRAPHY.md` §7.1): the advertised [localSessionId]
+ * (scan-response service data, used only for the connect tie-break) is regenerated and
+ * re-advertised every [SESSION_ID_ROTATION_INTERVAL_MS]. **Honest scope note:** this rotates the
+ * *application-layer* identifier this driver itself chose to broadcast -- it does not and cannot
+ * control the underlying BLE MAC/link-layer address, which is the Android platform's own
+ * privacy policy (`BluetoothLeAdvertiser` has no public API to force that). Rotating our own
+ * identifier on a matching cadence means it doesn't undermine whatever MAC rotation the OS is
+ * already doing; a device already connected through an existing GATT link is unaffected by a
+ * rotation (the advertised ID is only consulted pre-connection, during scanning/tie-break).
  */
 @SuppressLint("MissingPermission") // Caller (MainActivity) gates start() behind runtime permission grants.
 class BleTransportDriver(private val context: Context) : FfiMeshTransport {
@@ -75,7 +95,16 @@ class BleTransportDriver(private val context: Context) : FfiMeshTransport {
     private val addressToServerSubscribed = ConcurrentHashMap<String, Boolean>()
     private val connectingAddresses = ConcurrentHashMap.newKeySet<String>()
 
-    private var localSessionId: ByteArray = ByteArray(SESSION_ID_SIZE)
+    // @Volatile + always-replace-the-reference-never-mutate-in-place (see rotateSessionId) so a
+    // scan/GATT callback on a Binder thread never observes a torn/partially-regenerated array.
+    @Volatile private var localSessionId: ByteArray = ByteArray(SESSION_ID_SIZE)
+    private val rotationHandler = Handler(Looper.getMainLooper())
+    private val rotationRunnable = object : Runnable {
+        override fun run() {
+            rotateSessionId()
+            rotationHandler.postDelayed(this, SESSION_ID_ROTATION_INTERVAL_MS)
+        }
+    }
     private var gattServer: BluetoothGattServer? = null
     private var advertiser: BluetoothLeAdvertiser? = null
     private var scanner: BluetoothLeScanner? = null
@@ -97,7 +126,7 @@ class BleTransportDriver(private val context: Context) : FfiMeshTransport {
         if (bleAdapter == null || !bleAdapter.isEnabled) {
             throw FfiException.InvalidState("Bluetooth adapter unavailable or disabled")
         }
-        SecureRandom().nextBytes(localSessionId)
+        localSessionId = freshSessionId()
         Log.i(TAG, "start(): service=${BleUuids.SERVICE} sessionId=${localSessionId.toHexString()}")
 
         gattServer = bluetoothManager.openGattServer(context, gattServerCallback)
@@ -135,12 +164,14 @@ class BleTransportDriver(private val context: Context) : FfiMeshTransport {
         startAdvertising()
         startScanning()
         running = true
+        rotationHandler.postDelayed(rotationRunnable, SESSION_ID_ROTATION_INTERVAL_MS)
     }
 
     override fun stop() {
         if (!running) return
         running = false
         Log.i(TAG, "stop()")
+        rotationHandler.removeCallbacks(rotationRunnable)
 
         runCatching { advertiser?.stopAdvertising(advertiseCallback) }
             .onFailure { Log.w(TAG, "stopAdvertising failed", it) }
@@ -182,6 +213,23 @@ class BleTransportDriver(private val context: Context) : FfiMeshTransport {
     }
 
     // ---- Central role: advertise ---------------------------------------------------------
+
+    private fun freshSessionId(): ByteArray = ByteArray(SESSION_ID_SIZE).also { SecureRandom().nextBytes(it) }
+
+    /**
+     * Regenerate [localSessionId] and re-advertise it. BLE advertising payloads are immutable
+     * once started (`BluetoothLeAdvertiser` has no "update in place" call), so this stops and
+     * restarts advertising with fresh [AdvertiseData] -- existing GATT connections are
+     * unaffected (see the class doc's rotation note).
+     */
+    private fun rotateSessionId() {
+        if (!running) return
+        localSessionId = freshSessionId()
+        Log.i(TAG, "rotating advertised session id -> ${localSessionId.toHexString()}")
+        runCatching { advertiser?.stopAdvertising(advertiseCallback) }
+            .onFailure { Log.w(TAG, "stopAdvertising during rotation failed", it) }
+        startAdvertising()
+    }
 
     private fun startAdvertising() {
         val settings = AdvertiseSettings.Builder()
