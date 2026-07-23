@@ -25,11 +25,10 @@ import uniffi.mesh_core.FfiIdentity
  * Rust core (`core/src/ffi.rs`) and displays its fingerprint from Kotlin. Not wired to any
  * transport, persistence, or the rest of the app yet -- see docs/IMPLEMENTATION-STATUS.md.
  *
- * **Known gap:** this will throw `UnsatisfiedLinkError` at runtime until `mesh-core` is
- * cross-compiled for an Android target (arm64-v8a etc.) and the resulting `libmesh_core.so`
- * is placed under `app/src/main/jniLibs/<abi>/`. No Android NDK is available in this repo's
- * current dev environment, so that cross-compile has not been done -- see
- * `android/app/src/main/jniLibs/README.md`.
+ * `./gradlew assembleDebug` builds successfully (native `libmesh_core.so` cross-compiled and
+ * packaged for arm64-v8a/armeabi-v7a/x86_64 -- see `jniLibs/README.md`), but this has **not**
+ * been run on an actual device or emulator yet (none available in this dev environment), so
+ * whether the "Generate identity" button actually works at runtime is unverified.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

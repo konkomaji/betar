@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -27,10 +28,6 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -52,6 +49,9 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    // Provides the XML Theme.Material3.* base themes (manifest android:theme) -- Compose
+    // Material3 alone only supplies the in-Compose theming, not these launch-time resources.
+    implementation("com.google.android.material:material:1.12.0")
     // Required at runtime by UniFFI-generated Kotlin bindings (JNA-based FFI, not raw JNI).
     implementation("net.java.dev.jna:jna:5.15.0@aar")
 

@@ -4,7 +4,7 @@
 
     <!-- Deliberately no INTERNET permission: Project Mesh has no server and no cloud dependency
          by design (docs/ARCHITECTURE.md §1, docs/DISTRIBUTION.md §1). Add only if/when an
-         explicitly opt-in feature genuinely needs it -- never by default. -->
+         explicitly opt-in feature genuinely needs it, never by default. -->
 
     <!-- Legacy Bluetooth model, API < 31 -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- Foreground relay service (not implemented yet -- see docs/IMPLEMENTATION-STATUS.md).
+    <!-- Foreground relay service (not implemented yet, see docs/IMPLEMENTATION-STATUS.md).
          Android 14+ requires an explicit foreground-service type declaration. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />

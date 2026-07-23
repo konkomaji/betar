@@ -1,7 +1,7 @@
-# Native libraries — not yet present
+# Native libraries
 
-This is where `libmesh_core.so`, cross-compiled for each Android ABI, must go before the app
-can actually call into the Rust core at runtime:
+`libmesh_core.so`, cross-compiled for each Android ABI, so the app can call into the Rust core
+at runtime:
 
 ```
 jniLibs/
@@ -10,19 +10,19 @@ jniLibs/
 └── x86_64/libmesh_core.so        (emulator)
 ```
 
-**Status: not done.** This repo's current dev environment has no Android NDK, so `mesh-core`
-has only been built for the host (`target/release/mesh_core.dll` on this machine) — that build
-was used solely to generate the Kotlin bindings (`uniffi-bindgen`), not to produce an
-Android-loadable library. Until the `.so` files exist here, `MainActivity`'s call to
-`FfiIdentity.generate()` will throw `UnsatisfiedLinkError`. See
-`docs/IMPLEMENTATION-STATUS.md`.
+**Status: built.** Cross-compiled with `cargo-ndk` against NDK r27c. `./gradlew assembleDebug`
+succeeds end to end (`docs/PROGRESS.md`) with these libraries packaged into the APK.
 
-To fix, once the Android NDK is available:
+`i686-linux-android` (32-bit x86 emulator) target is installed via rustup but not built into
+`jniLibs/` by default — add `-t x86` to the command below if a 32-bit emulator image is needed.
+
+To regenerate after changing `core/`:
 
 ```sh
-rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
-cargo install cargo-ndk
 cargo ndk -o android/app/src/main/jniLibs \
   -t arm64-v8a -t armeabi-v7a -t x86_64 \
   build --release -p mesh-core
 ```
+
+(Requires `ANDROID_NDK_HOME` set, e.g.
+`C:\Users\<you>\AppData\Local\Android\Sdk\ndk\27.2.12479018`.)
