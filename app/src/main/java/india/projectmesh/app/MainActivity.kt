@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -27,21 +29,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import india.projectmesh.app.messaging.MessagingScreen
 import kotlinx.coroutines.delay
-import uniffi.mesh_core.FfiIdentity
-import uniffi.mesh_core.envelopePack
-import uniffi.mesh_core.envelopeUnpack
 
 /**
- * Phase 1 screen. Two independently-testable pieces:
- * - [IdentityScreen]: proves the UniFFI pipe end-to-end (`FfiIdentity.generate()`); verified
- *   working on an emulator (`docs/PROGRESS.md`).
+ * Phase 1 screen, three independently-testable pieces:
+ * - [IdentityScreen]: displays the app's one stable session identity ([MeshApplication.identity])
+ *   — proves the UniFFI pipe end-to-end and is what [india.projectmesh.app.messaging.DirectMessenger]
+ *   actually addresses Direct messages with (not a throwaway demo identity anymore).
  * - [MeshScreen]: drives the real BLE transport driver (`ble/BleTransportDriver.kt`) via
- *   [MeshApplication.coordinator]. Requests Bluetooth runtime permissions, starts/stops the
- *   mesh, shows connected-peer count, and offers a manual send/check pair (built on the already-
- *   exported `envelopePack`/`envelopeUnpack`/`composeLocal`/`containsHex`) as an
- *   application-level correctness signal beyond "link-layer bytes moved" -- see the plan doc's
- *   verification section.
+ *   [MeshApplication.coordinator], now running inside [MeshRelayService] so it survives
+ *   backgrounding. Requests Bluetooth runtime permissions, starts/stops the mesh, shows
+ *   connected-peer count, and OEM battery-whitelist guidance.
+ * - [MessagingScreen]: real Direct + Broadcast messaging UI (Channel/Group deferred — see its
+ *   own doc comment for why).
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +50,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(24.dp),
+                    ) {
                         IdentityScreen()
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         MeshScreen()
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                        MessagingScreen()
                     }
                 }
             }
@@ -62,37 +70,34 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun IdentityScreen() {
-    var fingerprint by remember { mutableStateOf<String?>(null) }
-    var safetyString by remember { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
+    val app = remember { context.applicationContext as MeshApplication }
+    var shown by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Project Mesh", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Phase 1 skeleton -- identity generation via the Rust core",
+            "One stable identity per app session (not persisted across restarts yet).",
             style = MaterialTheme.typography.bodyMedium,
         )
 
         Button(onClick = {
             try {
-                val identity = FfiIdentity.generate()
-                fingerprint = identity.fingerprintHex()
-                safetyString = identity.safetyString()
+                shown = true
                 error = null
             } catch (e: UnsatisfiedLinkError) {
                 error = "Native library not loaded: ${e.message}"
             }
         }) {
-            Text("Generate identity")
+            Text("Show my identity")
         }
 
-        fingerprint?.let {
+        if (shown) {
             Text("Fingerprint:")
-            Text(it, style = MaterialTheme.typography.bodySmall)
-        }
-        safetyString?.let {
+            Text(app.identity.fingerprintHex(), style = MaterialTheme.typography.bodySmall)
             Text("Safety string:")
-            Text(it, style = MaterialTheme.typography.bodySmall)
+            Text(app.identity.safetyString(), style = MaterialTheme.typography.bodySmall)
         }
         error?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
@@ -128,8 +133,6 @@ fun MeshScreen() {
     var connectedCount by remember { mutableStateOf(0) }
     var batteryExempt by remember { mutableStateOf(OemBatteryGuidance.isIgnoringBatteryOptimizations(context)) }
     var statusMessage by remember { mutableStateOf<String?>(null) }
-    var lastEnvelopeIdHex by remember { mutableStateOf<String?>(null) }
-    var checkResult by remember { mutableStateOf<Boolean?>(null) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
@@ -200,38 +203,6 @@ fun MeshScreen() {
             }) {
                 Text("Open device autostart settings")
             }
-        }
-
-        Button(onClick = {
-            try {
-                val payload = "mesh-test-${System.currentTimeMillis()}".toByteArray()
-                val expiresAt = (System.currentTimeMillis() / 1000L + 3600L).toULong()
-                val bytes = envelopePack(
-                    addressingTag = 0u, // Broadcast
-                    addressingTarget = null,
-                    priorityTag = 2u, // Normal
-                    ttlHops = 8u,
-                    expiresAt = expiresAt,
-                    sealed = payload,
-                )
-                lastEnvelopeIdHex = envelopeUnpack(bytes).idHex
-                checkResult = null
-                coordinator.node().composeLocal(bytes, (System.currentTimeMillis() / 1000L).toULong())
-                statusMessage = null
-            } catch (e: Exception) {
-                statusMessage = "compose_local failed: ${e.message}"
-            }
-        }) {
-            Text("Send test broadcast")
-        }
-
-        lastEnvelopeIdHex?.let { idHex ->
-            Text("Last envelope ID:")
-            Text(idHex, style = MaterialTheme.typography.bodySmall)
-            Button(onClick = { checkResult = coordinator.node().containsHex(idHex) }) {
-                Text("Check received (other device)")
-            }
-            checkResult?.let { Text("Store contains it: $it") }
         }
     }
 }
