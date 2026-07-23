@@ -66,6 +66,8 @@ class MeshCoordinator(private val context: Context) {
 
     fun connectedPeerCount(): Int = driver.connectedPeerCount()
 
+    fun isRunning(): Boolean = driver.isRunning()
+
     fun node(): FfiMeshNode = node
 
     private fun logFfiFailure(what: String, peerHandle: ULong, e: Throwable) {

@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.delay
 import uniffi.mesh_core.FfiIdentity
 import uniffi.mesh_core.envelopePack
@@ -99,8 +100,8 @@ fun IdentityScreen() {
     }
 }
 
-private fun requiredBluetoothPermissions(): Array<String> =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+private fun requiredMeshPermissions(): Array<String> {
+    val bluetooth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         arrayOf(
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_ADVERTISE,
@@ -109,14 +110,23 @@ private fun requiredBluetoothPermissions(): Array<String> =
     } else {
         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
     }
+    // The foreground service's persistent notification needs this at runtime on API 33+.
+    val notifications = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+    } else {
+        emptyArray()
+    }
+    return bluetooth + notifications
+}
 
 @Composable
 fun MeshScreen() {
     val context = LocalContext.current
     val coordinator = remember { (context.applicationContext as MeshApplication).coordinator }
 
-    var meshRunning by remember { mutableStateOf(false) }
+    var meshRunning by remember { mutableStateOf(coordinator.isRunning()) }
     var connectedCount by remember { mutableStateOf(0) }
+    var batteryExempt by remember { mutableStateOf(OemBatteryGuidance.isIgnoringBatteryOptimizations(context)) }
     var statusMessage by remember { mutableStateOf<String?>(null) }
     var lastEnvelopeIdHex by remember { mutableStateOf<String?>(null) }
     var checkResult by remember { mutableStateOf<Boolean?>(null) }
@@ -125,21 +135,22 @@ fun MeshScreen() {
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { results ->
         if (results.values.all { it }) {
-            try {
-                coordinator.start()
-                meshRunning = true
-                statusMessage = null
-            } catch (e: Exception) {
-                statusMessage = "Failed to start mesh: ${e.message}"
-            }
+            ContextCompat.startForegroundService(context, MeshRelayService.startIntent(context))
+            statusMessage = null
         } else {
-            statusMessage = "Bluetooth permissions denied -- mesh needs all of them to run"
+            statusMessage = "Permissions denied -- mesh needs all of them to run"
         }
     }
 
-    LaunchedEffect(meshRunning) {
-        while (meshRunning) {
-            connectedCount = coordinator.connectedPeerCount()
+    // Single source of truth for on-screen state: the foreground service (MeshRelayService) is
+    // what actually starts/stops the mesh now, and it can be started/stopped/restarted (STICKY)
+    // independently of this composable's lifecycle -- polling coordinator.isRunning() rather
+    // than tracking a locally-set flag keeps the UI honest about what's actually running.
+    LaunchedEffect(Unit) {
+        while (true) {
+            meshRunning = coordinator.isRunning()
+            connectedCount = if (meshRunning) coordinator.connectedPeerCount() else 0
+            batteryExempt = OemBatteryGuidance.isIgnoringBatteryOptimizations(context)
             delay(1000)
         }
     }
@@ -147,22 +158,20 @@ fun MeshScreen() {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Mesh (BLE)", style = MaterialTheme.typography.headlineSmall)
         Text(
-            "Real android.bluetooth.* driver -- advertise + scan, GATT server + client. " +
-                "No foreground service yet, so this stops if the app leaves the foreground.",
+            "Real android.bluetooth.* driver -- advertise + scan, GATT server + client, " +
+                "running in a foreground service so it keeps working when backgrounded.",
             style = MaterialTheme.typography.bodyMedium,
         )
 
         Button(onClick = {
             if (meshRunning) {
-                coordinator.stop()
-                meshRunning = false
-                connectedCount = 0
+                context.stopService(MeshRelayService.startIntent(context))
             } else {
                 val bluetoothManager = context.getSystemService(BluetoothManager::class.java)
                 if (bluetoothManager?.adapter?.isEnabled != true) {
                     statusMessage = "Enable Bluetooth first"
                 } else {
-                    permissionLauncher.launch(requiredBluetoothPermissions())
+                    permissionLauncher.launch(requiredMeshPermissions())
                 }
             }
         }) {
@@ -173,6 +182,25 @@ fun MeshScreen() {
             Text("Connected peers: $connectedCount")
         }
         statusMessage?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+
+        if (!batteryExempt) {
+            Text(
+                "For reliable background relay, exempt this app from battery optimization. " +
+                    "Some devices (Xiaomi, Oppo, Vivo, realme, Samsung...) also need a separate " +
+                    "\"autostart\"/\"protected apps\" setting -- see docs/TRANSPORT.md §6.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Button(onClick = { OemBatteryGuidance.requestIgnoreBatteryOptimizations(context) }) {
+                Text("Allow background activity")
+            }
+            Button(onClick = {
+                if (!OemBatteryGuidance.openVendorAutostartSettings(context)) {
+                    statusMessage = "No known autostart setting for ${Build.MANUFACTURER} -- check device settings manually"
+                }
+            }) {
+                Text("Open device autostart settings")
+            }
+        }
 
         Button(onClick = {
             try {

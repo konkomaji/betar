@@ -18,11 +18,18 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- Foreground relay service (not implemented yet, see docs/IMPLEMENTATION-STATUS.md).
-         Android 14+ requires an explicit foreground-service type declaration. -->
+    <!-- Foreground relay service (MeshRelayService): keeps the mesh running while backgrounded,
+         docs/ARCHITECTURE.md §4, docs/TRANSPORT.md §6. Android 14+ requires an explicit
+         foreground-service type declaration, matched on the service element below. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Lets the app prompt the user to exempt it from battery optimization: needed for
+         reliable background relay on Indian budget devices (docs/TRANSPORT.md §6). A "special"
+         permission Play Store scrutinizes for arbitrary apps; legitimate here since background
+         mesh relay is this app's actual purpose, not an add-on. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
@@ -41,5 +48,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MeshRelayService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
     </application>
 </manifest>

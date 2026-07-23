@@ -115,6 +115,8 @@ class BleTransportDriver(private val context: Context) : FfiMeshTransport {
     /** Number of peers currently connected (either role). For UI status display. */
     fun connectedPeerCount(): Int = peers.connectedCount()
 
+    fun isRunning(): Boolean = running
+
     // ---- FfiMeshTransport ---------------------------------------------------------------
 
     override fun start(serviceId: ByteArray) {
