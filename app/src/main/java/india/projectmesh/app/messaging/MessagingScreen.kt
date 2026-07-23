@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import india.projectmesh.app.MeshApplication
+import india.projectmesh.app.R
 import kotlinx.coroutines.delay
 
 private const val POLL_INTERVAL_MS = 1000L
@@ -40,12 +42,8 @@ fun MessagingScreen() {
     val app = remember { context.applicationContext as MeshApplication }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Messaging", style = MaterialTheme.typography.headlineSmall)
-        Text(
-            "Direct (Noise XX -> Double Ratchet) and Broadcast only -- Channel and Group need " +
-                "their own UniFFI export pass first, see docs/IMPLEMENTATION-STATUS.md.",
-            style = MaterialTheme.typography.bodySmall,
-        )
+        Text(stringResource(R.string.messaging_title), style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.messaging_subtitle), style = MaterialTheme.typography.bodySmall)
 
         BroadcastSection(app.broadcastMessenger)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -65,13 +63,13 @@ private fun BroadcastSection(messenger: BroadcastMessenger) {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Broadcast (everyone nearby, unsigned -- see class doc)", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.broadcast_title), style = MaterialTheme.typography.titleMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Message") },
+                label = { Text(stringResource(R.string.message_label)) },
             )
             Button(onClick = {
                 if (draft.isNotBlank()) {
@@ -79,7 +77,7 @@ private fun BroadcastSection(messenger: BroadcastMessenger) {
                     draft = ""
                 }
             }) {
-                Text("Post")
+                Text(stringResource(R.string.action_post))
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
@@ -102,9 +100,11 @@ private fun DirectSection(messenger: DirectMessenger) {
         }
     }
 
+    val contactRowFormat = stringResource(R.string.direct_contact_row)
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Direct", style = MaterialTheme.typography.titleMedium)
-        Text("My fingerprint (share this so others can add you):", style = MaterialTheme.typography.bodySmall)
+        Text(stringResource(R.string.direct_title), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.direct_my_fingerprint_label), style = MaterialTheme.typography.bodySmall)
         Text(messenger.myFingerprintHex, style = MaterialTheme.typography.bodySmall)
 
         val contact = selectedContact
@@ -114,13 +114,13 @@ private fun DirectSection(messenger: DirectMessenger) {
                     value = fingerprintDraft,
                     onValueChange = { fingerprintDraft = it },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Contact's fingerprint (64 hex chars)") },
+                    label = { Text(stringResource(R.string.direct_contact_fingerprint_label)) },
                 )
                 Button(onClick = {
                     val added = messenger.addContact(fingerprintDraft)
                     if (added != null) fingerprintDraft = ""
                 }) {
-                    Text("Add")
+                    Text(stringResource(R.string.action_add))
                 }
             }
             LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
@@ -129,8 +129,8 @@ private fun DirectSection(messenger: DirectMessenger) {
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text("${c.fingerprintHex.take(16)}... (${c.status})", style = MaterialTheme.typography.bodySmall)
-                        Button(onClick = { selectedContact = c }) { Text("Open") }
+                        Text(contactRowFormat.format(c.fingerprintHex.take(16), c.status), style = MaterialTheme.typography.bodySmall)
+                        Button(onClick = { selectedContact = c }) { Text(stringResource(R.string.action_open)) }
                     }
                 }
             }
@@ -143,16 +143,22 @@ private fun DirectSection(messenger: DirectMessenger) {
 @Composable
 private fun ContactThread(messenger: DirectMessenger, contact: Contact, onBack: () -> Unit) {
     var draft by remember { mutableStateOf("") }
+    val contactRowFormat = stringResource(R.string.direct_contact_row)
+    val mePrefix = stringResource(R.string.direct_chat_me_prefix)
+    val themPrefix = stringResource(R.string.direct_chat_them_prefix)
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = onBack) { Text("Back") }
-            Text("${contact.fingerprintHex.take(16)}... (${contact.status})", style = MaterialTheme.typography.bodyMedium)
+            Button(onClick = onBack) { Text(stringResource(R.string.action_back)) }
+            Text(
+                contactRowFormat.format(contact.fingerprintHex.take(16), contact.status),
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
         LazyColumn(modifier = Modifier.fillMaxWidth().height(200.dp)) {
             items(contact.messages) { m ->
                 Text(
-                    (if (m.fromMe) "Me: " else "Them: ") + m.text,
+                    (if (m.fromMe) mePrefix else themPrefix) + m.text,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -162,7 +168,7 @@ private fun ContactThread(messenger: DirectMessenger, contact: Contact, onBack: 
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Message") },
+                label = { Text(stringResource(R.string.message_label)) },
                 enabled = contact.status == ContactStatus.CONNECTED,
             )
             Button(
@@ -174,11 +180,11 @@ private fun ContactThread(messenger: DirectMessenger, contact: Contact, onBack: 
                 },
                 enabled = contact.status == ContactStatus.CONNECTED,
             ) {
-                Text("Send")
+                Text(stringResource(R.string.action_send))
             }
         }
         if (contact.status != ContactStatus.CONNECTED) {
-            Text("Waiting for handshake to complete (both devices need mesh contact)...", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.direct_waiting_handshake), style = MaterialTheme.typography.bodySmall)
         }
     }
 }

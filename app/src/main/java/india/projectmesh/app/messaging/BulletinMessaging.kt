@@ -1,8 +1,10 @@
 package india.projectmesh.app.messaging
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.mutableStateListOf
 import india.projectmesh.app.MeshCoordinator
+import india.projectmesh.app.R
 import uniffi.mesh_core.envelopePack
 import uniffi.mesh_core.envelopeUnpack
 
@@ -12,15 +14,18 @@ private const val BULLETIN_EXPIRES_SECONDS = 72L * 3600L // ROUTING-PROTOCOL.md'
 private const val PRIORITY_BULLETIN: UByte = 1u
 private const val EXTRA_UNUSED = 0
 
-enum class BulletinCategory(val code: Int, val label: String) {
-    RELIEF_CAMP(0, "Relief camp"),
-    FOOD(1, "Food"),
-    WATER(2, "Water"),
-    MEDICINE(3, "Medicine"),
-    ROAD_STATUS(4, "Road/bridge status"),
-    SHELTER(5, "Shelter"),
-    MISSING_PERSON(6, "Missing person"),
-    OTHER(7, "Other"),
+/** [labelRes], not a raw string -- see `SosCategory`'s doc comment; also reuses the shared
+ * `category_food`/`category_shelter`/`category_other` strings the resource board uses, per
+ * `docs/LOCALIZATION-UX.md` SS1's glossary-consistency requirement. */
+enum class BulletinCategory(val code: Int, @StringRes val labelRes: Int) {
+    RELIEF_CAMP(0, R.string.category_relief_camp),
+    FOOD(1, R.string.category_food),
+    WATER(2, R.string.category_water),
+    MEDICINE(3, R.string.category_medicine),
+    ROAD_STATUS(4, R.string.category_road_status),
+    SHELTER(5, R.string.category_shelter),
+    MISSING_PERSON(6, R.string.category_missing_person),
+    OTHER(7, R.string.category_other),
     ;
 
     companion object {

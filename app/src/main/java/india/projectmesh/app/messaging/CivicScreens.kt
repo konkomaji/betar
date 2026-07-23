@@ -21,7 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import india.projectmesh.app.R
 import kotlinx.coroutines.delay
 
 private const val POLL_INTERVAL_MS = 1000L
@@ -30,6 +32,8 @@ private const val POLL_INTERVAL_MS = 1000L
 fun SosScreen(messenger: SosMessenger) {
     var category by remember { mutableStateOf(SosCategory.MEDICAL) }
     var draft by remember { mutableStateOf("") }
+    val selectedFormat = stringResource(R.string.category_selected)
+    val postFormat = stringResource(R.string.post_prefixed_category)
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -39,15 +43,13 @@ fun SosScreen(messenger: SosMessenger) {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Emergency SOS", style = MaterialTheme.typography.titleMedium)
-        Text(
-            "One-tap high-priority broadcast -- no device location this pass, see class doc.",
-            style = MaterialTheme.typography.bodySmall,
-        )
+        Text(stringResource(R.string.sos_title), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.sos_subtitle), style = MaterialTheme.typography.bodySmall)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (c in SosCategory.entries) {
+                val label = stringResource(c.labelRes)
                 Button(onClick = { category = c }) {
-                    Text(if (c == category) "[${c.label}]" else c.label)
+                    Text(if (c == category) selectedFormat.format(label) else label)
                 }
             }
         }
@@ -56,7 +58,7 @@ fun SosScreen(messenger: SosMessenger) {
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("What's happening") },
+                label = { Text(stringResource(R.string.sos_whats_happening_label)) },
             )
             Button(onClick = {
                 if (draft.isNotBlank()) {
@@ -64,18 +66,21 @@ fun SosScreen(messenger: SosMessenger) {
                     draft = ""
                 }
             }) {
-                Text("Send SOS")
+                Text(stringResource(R.string.sos_send_button))
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth().height(180.dp)) {
             items(messenger.alerts) { alert ->
                 val acked = messenger.acknowledgedIdHexes.contains(alert.idHex)
                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    Text("[${alert.category.label}] ${alert.text}", style = MaterialTheme.typography.bodyMedium)
+                    Text(postFormat.format(stringResource(alert.category.labelRes), alert.text), style = MaterialTheme.typography.bodyMedium)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(if (acked) "Acknowledged" else "Not yet acknowledged", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            stringResource(if (acked) R.string.sos_acknowledged else R.string.sos_not_acknowledged),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                         if (!acked) {
-                            Button(onClick = { messenger.acknowledge(alert) }) { Text("Acknowledge") }
+                            Button(onClick = { messenger.acknowledge(alert) }) { Text(stringResource(R.string.action_acknowledge)) }
                         }
                     }
                 }
@@ -88,6 +93,8 @@ fun SosScreen(messenger: SosMessenger) {
 fun BulletinScreen(messenger: BulletinMessenger) {
     var category by remember { mutableStateOf(BulletinCategory.RELIEF_CAMP) }
     var draft by remember { mutableStateOf("") }
+    val selectedFormat = stringResource(R.string.category_selected)
+    val postFormat = stringResource(R.string.post_prefixed_category)
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -97,11 +104,12 @@ fun BulletinScreen(messenger: BulletinMessenger) {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Disaster bulletin board", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.bulletin_title), style = MaterialTheme.typography.titleMedium)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (c in BulletinCategory.entries) {
+                val label = stringResource(c.labelRes)
                 Button(onClick = { category = c }) {
-                    Text(if (c == category) "[${c.label}]" else c.label)
+                    Text(if (c == category) selectedFormat.format(label) else label)
                 }
             }
         }
@@ -110,7 +118,7 @@ fun BulletinScreen(messenger: BulletinMessenger) {
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Bulletin") },
+                label = { Text(stringResource(R.string.bulletin_label)) },
             )
             Button(onClick = {
                 if (draft.isNotBlank()) {
@@ -118,12 +126,12 @@ fun BulletinScreen(messenger: BulletinMessenger) {
                     draft = ""
                 }
             }) {
-                Text("Post")
+                Text(stringResource(R.string.action_post))
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth().height(180.dp)) {
             items(messenger.posts) { post ->
-                Text("[${post.category.label}] ${post.text}", style = MaterialTheme.typography.bodyMedium)
+                Text(postFormat.format(stringResource(post.category.labelRes), post.text), style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -134,6 +142,8 @@ fun ResourceScreen(messenger: ResourceMessenger) {
     var kind by remember { mutableStateOf(ResourceKind.HAVE) }
     var category by remember { mutableStateOf(ResourceCategory.FOOD) }
     var draft by remember { mutableStateOf("") }
+    val selectedFormat = stringResource(R.string.category_selected)
+    val postFormat = stringResource(R.string.resource_post_prefixed)
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -143,18 +153,20 @@ fun ResourceScreen(messenger: ResourceMessenger) {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Community resource board", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.resource_title), style = MaterialTheme.typography.titleMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (k in ResourceKind.entries) {
+                val label = stringResource(k.labelRes)
                 Button(onClick = { kind = k }) {
-                    Text(if (k == kind) "[${k.label}]" else k.label)
+                    Text(if (k == kind) selectedFormat.format(label) else label)
                 }
             }
         }
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             for (c in ResourceCategory.entries) {
+                val label = stringResource(c.labelRes)
                 Button(onClick = { category = c }) {
-                    Text(if (c == category) "[${c.label}]" else c.label)
+                    Text(if (c == category) selectedFormat.format(label) else label)
                 }
             }
         }
@@ -163,7 +175,7 @@ fun ResourceScreen(messenger: ResourceMessenger) {
                 value = draft,
                 onValueChange = { draft = it },
                 modifier = Modifier.weight(1f),
-                label = { Text("Details") },
+                label = { Text(stringResource(R.string.resource_details_label)) },
             )
             Button(onClick = {
                 if (draft.isNotBlank()) {
@@ -171,12 +183,15 @@ fun ResourceScreen(messenger: ResourceMessenger) {
                     draft = ""
                 }
             }) {
-                Text("Post")
+                Text(stringResource(R.string.action_post))
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth().height(180.dp)) {
             items(messenger.posts) { post ->
-                Text("[${post.kind.label}/${post.category.label}] ${post.text}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    postFormat.format(stringResource(post.kind.labelRes), stringResource(post.category.labelRes), post.text),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
         }
     }

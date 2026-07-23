@@ -3,4 +3,82 @@
     <string name="mesh_relay_channel_name">Mesh relay</string>
     <string name="mesh_relay_notification_title">Project Mesh relay active</string>
     <string name="mesh_relay_notification_text">Advertising and relaying for nearby devices</string>
+
+    <!-- Identity screen -->
+    <string name="identity_subtitle">One stable identity per app session (not persisted across restarts yet).</string>
+    <string name="identity_show_button">Show my identity</string>
+    <string name="identity_fingerprint_label">Fingerprint:</string>
+    <string name="identity_safety_string_label">Safety string:</string>
+    <string name="identity_native_lib_error">Native library not loaded: %1$s</string>
+
+    <!-- Mesh (BLE) screen -->
+    <string name="mesh_title">Mesh (BLE)</string>
+    <string name="mesh_description">Real android.bluetooth.* driver -- advertise + scan, GATT server + client, running in a foreground service so it keeps working when backgrounded.</string>
+    <string name="mesh_stop_button">Stop mesh</string>
+    <string name="mesh_start_button">Start mesh</string>
+    <string name="mesh_connected_peers">Connected peers: %1$d</string>
+    <string name="mesh_enable_bluetooth_first">Enable Bluetooth first</string>
+    <string name="mesh_permissions_denied">Permissions denied -- mesh needs all of them to run</string>
+    <string name="mesh_battery_guidance">For reliable background relay, exempt this app from battery optimization. Some devices (Xiaomi, Oppo, Vivo, realme, Samsung...) also need a separate \"autostart\"/\"protected apps\" setting -- see docs/TRANSPORT.md §6.</string>
+    <string name="mesh_allow_background_button">Allow background activity</string>
+    <string name="mesh_open_autostart_button">Open device autostart settings</string>
+    <string name="mesh_no_autostart_setting">No known autostart setting for %1$s -- check device settings manually</string>
+
+    <!-- Messaging (Direct + Broadcast) -->
+    <string name="messaging_title">Messaging</string>
+    <string name="messaging_subtitle">Direct (Noise XX -&gt; Double Ratchet) and Broadcast only -- Channel and Group need their own UniFFI export pass first, see docs/IMPLEMENTATION-STATUS.md.</string>
+    <string name="broadcast_title">Broadcast (everyone nearby, unsigned -- see class doc)</string>
+    <string name="message_label">Message</string>
+    <string name="direct_title">Direct</string>
+    <string name="direct_my_fingerprint_label">My fingerprint (share this so others can add you):</string>
+    <string name="direct_contact_fingerprint_label">Contact\'s fingerprint (64 hex chars)</string>
+    <string name="direct_contact_row">%1$s… (%2$s)</string>
+    <string name="direct_waiting_handshake">Waiting for handshake to complete (both devices need mesh contact)…</string>
+    <string name="direct_chat_me_prefix">Me: </string>
+    <string name="direct_chat_them_prefix">Them: </string>
+
+    <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
+    <string name="sos_title">Emergency SOS</string>
+    <string name="sos_subtitle">One-tap high-priority broadcast -- no device location this pass, see class doc.</string>
+    <string name="sos_whats_happening_label">What\'s happening</string>
+    <string name="sos_send_button">Send SOS</string>
+    <string name="sos_acknowledged">Acknowledged</string>
+    <string name="sos_not_acknowledged">Not yet acknowledged</string>
+    <string name="bulletin_title">Disaster bulletin board</string>
+    <string name="bulletin_label">Bulletin</string>
+    <string name="resource_title">Community resource board</string>
+    <string name="resource_details_label">Details</string>
+    <string name="post_prefixed_category">[%1$s] %2$s</string>
+    <string name="resource_post_prefixed">[%1$s/%2$s] %3$s</string>
+
+    <!-- Shared action labels -->
+    <string name="action_post">Post</string>
+    <string name="action_add">Add</string>
+    <string name="action_open">Open</string>
+    <string name="action_back">Back</string>
+    <string name="action_send">Send</string>
+    <string name="action_acknowledge">Acknowledge</string>
+
+    <!-- Category glossary: kept consistent across SOS/bulletin/resource board per
+         docs/LOCALIZATION-UX.md SS1's "glossary so safety-critical terms are consistent". -->
+    <string name="category_medical">Medical</string>
+    <string name="category_trapped">Trapped</string>
+    <string name="category_fire">Fire</string>
+    <string name="category_violence">Violence</string>
+    <string name="category_other">Other</string>
+    <string name="category_relief_camp">Relief camp</string>
+    <string name="category_food">Food</string>
+    <string name="category_water">Water</string>
+    <string name="category_medicine">Medicine</string>
+    <string name="category_road_status">Road/bridge status</string>
+    <string name="category_shelter">Shelter</string>
+    <string name="category_missing_person">Missing person</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_blood_donor">Blood donor</string>
+    <string name="category_charging">Charging point</string>
+    <string name="category_labour">Labour</string>
+    <string name="resource_kind_have">Have</string>
+    <string name="resource_kind_need">Need</string>
+    <string name="category_selected">[%1$s]</string>
 </resources>

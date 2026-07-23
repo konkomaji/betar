@@ -1,8 +1,10 @@
 package india.projectmesh.app.messaging
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.mutableStateListOf
 import india.projectmesh.app.MeshCoordinator
+import india.projectmesh.app.R
 import uniffi.mesh_core.envelopePack
 import uniffi.mesh_core.envelopeUnpack
 
@@ -11,9 +13,10 @@ private const val RESOURCE_TTL_HOPS: UByte = 16u
 private const val RESOURCE_EXPIRES_SECONDS = 72L * 3600L
 private const val PRIORITY_NORMAL: UByte = 2u // no dedicated Priority variant; FEATURES.md SS7 ranks it above chat
 
-enum class ResourceKind(val code: Int, val label: String) {
-    HAVE(0, "Have"),
-    NEED(1, "Need"),
+/** [labelRes], not a raw string -- see `SosCategory`'s doc comment. */
+enum class ResourceKind(val code: Int, @StringRes val labelRes: Int) {
+    HAVE(0, R.string.resource_kind_have),
+    NEED(1, R.string.resource_kind_need),
     ;
 
     companion object {
@@ -21,15 +24,17 @@ enum class ResourceKind(val code: Int, val label: String) {
     }
 }
 
-enum class ResourceCategory(val code: Int, val label: String) {
-    FOOD(0, "Food"),
-    SHELTER(1, "Shelter"),
-    TRANSPORT(2, "Transport"),
-    TOOLS(3, "Tools"),
-    BLOOD_DONOR(4, "Blood donor"),
-    CHARGING(5, "Charging point"),
-    LABOUR(6, "Labour"),
-    OTHER(7, "Other"),
+/** Reuses `category_food`/`category_shelter`/`category_other` from `BulletinCategory` -- see
+ * `docs/LOCALIZATION-UX.md` SS1's glossary-consistency requirement. */
+enum class ResourceCategory(val code: Int, @StringRes val labelRes: Int) {
+    FOOD(0, R.string.category_food),
+    SHELTER(1, R.string.category_shelter),
+    TRANSPORT(2, R.string.category_transport),
+    TOOLS(3, R.string.category_tools),
+    BLOOD_DONOR(4, R.string.category_blood_donor),
+    CHARGING(5, R.string.category_charging),
+    LABOUR(6, R.string.category_labour),
+    OTHER(7, R.string.category_other),
     ;
 
     companion object {

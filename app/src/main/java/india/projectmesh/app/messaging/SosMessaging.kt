@@ -1,8 +1,10 @@
 package india.projectmesh.app.messaging
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.mutableStateListOf
 import india.projectmesh.app.MeshCoordinator
+import india.projectmesh.app.R
 import uniffi.mesh_core.envelopePack
 import uniffi.mesh_core.envelopeUnpack
 
@@ -13,12 +15,15 @@ private const val PRIORITY_SOS: UByte = 0u
 private const val EXTRA_NEW_ALERT = 0
 private const val EXTRA_ACKNOWLEDGEMENT = 1
 
-enum class SosCategory(val code: Int, val label: String) {
-    MEDICAL(0, "Medical"),
-    TRAPPED(1, "Trapped"),
-    FIRE(2, "Fire"),
-    VIOLENCE(3, "Violence"),
-    OTHER(4, "Other"),
+/** [labelRes] rather than a raw string so category names go through the same localization
+ * resource pipeline as everything else -- see `docs/LOCALIZATION-UX.md` SS1 (English only for
+ * now, per the user; the point of this pass is the resource *framework*, not translations). */
+enum class SosCategory(val code: Int, @StringRes val labelRes: Int) {
+    MEDICAL(0, R.string.category_medical),
+    TRAPPED(1, R.string.category_trapped),
+    FIRE(2, R.string.category_fire),
+    VIOLENCE(3, R.string.category_violence),
+    OTHER(4, R.string.category_other),
     ;
 
     companion object {
