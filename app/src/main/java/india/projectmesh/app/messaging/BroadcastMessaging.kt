@@ -23,6 +23,9 @@ data class BroadcastPost(val text: String, val idHex: String)
  * forge a broadcast claiming to be from anyone; there's no authenticity check at this layer.
  * Real signing is a separate, contained follow-up once `FfiIdentity::sign` is exported -- not
  * bundled into this pass silently.
+ *
+ * Excludes anything matching [isCivicMagic] (SOS/bulletin/resource-board posts, see
+ * `CivicPost.kt`) so those don't leak into this plain-chat feed as garbled text.
  */
 class BroadcastMessenger(private val coordinator: MeshCoordinator) {
     val posts = mutableStateListOf<BroadcastPost>()
@@ -57,6 +60,7 @@ class BroadcastMessenger(private val coordinator: MeshCoordinator) {
                 continue
             }
             if (parsed.addressingTag != 0.toUByte()) continue // not Broadcast
+            if (isCivicMagic(parsed.sealed)) continue // SOS/bulletin/resource-board post, not plain chat
             val text = runCatching { String(parsed.sealed, Charsets.UTF_8) }.getOrNull() ?: continue
             posts.add(0, BroadcastPost(text, parsed.idHex)) // newest first
         }

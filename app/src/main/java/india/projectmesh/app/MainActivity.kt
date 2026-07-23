@@ -29,11 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import india.projectmesh.app.messaging.BulletinScreen
 import india.projectmesh.app.messaging.MessagingScreen
+import india.projectmesh.app.messaging.ResourceScreen
+import india.projectmesh.app.messaging.SosScreen
 import kotlinx.coroutines.delay
 
 /**
- * Phase 1 screen, three independently-testable pieces:
+ * Phase 1 screen, independently-testable pieces:
  * - [IdentityScreen]: displays the app's one stable session identity ([MeshApplication.identity])
  *   — proves the UniFFI pipe end-to-end and is what [india.projectmesh.app.messaging.DirectMessenger]
  *   actually addresses Direct messages with (not a throwaway demo identity anymore).
@@ -43,6 +46,8 @@ import kotlinx.coroutines.delay
  *   connected-peer count, and OEM battery-whitelist guidance.
  * - [MessagingScreen]: real Direct + Broadcast messaging UI (Channel/Group deferred — see its
  *   own doc comment for why).
+ * - [SosScreen]/[BulletinScreen]/[ResourceScreen]: the three civic-broadcast features
+ *   (`FEATURES.md` §1/§2/§4) — see `messaging/CivicPost.kt` for their shared wire framing.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +61,18 @@ class MainActivity : ComponentActivity() {
                             .verticalScroll(rememberScrollState())
                             .padding(24.dp),
                     ) {
+                        val app = LocalContext.current.applicationContext as MeshApplication
                         IdentityScreen()
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         MeshScreen()
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         MessagingScreen()
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                        SosScreen(app.sosMessenger)
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                        BulletinScreen(app.bulletinMessenger)
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                        ResourceScreen(app.resourceMessenger)
                     }
                 }
             }
