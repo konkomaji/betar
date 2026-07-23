@@ -875,6 +875,10 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -974,6 +978,10 @@ internal interface UniffiLib : Library {
     fun uniffi_mesh_core_fn_method_ffimeshnode_on_peer_connected(`ptr`: Pointer,`peerHandle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     fun uniffi_mesh_core_fn_method_ffimeshnode_on_peer_lost(`ptr`: Pointer,`peerHandle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffimeshnode_set_puzzle_difficulty(`ptr`: Pointer,`difficultyBits`: Byte,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffimeshnode_set_rate_limits(`ptr`: Pointer,`maxEnvelopesPerWindow`: Int,`maxBytesPerWindow`: Long,`windowSeconds`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     fun uniffi_mesh_core_fn_clone_ffimeshtransport(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
@@ -1203,6 +1211,10 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshnode_on_peer_lost(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffimeshnode_set_puzzle_difficulty(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimeshnode_set_rate_limits(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshtransport_start(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshtransport_stop(
@@ -1350,6 +1362,12 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_on_peer_lost() != 30660.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_set_puzzle_difficulty() != 37596.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_set_rate_limits() != 53018.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimeshtransport_start() != 13437.toShort()) {
@@ -3194,6 +3212,20 @@ public interface FfiMeshNodeInterface {
      */
     fun `onPeerLost`(`peerHandle`: kotlin.ULong)
     
+    /**
+     * Tune the client puzzle (`docs/ROUTING-PROTOCOL.md` §4.5). `0` disables it (the default).
+     * See `core/src/puzzle.rs`'s doc comment for why the default difficulty is a reasoned
+     * estimate, not one benchmarked against real target hardware.
+     */
+    fun `setPuzzleDifficulty`(`difficultyBits`: kotlin.UByte)
+    
+    /**
+     * Tune per-peer rate limits (`docs/ROUTING-PROTOCOL.md` §4.4). Defaults: 120 envelopes and
+     * 2,000,000 bytes per 60-second window per peer — reasoned, not benchmarked (see
+     * `core/src/relay.rs`'s `RateLimitConfig::default`).
+     */
+    fun `setRateLimits`(`maxEnvelopesPerWindow`: kotlin.UInt, `maxBytesPerWindow`: kotlin.ULong, `windowSeconds`: kotlin.ULong)
+    
     companion object
 }
 
@@ -3360,6 +3392,38 @@ open class FfiMeshNode: Disposable, AutoCloseable, FfiMeshNodeInterface {
     uniffiRustCall() { _status ->
     UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimeshnode_on_peer_lost(
         it, FfiConverterULong.lower(`peerHandle`),_status)
+}
+    }
+    
+    
+
+    
+    /**
+     * Tune the client puzzle (`docs/ROUTING-PROTOCOL.md` §4.5). `0` disables it (the default).
+     * See `core/src/puzzle.rs`'s doc comment for why the default difficulty is a reasoned
+     * estimate, not one benchmarked against real target hardware.
+     */override fun `setPuzzleDifficulty`(`difficultyBits`: kotlin.UByte)
+        = 
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimeshnode_set_puzzle_difficulty(
+        it, FfiConverterUByte.lower(`difficultyBits`),_status)
+}
+    }
+    
+    
+
+    
+    /**
+     * Tune per-peer rate limits (`docs/ROUTING-PROTOCOL.md` §4.4). Defaults: 120 envelopes and
+     * 2,000,000 bytes per 60-second window per peer — reasoned, not benchmarked (see
+     * `core/src/relay.rs`'s `RateLimitConfig::default`).
+     */override fun `setRateLimits`(`maxEnvelopesPerWindow`: kotlin.UInt, `maxBytesPerWindow`: kotlin.ULong, `windowSeconds`: kotlin.ULong)
+        = 
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimeshnode_set_rate_limits(
+        it, FfiConverterUInt.lower(`maxEnvelopesPerWindow`),FfiConverterULong.lower(`maxBytesPerWindow`),FfiConverterULong.lower(`windowSeconds`),_status)
 }
     }
     
