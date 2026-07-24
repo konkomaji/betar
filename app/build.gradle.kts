@@ -57,3 +57,50 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
+
+// XML forbids "--" inside a <!-- --> comment body -- this project has hit that exact mistake
+// four times (AndroidManifest.xml x2, strings.xml, AndroidManifest.xml again), each time as a
+// cryptic ManifestMerger2/resource-parse failure with no line number pointing at the real cause.
+// Checked here, before any resource/manifest processing runs, so it fails fast with an exact
+// file:line instead. Only flags "--" found strictly *inside* a comment's <!-- ... --> body (the
+// delimiters themselves are excluded from the check), so "--" used as a prose dash inside a
+// <string> resource's text content -- which is valid XML -- is not a false positive.
+tasks.register("checkXmlComments") {
+    group = "verification"
+    description = "Fails if any XML comment under src/main contains a literal '--' (invalid XML)."
+
+    val xmlFiles = fileTree(layout.projectDirectory.dir("src/main")) { include("**/*.xml") }
+    inputs.files(xmlFiles)
+
+    doLast {
+        val commentBody = Regex("<!--(.*?)-->", RegexOption.DOT_MATCHES_ALL)
+        val violations = mutableListOf<String>()
+        xmlFiles.forEach { file ->
+            val text = file.readText()
+            for (match in commentBody.findAll(text)) {
+                val body = match.groupValues[1]
+                var searchFrom = 0
+                while (true) {
+                    val hit = body.indexOf("--", searchFrom)
+                    if (hit < 0) break
+                    val offset = match.range.first + "<!--".length + hit
+                    val line = text.substring(0, offset).count { it == '\n' } + 1
+                    violations += "${file.relativeTo(projectDir)}:$line"
+                    searchFrom = hit + 1
+                }
+            }
+        }
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Found '--' inside an XML comment (invalid XML -- breaks the manifest/resource " +
+                    "parser with a much less useful error than this one). Use ':', ';', or an " +
+                    "em dash instead of '--' as a prose dash inside XML comments.\n" +
+                    violations.joinToString("\n") { "  $it" },
+            )
+        }
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("checkXmlComments")
+}

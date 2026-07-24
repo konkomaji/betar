@@ -6,6 +6,7 @@ import android.util.Log
 import india.projectmesh.app.ble.BleTransportDriver
 import india.projectmesh.app.ble.BleUuids
 import india.projectmesh.app.ble.MeshEventSink
+import india.projectmesh.app.wifidirect.WifiDirectTransportDriver
 import java.io.File
 import java.security.SecureRandom
 import uniffi.mesh_core.FfiException
@@ -18,10 +19,10 @@ private const val MASTER_KEY_SIZE = 32
 private const val STORE_CAPACITY: UInt = 500u
 
 /**
- * Owns one [BleTransportDriver] and the [FfiMeshNode] it drives. Resolves the
- * construction-order circularity between the two (the node needs the transport at construction;
- * the transport needs a way to call back into the node once it exists) via [MeshEventSink] --
- * see the plan doc's "Key design decision" section.
+ * Owns [MultiTransport] (BLE + Wi-Fi Direct composed behind one `FfiMeshTransport`) and the
+ * [FfiMeshNode] it drives. Resolves the construction-order circularity between the two (the node
+ * needs the transport at construction; the transport needs a way to call back into the node once
+ * it exists) via [MeshEventSink] -- see the plan doc's "Key design decision" section.
  *
  * **Master key gap, flagged not silently patched:** `FfiMeshNode.open` wants a 32-byte key
  * documented as needing platform-Keystore backing (Android Keystore / iOS Secure Enclave, per
@@ -31,14 +32,16 @@ private const val STORE_CAPACITY: UInt = 500u
  * item in `docs/IMPLEMENTATION-STATUS.md`, not bundled into "BLE driver done."
  */
 class MeshCoordinator(private val context: Context) {
-    val driver = BleTransportDriver(context)
+    private val ble = BleTransportDriver(context)
+    private val wifiDirect = WifiDirectTransportDriver(context)
+    val transport = MultiTransport(ble, wifiDirect)
     private val node: FfiMeshNode
 
     init {
         val masterKey = loadOrCreateMasterKey(context)
         val dbPath = File(context.filesDir, "mesh-store.redb").absolutePath
-        node = FfiMeshNode.open(dbPath, masterKey, STORE_CAPACITY, nowSeconds(), driver)
-        driver.eventSink = object : MeshEventSink {
+        node = FfiMeshNode.open(dbPath, masterKey, STORE_CAPACITY, nowSeconds(), transport)
+        transport.eventSink = object : MeshEventSink {
             override fun onPeerConnected(peerHandle: ULong) {
                 runCatching { node.onPeerConnected(peerHandle) }
                     .onFailure { e -> logFfiFailure("onPeerConnected", peerHandle, e) }
@@ -55,18 +58,18 @@ class MeshCoordinator(private val context: Context) {
         }
     }
 
-    /** Begin advertising, scanning, and serving GATT connections. */
+    /** Begin advertising/scanning (BLE) and service discovery (Wi-Fi Direct) on both links. */
     fun start() {
-        driver.start(BleUuids.serviceIdBytes())
+        transport.start(BleUuids.serviceIdBytes())
     }
 
     fun stop() {
-        driver.stop()
+        transport.stop()
     }
 
-    fun connectedPeerCount(): Int = driver.connectedPeerCount()
+    fun connectedPeerCount(): Int = transport.connectedPeerCount()
 
-    fun isRunning(): Boolean = driver.isRunning()
+    fun isRunning(): Boolean = transport.isRunning()
 
     fun node(): FfiMeshNode = node
 
