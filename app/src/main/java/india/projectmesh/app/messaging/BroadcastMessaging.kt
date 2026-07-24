@@ -24,8 +24,9 @@ data class BroadcastPost(val text: String, val idHex: String)
  * Real signing is a separate, contained follow-up once `FfiIdentity::sign` is exported -- not
  * bundled into this pass silently.
  *
- * Excludes anything matching [isCivicMagic] (SOS/bulletin/resource-board posts, see
- * `CivicPost.kt`) so those don't leak into this plain-chat feed as garbled text.
+ * Excludes anything matching [isReservedBroadcastMagic] (SOS/bulletin/resource-board posts, and
+ * `DirectMessaging.kt`'s prekey-bundle announcement -- see `CivicPost.kt`) so those don't leak
+ * into this plain-chat feed as garbled text.
  */
 class BroadcastMessenger(private val coordinator: MeshCoordinator) {
     val posts = mutableStateListOf<BroadcastPost>()
@@ -60,7 +61,7 @@ class BroadcastMessenger(private val coordinator: MeshCoordinator) {
                 continue
             }
             if (parsed.addressingTag != 0.toUByte()) continue // not Broadcast
-            if (isCivicMagic(parsed.sealed)) continue // SOS/bulletin/resource-board post, not plain chat
+            if (isReservedBroadcastMagic(parsed.sealed)) continue // civic post or prekey-bundle announcement, not plain chat
             val text = runCatching { String(parsed.sealed, Charsets.UTF_8) }.getOrNull() ?: continue
             posts.add(0, BroadcastPost(text, parsed.idHex)) // newest first
         }

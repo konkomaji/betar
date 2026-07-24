@@ -27,6 +27,15 @@ const val MAGIC_SOS: Byte = 0xF1.toByte()
 const val MAGIC_BULLETIN: Byte = 0xF2.toByte()
 const val MAGIC_RESOURCE: Byte = 0xF3.toByte()
 
+/** Not a civic post -- `DirectMessaging.kt`'s hybrid prekey-bundle announcement, which reuses this
+ *  same magic-byte-prefixed-Broadcast pattern. Kept in this shared registry (rather than defined
+ *  privately where it's used) specifically so [isReservedBroadcastMagic] can't forget about it --
+ *  which is exactly what happened before this constant moved here: the prekey bundle (real
+ *  ML-KEM-1024/X25519 key material, no user-readable text) was leaking into the plain chat feed as
+ *  garbled binary noise on every launch, since the exclusion check only knew about SOS/bulletin/
+ *  resource. Found via an actual on-device QA pass, not a hypothetical. */
+const val MAGIC_PREKEY_BUNDLE: Byte = 0xF4.toByte()
+
 private const val HEADER_SIZE = 4
 private const val LOCATION_SIZE = 8
 private const val FIXED_POINT_SCALE = 1_000_000.0
@@ -35,8 +44,12 @@ data class GeoPoint(val latitude: Double, val longitude: Double)
 
 data class DecodedCivicPost(val magic: Byte, val category: Int, val extra: Int, val location: GeoPoint?, val text: String)
 
-fun isCivicMagic(bytes: ByteArray): Boolean =
-    bytes.isNotEmpty() && (bytes[0] == MAGIC_SOS || bytes[0] == MAGIC_BULLETIN || bytes[0] == MAGIC_RESOURCE)
+/** True for any reserved (non-plain-chat) magic-byte-prefixed Broadcast payload -- civic posts
+ *  (SOS/bulletin/resource) or the prekey-bundle announcement. `BroadcastMessaging.kt` excludes
+ *  everything this returns true for from the plain chat feed. */
+fun isReservedBroadcastMagic(bytes: ByteArray): Boolean =
+    bytes.isNotEmpty() &&
+        (bytes[0] == MAGIC_SOS || bytes[0] == MAGIC_BULLETIN || bytes[0] == MAGIC_RESOURCE || bytes[0] == MAGIC_PREKEY_BUNDLE)
 
 fun encodeCivicPayload(magic: Byte, category: Int, extra: Int, location: GeoPoint?, text: String): ByteArray {
     val textBytes = text.toByteArray(Charsets.UTF_8)

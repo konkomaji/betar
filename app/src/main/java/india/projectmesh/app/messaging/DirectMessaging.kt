@@ -28,11 +28,9 @@ private const val FINGERPRINT_BYTES = 32
 private const val DIRECT_TTL_HOPS: UByte = 8u
 private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOCOL.md's example 24-72h range
 
-// One-byte magic prefix distinguishing a prekey-bundle announcement from plain broadcast chat --
-// same "Rust core never needs to know" framing `CivicPost.kt` already uses for SOS/bulletin/
-// resource-board broadcasts, applied to `docs/ROUTING-PROTOCOL.md` §5.1's bundle-transport
-// decision (a magic-byte-prefixed Broadcast envelope).
-private const val MAGIC_PREKEY_BUNDLE: Byte = 0xF4.toByte()
+// MAGIC_PREKEY_BUNDLE lives in CivicPost.kt (shared magic-byte registry), not here -- see its doc
+// comment for why: BroadcastMessaging.kt's exclusion check needs to know about every reserved
+// magic byte, and a private-here constant already let that check silently miss this one once.
 private const val PREKEY_INITIAL_BATCH: UInt = 10u
 
 // The prekey pool holds real secrets (signed-prekey scalar, one-time-prekey scalars, PQ
