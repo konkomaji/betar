@@ -54,6 +54,11 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     // Required at runtime by UniFFI-generated Kotlin bindings (JNA-based FFI, not raw JNI).
     implementation("net.java.dev.jna:jna:5.15.0@aar")
+    // Offline maps (FEATURES.md §3): renders entirely from a local style + local tile sources,
+    // no remote style/tile server required -- matches this app's "no INTERNET permission" stance
+    // (AndroidManifest.xml). This pass wires up the SDK itself; real MBTiles/PMTiles regional
+    // tile packs are a separate follow-up (see MapScreen.kt's doc comment).
+    implementation("org.maplibre.gl:android-sdk:11.13.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

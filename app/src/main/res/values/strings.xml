@@ -43,6 +43,10 @@
     <string name="channel_join_button">Join</string>
     <string name="channel_session_row">%1$s (%2$s…)</string>
 
+    <!-- Offline map (rendering pipeline only this pass; see MapScreen.kt's class doc) -->
+    <string name="map_title">Offline map (preview)</string>
+    <string name="map_subtitle">Renders with zero network calls -- no real map data loaded yet, see class doc.</string>
+
     <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
     <string name="sos_title">Emergency SOS</string>
     <string name="sos_subtitle">One-tap high-priority broadcast -- no device location this pass, see class doc.</string>

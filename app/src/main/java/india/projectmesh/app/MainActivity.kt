@@ -69,6 +69,8 @@ class MainActivity : ComponentActivity() {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         MessagingScreen()
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                        MapScreen()
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         SosScreen(app.sosMessenger)
                         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                         BulletinScreen(app.bulletinMessenger)
