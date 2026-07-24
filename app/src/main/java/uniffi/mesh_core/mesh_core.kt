@@ -922,6 +922,36 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1006,6 +1036,40 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_mesh_core_fn_method_ffihandshake_write_message(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_clone_ffihybridbundle(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_free_ffihybridbundle(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffihybridbundle_from_bytes(`bytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffihybridbundle_identity_fingerprint_hex(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffihybridbundle_initiate(`ptr`: Pointer,`senderIdentity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffihybridbundle_to_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffihybridbundle_verify(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Byte
+    fun uniffi_mesh_core_fn_clone_ffihybridprekeypool(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_free_ffihybridprekeypool(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffihybridprekeypool_new(`identity`: Pointer,`initialBatch`: Int,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_available_count(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Int
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_current_bundle_bytes(`ptr`: Pointer,`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_needs_top_up(`ptr`: Pointer,`threshold`: Int,uniffi_out_err: UniffiRustCallStatus, 
+    ): Byte
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_respond(`ptr`: Pointer,`identity`: Pointer,`initiationMessage`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_rotate_pq_prekey(`ptr`: Pointer,`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_rotate_signed_prekey(`ptr`: Pointer,`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_top_up(`ptr`: Pointer,`n`: Int,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
     fun uniffi_mesh_core_fn_clone_ffiidentity(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffiidentity(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1300,6 +1364,28 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffihandshake_write_message(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridbundle_identity_fingerprint_hex(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridbundle_initiate(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridbundle_to_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridbundle_verify(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_available_count(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_current_bundle_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_needs_top_up(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_respond(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_pq_prekey(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_signed_prekey(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_fingerprint_hex(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_safety_string(
@@ -1400,6 +1486,10 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffihandshake_new_responder(
     ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffihybridbundle_from_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_new(
+    ): Short
     fun uniffi_mesh_core_checksum_constructor_ffiidentity_from_bytes(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffiidentity_generate(
@@ -1490,6 +1580,39 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffihandshake_write_message() != 21077.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridbundle_identity_fingerprint_hex() != 13974.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridbundle_initiate() != 29993.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridbundle_to_bytes() != 63552.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridbundle_verify() != 16225.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_available_count() != 31661.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_current_bundle_bytes() != 56254.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_needs_top_up() != 60147.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_respond() != 35455.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_pq_prekey() != 22565.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_signed_prekey() != 34746.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up() != 39147.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffiidentity_fingerprint_hex() != 61171.toShort()) {
@@ -1640,6 +1763,12 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffihandshake_new_responder() != 28074.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffihybridbundle_from_bytes() != 46326.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_new() != 34854.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffiidentity_from_bytes() != 7075.toShort()) {
@@ -3317,6 +3446,707 @@ public object FfiConverterTypeFfiHandshake: FfiConverter<FfiHandshake, Pointer> 
     override fun allocationSize(value: FfiHandshake) = 8UL
 
     override fun write(value: FfiHandshake, buf: ByteBuffer) {
+        // The Rust code always expects pointers written as 8 bytes,
+        // and will fail to compile if they don't fit.
+        buf.putLong(Pointer.nativeValue(lower(value)))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a Pointer/Arc<T>
+// to the live Rust struct on the other side of the FFI.
+//
+// Each instance implements core operations for working with the Rust `Arc<T>` and the
+// Kotlin Pointer to work with the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque pointer to the underlying Rust struct.
+//     Method calls need to read this pointer from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its pointer should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the pointer, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the pointer, but is interrupted
+//      before it can pass the pointer over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read pointer value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+/**
+ * A hybrid (classical X3DH + ML-KEM-1024) prekey bundle, as published/gossiped by whoever wants
+ * to be reachable asynchronously. See `docs/ROUTING-PROTOCOL.md` §5.1 for the transport
+ * decision (a magic-byte-prefixed Broadcast envelope) this bundle's bytes are meant to ride
+ * inside.
+ */
+public interface FfiHybridBundleInterface {
+    
+    /**
+     * Hex-encoded fingerprint of the identity this bundle claims to belong to — for display
+     * (e.g. "you're about to message X") before actually bootstrapping a session with it. Not a
+     * substitute for out-of-band fingerprint verification, same as every other identity display
+     * in this crate.
+     */
+    fun `identityFingerprintHex`(): kotlin.String
+    
+    /**
+     * Alice's side of the hybrid bootstrap: verifies this bundle, derives the shared secret,
+     * and returns a ready-to-use [`FfiSession`] plus the wire bytes of the "first contact"
+     * message she must actually send Bob (`crypto::pqxdh::pack_initiation_message`) — carrying
+     * her identity, her fresh ephemeral public key, which one-time prekey she used (if any), and
+     * the ML-KEM ciphertext, everything [`FfiHybridPrekeyPool::respond`] needs on the other end.
+     */
+    fun `initiate`(`senderIdentity`: FfiIdentity): FfiHybridInitiateResult
+    
+    fun `toBytes`(): kotlin.ByteArray
+    
+    /**
+     * Both the classical and PQ signatures must verify — a forged bundle that got only one past
+     * a careless caller would downgrade the hybrid property to whichever half wasn't checked.
+     */
+    fun `verify`(): kotlin.Boolean
+    
+    companion object
+}
+
+/**
+ * A hybrid (classical X3DH + ML-KEM-1024) prekey bundle, as published/gossiped by whoever wants
+ * to be reachable asynchronously. See `docs/ROUTING-PROTOCOL.md` §5.1 for the transport
+ * decision (a magic-byte-prefixed Broadcast envelope) this bundle's bytes are meant to ride
+ * inside.
+ */
+open class FfiHybridBundle: Disposable, AutoCloseable, FfiHybridBundleInterface {
+
+    constructor(pointer: Pointer) {
+        this.pointer = pointer
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    /**
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noPointer: NoPointer) {
+        this.pointer = null
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    protected val pointer: Pointer?
+    protected val cleanable: UniffiCleaner.Cleanable
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithPointer(block: (ptr: Pointer) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the pointer being freed concurrently.
+        try {
+            return block(this.uniffiClonePointer())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
+        override fun run() {
+            pointer?.let { ptr ->
+                uniffiRustCall { status ->
+                    UniffiLib.INSTANCE.uniffi_mesh_core_fn_free_ffihybridbundle(ptr, status)
+                }
+            }
+        }
+    }
+
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
+            UniffiLib.INSTANCE.uniffi_mesh_core_fn_clone_ffihybridbundle(pointer!!, status)
+        }
+    }
+
+    
+    /**
+     * Hex-encoded fingerprint of the identity this bundle claims to belong to — for display
+     * (e.g. "you're about to message X") before actually bootstrapping a session with it. Not a
+     * substitute for out-of-band fingerprint verification, same as every other identity display
+     * in this crate.
+     */override fun `identityFingerprintHex`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridbundle_identity_fingerprint_hex(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Alice's side of the hybrid bootstrap: verifies this bundle, derives the shared secret,
+     * and returns a ready-to-use [`FfiSession`] plus the wire bytes of the "first contact"
+     * message she must actually send Bob (`crypto::pqxdh::pack_initiation_message`) — carrying
+     * her identity, her fresh ephemeral public key, which one-time prekey she used (if any), and
+     * the ML-KEM ciphertext, everything [`FfiHybridPrekeyPool::respond`] needs on the other end.
+     */
+    @Throws(FfiException::class)override fun `initiate`(`senderIdentity`: FfiIdentity): FfiHybridInitiateResult {
+            return FfiConverterTypeFfiHybridInitiateResult.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridbundle_initiate(
+        it, FfiConverterTypeFfiIdentity.lower(`senderIdentity`),_status)
+}
+    }
+    )
+    }
+    
+
+    override fun `toBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridbundle_to_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Both the classical and PQ signatures must verify — a forged bundle that got only one past
+     * a careless caller would downgrade the hybrid property to whichever half wasn't checked.
+     */override fun `verify`(): kotlin.Boolean {
+            return FfiConverterBoolean.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridbundle_verify(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+
+    
+    companion object {
+        
+    /**
+     * Parse untrusted wire bytes (e.g. gossiped through the mesh). Does not verify signatures —
+     * call [`verify`](Self::verify) before trusting the result, or just call
+     * [`initiate`](Self::initiate), which always verifies first.
+     */
+    @Throws(FfiException::class) fun `fromBytes`(`bytes`: kotlin.ByteArray): FfiHybridBundle {
+            return FfiConverterTypeFfiHybridBundle.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffihybridbundle_from_bytes(
+        FfiConverterByteArray.lower(`bytes`),_status)
+}
+    )
+    }
+    
+
+        
+    }
+    
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiHybridBundle: FfiConverter<FfiHybridBundle, Pointer> {
+
+    override fun lower(value: FfiHybridBundle): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): FfiHybridBundle {
+        return FfiHybridBundle(value)
+    }
+
+    override fun read(buf: ByteBuffer): FfiHybridBundle {
+        // The Rust code always writes pointers as 8 bytes, and will
+        // fail to compile if they don't fit.
+        return lift(Pointer(buf.getLong()))
+    }
+
+    override fun allocationSize(value: FfiHybridBundle) = 8UL
+
+    override fun write(value: FfiHybridBundle, buf: ByteBuffer) {
+        // The Rust code always expects pointers written as 8 bytes,
+        // and will fail to compile if they don't fit.
+        buf.putLong(Pointer.nativeValue(lower(value)))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a Pointer/Arc<T>
+// to the live Rust struct on the other side of the FFI.
+//
+// Each instance implements core operations for working with the Rust `Arc<T>` and the
+// Kotlin Pointer to work with the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque pointer to the underlying Rust struct.
+//     Method calls need to read this pointer from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its pointer should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the pointer, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the pointer, but is interrupted
+//      before it can pass the pointer over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read pointer value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+/**
+ * Bob-side bookkeeping over a batch of one-time prekeys plus a rotatable PQ prekey
+ * (`crypto::pqxdh::HybridPrekeyPool`) — the local device's reachability state for anyone who
+ * wants to bootstrap a session while it's offline.
+ */
+public interface FfiHybridPrekeyPoolInterface {
+    
+    fun `availableCount`(): kotlin.UInt
+    
+    /**
+     * The bundle to publish/gossip right now, wire-serialized
+     * (`crypto::pqxdh::HybridBundle::to_bytes`) — ready to hand to `envelope_pack` as a
+     * Broadcast payload per `docs/ROUTING-PROTOCOL.md` §5.1.
+     */
+    fun `currentBundleBytes`(`identity`: FfiIdentity): kotlin.ByteArray
+    
+    fun `needsTopUp`(`threshold`: kotlin.UInt): kotlin.Boolean
+    
+    /**
+     * Bob's side: process the wire bytes of Alice's "first contact" message
+     * (`FfiHybridBundle::initiate`'s `message_to_send`), consume the one-time prekey it
+     * references (if any) so it's never reused, and return a ready-to-use [`FfiSession`]. The
+     * one-time prekey's secret never leaves this call — see the module doc.
+     */
+    fun `respond`(`identity`: FfiIdentity, `initiationMessage`: kotlin.ByteArray): FfiSession
+    
+    fun `rotatePqPrekey`(`identity`: FfiIdentity)
+    
+    fun `rotateSignedPrekey`(`identity`: FfiIdentity)
+    
+    fun `topUp`(`n`: kotlin.UInt)
+    
+    companion object
+}
+
+/**
+ * Bob-side bookkeeping over a batch of one-time prekeys plus a rotatable PQ prekey
+ * (`crypto::pqxdh::HybridPrekeyPool`) — the local device's reachability state for anyone who
+ * wants to bootstrap a session while it's offline.
+ */
+open class FfiHybridPrekeyPool: Disposable, AutoCloseable, FfiHybridPrekeyPoolInterface {
+
+    constructor(pointer: Pointer) {
+        this.pointer = pointer
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    /**
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noPointer: NoPointer) {
+        this.pointer = null
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+    /**
+     * Start a pool with a freshly generated signed prekey, `initial_batch` one-time prekeys, and
+     * a freshly generated PQ prekey.
+     */
+    constructor(`identity`: FfiIdentity, `initialBatch`: kotlin.UInt) :
+        this(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffihybridprekeypool_new(
+        FfiConverterTypeFfiIdentity.lower(`identity`),FfiConverterUInt.lower(`initialBatch`),_status)
+}
+    )
+
+    protected val pointer: Pointer?
+    protected val cleanable: UniffiCleaner.Cleanable
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithPointer(block: (ptr: Pointer) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the pointer being freed concurrently.
+        try {
+            return block(this.uniffiClonePointer())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
+        override fun run() {
+            pointer?.let { ptr ->
+                uniffiRustCall { status ->
+                    UniffiLib.INSTANCE.uniffi_mesh_core_fn_free_ffihybridprekeypool(ptr, status)
+                }
+            }
+        }
+    }
+
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
+            UniffiLib.INSTANCE.uniffi_mesh_core_fn_clone_ffihybridprekeypool(pointer!!, status)
+        }
+    }
+
+    override fun `availableCount`(): kotlin.UInt {
+            return FfiConverterUInt.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_available_count(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * The bundle to publish/gossip right now, wire-serialized
+     * (`crypto::pqxdh::HybridBundle::to_bytes`) — ready to hand to `envelope_pack` as a
+     * Broadcast payload per `docs/ROUTING-PROTOCOL.md` §5.1.
+     */override fun `currentBundleBytes`(`identity`: FfiIdentity): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_current_bundle_bytes(
+        it, FfiConverterTypeFfiIdentity.lower(`identity`),_status)
+}
+    }
+    )
+    }
+    
+
+    override fun `needsTopUp`(`threshold`: kotlin.UInt): kotlin.Boolean {
+            return FfiConverterBoolean.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_needs_top_up(
+        it, FfiConverterUInt.lower(`threshold`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Bob's side: process the wire bytes of Alice's "first contact" message
+     * (`FfiHybridBundle::initiate`'s `message_to_send`), consume the one-time prekey it
+     * references (if any) so it's never reused, and return a ready-to-use [`FfiSession`]. The
+     * one-time prekey's secret never leaves this call — see the module doc.
+     */
+    @Throws(FfiException::class)override fun `respond`(`identity`: FfiIdentity, `initiationMessage`: kotlin.ByteArray): FfiSession {
+            return FfiConverterTypeFfiSession.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_respond(
+        it, FfiConverterTypeFfiIdentity.lower(`identity`),FfiConverterByteArray.lower(`initiationMessage`),_status)
+}
+    }
+    )
+    }
+    
+
+    override fun `rotatePqPrekey`(`identity`: FfiIdentity)
+        = 
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_rotate_pq_prekey(
+        it, FfiConverterTypeFfiIdentity.lower(`identity`),_status)
+}
+    }
+    
+    
+
+    override fun `rotateSignedPrekey`(`identity`: FfiIdentity)
+        = 
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_rotate_signed_prekey(
+        it, FfiConverterTypeFfiIdentity.lower(`identity`),_status)
+}
+    }
+    
+    
+
+    override fun `topUp`(`n`: kotlin.UInt)
+        = 
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_top_up(
+        it, FfiConverterUInt.lower(`n`),_status)
+}
+    }
+    
+    
+
+    
+
+    
+    
+    companion object
+    
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiHybridPrekeyPool: FfiConverter<FfiHybridPrekeyPool, Pointer> {
+
+    override fun lower(value: FfiHybridPrekeyPool): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): FfiHybridPrekeyPool {
+        return FfiHybridPrekeyPool(value)
+    }
+
+    override fun read(buf: ByteBuffer): FfiHybridPrekeyPool {
+        // The Rust code always writes pointers as 8 bytes, and will
+        // fail to compile if they don't fit.
+        return lift(Pointer(buf.getLong()))
+    }
+
+    override fun allocationSize(value: FfiHybridPrekeyPool) = 8UL
+
+    override fun write(value: FfiHybridPrekeyPool, buf: ByteBuffer) {
         // The Rust code always expects pointers written as 8 bytes,
         // and will fail to compile if they don't fit.
         buf.putLong(Pointer.nativeValue(lower(value)))
@@ -5365,8 +6195,9 @@ public object FfiConverterTypeFfiMlsMember: FfiConverter<FfiMlsMember, Pointer> 
 /**
  * An established Double Ratchet session (`docs/CRYPTOGRAPHY.md` §5) — forward secrecy and
  * post-compromise security for ongoing 1:1 messaging. Obtained from
- * [`FfiHandshake::finish_as_initiator`] / [`FfiHandshake::finish_as_responder`], never
- * constructed directly.
+ * [`FfiHandshake::finish_as_initiator`] / [`FfiHandshake::finish_as_responder`] (interactive
+ * Noise `XX` handshake) or `ffi_prekey.rs`'s hybrid async bootstrap — never constructed
+ * directly from outside this crate.
  */
 public interface FfiSessionInterface {
     
@@ -5380,8 +6211,9 @@ public interface FfiSessionInterface {
 /**
  * An established Double Ratchet session (`docs/CRYPTOGRAPHY.md` §5) — forward secrecy and
  * post-compromise security for ongoing 1:1 messaging. Obtained from
- * [`FfiHandshake::finish_as_initiator`] / [`FfiHandshake::finish_as_responder`], never
- * constructed directly.
+ * [`FfiHandshake::finish_as_initiator`] / [`FfiHandshake::finish_as_responder`] (interactive
+ * Noise `XX` handshake) or `ffi_prekey.rs`'s hybrid async bootstrap — never constructed
+ * directly from outside this crate.
  */
 open class FfiSession: Disposable, AutoCloseable, FfiSessionInterface {
 
@@ -6334,6 +7166,47 @@ public object FfiConverterTypeFfiHeader: FfiConverterRustBuffer<FfiHeader> {
             FfiConverterByteArray.write(value.`dhPub`, buf)
             FfiConverterUInt.write(value.`pn`, buf)
             FfiConverterUInt.write(value.`n`, buf)
+    }
+}
+
+
+
+data class FfiHybridInitiateResult (
+    var `session`: FfiSession, 
+    var `messageToSend`: kotlin.ByteArray
+) : Disposable {
+    
+    @Suppress("UNNECESSARY_SAFE_CALL") // codegen is much simpler if we unconditionally emit safe calls here
+    override fun destroy() {
+        
+        Disposable.destroy(this.`session`)
+    
+        Disposable.destroy(this.`messageToSend`)
+    
+    }
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiHybridInitiateResult: FfiConverterRustBuffer<FfiHybridInitiateResult> {
+    override fun read(buf: ByteBuffer): FfiHybridInitiateResult {
+        return FfiHybridInitiateResult(
+            FfiConverterTypeFfiSession.read(buf),
+            FfiConverterByteArray.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: FfiHybridInitiateResult) = (
+            FfiConverterTypeFfiSession.allocationSize(value.`session`) +
+            FfiConverterByteArray.allocationSize(value.`messageToSend`)
+    )
+
+    override fun write(value: FfiHybridInitiateResult, buf: ByteBuffer) {
+            FfiConverterTypeFfiSession.write(value.`session`, buf)
+            FfiConverterByteArray.write(value.`messageToSend`, buf)
     }
 }
 
