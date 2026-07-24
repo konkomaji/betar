@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import india.projectmesh.app.KeystoreSecretBox
 import india.projectmesh.app.MeshCoordinator
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -33,6 +34,13 @@ private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOC
 // decision (a magic-byte-prefixed Broadcast envelope).
 private const val MAGIC_PREKEY_BUNDLE: Byte = 0xF4.toByte()
 private const val PREKEY_INITIAL_BATCH: UInt = 10u
+
+// The prekey pool holds real secrets (signed-prekey scalar, one-time-prekey scalars, PQ
+// decapsulation key) -- Keystore-wrapped like the master key/identity, not plain SharedPreferences
+// like the (public) contact fingerprint list below.
+private const val PREKEY_POOL_KEY_ALIAS = "mesh_prekey_pool_wrap"
+private const val PREKEY_POOL_PREFS_NAME = "mesh_prekey_pool"
+private const val PREKEY_POOL_PREFS_KEY = "pool_wrapped_b64"
 
 // Fingerprints are public values (already meant to be read aloud/shared), so unlike the master
 // key/identity/channel-passphrase stores, this deliberately does NOT go through
@@ -103,13 +111,11 @@ class Contact(val fingerprintHex: String) {
  * per contact**, not auto-fired alongside every interactive attempt, to avoid two different
  * session-establishment mechanisms racing for the same contact.
  *
- * **Honest limit, stated plainly:** [prekeyPool] is in-memory only, regenerated fresh every app
- * launch — there is no Keystore-wrapped persistence for its signed-prekey/one-time-prekey/PQ
- * secrets yet (same kind of deferred-persistence gap this session's MLS group work has for
- * signer/credential export). A bundle published in a previous app session can no longer be
- * responded to after a restart, since the pool that held its secrets is gone; only bundles
- * published this session are answerable. Republish (call [publishPrekeyBundle] again) after every
- * restart to keep this device reachable.
+ * **[prekeyPool] now persists across restarts** (later pass, same session): Keystore-wrapped via
+ * [KeystoreSecretBox], same design as the master key/identity, loaded-or-created in [init] and
+ * re-persisted after every mutating call ([respond][uniffi.mesh_core.FfiHybridPrekeyPool.respond]
+ * consumes a one-time prekey, changing what's needed to answer the *next* bootstrap). A bundle
+ * published in a previous app session can now actually be answered after a restart.
  */
 class DirectMessenger(
     private val context: Context,
@@ -122,8 +128,8 @@ class DirectMessenger(
     val contacts = mutableStateListOf<Contact>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
-    // See the class doc's "honest limit" note -- in-memory only, not Keystore-persisted.
-    private val prekeyPool = FfiHybridPrekeyPool(identity, PREKEY_INITIAL_BATCH)
+    // Keystore-wrapped, loaded-or-created below (in `init`) -- see the class doc.
+    private lateinit var prekeyPool: FfiHybridPrekeyPool
 
     // Other devices' prekey bundles this device has seen broadcast, keyed by their fingerprint --
     // what [initiateAsync] looks up. Not persisted; rebuilt from whatever gets re-broadcast/
@@ -135,7 +141,35 @@ class DirectMessenger(
 
     init {
         loadPersistedContacts().forEach { fingerprintHex -> addContactInternal(fingerprintHex) }
+        prekeyPool = loadOrCreatePrekeyPool()
         publishPrekeyBundle()
+    }
+
+    private fun loadOrCreatePrekeyPool(): FfiHybridPrekeyPool {
+        val prefs = context.getSharedPreferences(PREKEY_POOL_PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.getString(PREKEY_POOL_PREFS_KEY, null)?.let { encoded ->
+            KeystoreSecretBox.unwrap(PREKEY_POOL_KEY_ALIAS, encoded)?.let { bytes ->
+                try {
+                    return FfiHybridPrekeyPool.fromBytes(bytes)
+                } catch (e: Exception) {
+                    Log.w(TAG, "stored prekey pool bytes failed to reconstruct -- regenerating", e)
+                }
+            } ?: Log.w(TAG, "stored wrapped prekey pool failed to decrypt -- regenerating")
+        }
+        val fresh = FfiHybridPrekeyPool(identity, PREKEY_INITIAL_BATCH)
+        persistPrekeyPool(fresh)
+        return fresh
+    }
+
+    /** Re-wrap and store the pool's current secrets. Call after anything that mutates them --
+     * today, only [handleAsyncInitFrame] (via `respond`, which consumes a one-time prekey). */
+    private fun persistPrekeyPool(pool: FfiHybridPrekeyPool) {
+        try {
+            val prefs = context.getSharedPreferences(PREKEY_POOL_PREFS_NAME, Context.MODE_PRIVATE)
+            prefs.edit().putString(PREKEY_POOL_PREFS_KEY, KeystoreSecretBox.wrap(PREKEY_POOL_KEY_ALIAS, pool.toBytes())).apply()
+        } catch (e: Exception) {
+            Log.w(TAG, "failed to persist prekey pool", e)
+        }
     }
 
     /** Broadcast this device's current hybrid prekey bundle so others can bootstrap a session
@@ -339,6 +373,7 @@ class DirectMessenger(
             contact.session = prekeyPool.respond(identity, message)
             contact.handshake = null
             contact.status = ContactStatus.CONNECTED
+            persistPrekeyPool(prekeyPool) // respond() just consumed a one-time prekey
         } catch (e: Exception) {
             Log.w(TAG, "async bootstrap respond failed from ${contact.fingerprintHex}", e)
         }

@@ -956,6 +956,10 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1058,6 +1062,8 @@ internal interface UniffiLib : Library {
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffihybridprekeypool(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffihybridprekeypool_from_bytes(`bytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
     fun uniffi_mesh_core_fn_constructor_ffihybridprekeypool_new(`identity`: Pointer,`initialBatch`: Int,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_method_ffihybridprekeypool_available_count(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1072,6 +1078,8 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_mesh_core_fn_method_ffihybridprekeypool_rotate_signed_prekey(`ptr`: Pointer,`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_mesh_core_fn_method_ffihybridprekeypool_to_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffihybridprekeypool_top_up(`ptr`: Pointer,`n`: Int,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
     fun uniffi_mesh_core_fn_clone_ffiidentity(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1392,6 +1400,8 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_signed_prekey(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_to_bytes(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_fingerprint_hex(
@@ -1497,6 +1507,8 @@ internal interface UniffiLib : Library {
     fun uniffi_mesh_core_checksum_constructor_ffihandshake_new_responder(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffihybridbundle_from_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_from_bytes(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_new(
     ): Short
@@ -1622,6 +1634,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_rotate_signed_prekey() != 34746.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_to_bytes() != 48744.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up() != 39147.toShort()) {
@@ -1781,6 +1796,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffihybridbundle_from_bytes() != 46326.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_from_bytes() != 45296.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffihybridprekeypool_new() != 34854.toShort()) {
@@ -3940,6 +3958,17 @@ public interface FfiHybridPrekeyPoolInterface {
     
     fun `rotateSignedPrekey`(`identity`: FfiIdentity)
     
+    /**
+     * Export every secret this pool holds for persistence — **the caller is entirely
+     * responsible for protecting these bytes at rest** (e.g. Keystore-wrapped, matching this
+     * crate's identity/master-key persistence pattern): this is everything needed to answer a
+     * hybrid bootstrap sent against this device's currently-published bundle. Callable
+     * repeatedly — call again after [`top_up`](Self::top_up)/[`rotate_signed_prekey`](Self::rotate_signed_prekey)/
+     * [`rotate_pq_prekey`](Self::rotate_pq_prekey)/[`respond`](Self::respond) (each of those
+     * mutates the pool's secrets) and re-persist.
+     */
+    fun `toBytes`(): kotlin.ByteArray
+    
     fun `topUp`(`n`: kotlin.UInt)
     
     companion object
@@ -4124,6 +4153,28 @@ open class FfiHybridPrekeyPool: Disposable, AutoCloseable, FfiHybridPrekeyPoolIn
     
     
 
+    
+    /**
+     * Export every secret this pool holds for persistence — **the caller is entirely
+     * responsible for protecting these bytes at rest** (e.g. Keystore-wrapped, matching this
+     * crate's identity/master-key persistence pattern): this is everything needed to answer a
+     * hybrid bootstrap sent against this device's currently-published bundle. Callable
+     * repeatedly — call again after [`top_up`](Self::top_up)/[`rotate_signed_prekey`](Self::rotate_signed_prekey)/
+     * [`rotate_pq_prekey`](Self::rotate_pq_prekey)/[`respond`](Self::respond) (each of those
+     * mutates the pool's secrets) and re-persist.
+     */
+    @Throws(FfiException::class)override fun `toBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffihybridprekeypool_to_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
     override fun `topUp`(`n`: kotlin.UInt)
         = 
     callWithPointer {
@@ -4138,8 +4189,26 @@ open class FfiHybridPrekeyPool: Disposable, AutoCloseable, FfiHybridPrekeyPoolIn
     
 
     
+    companion object {
+        
+    /**
+     * Resume a previously-persisted pool from [`to_bytes`](Self::to_bytes)'s output — the whole
+     * point being to close the "in-memory only, regenerated every launch" gap this pool had:
+     * without this, a bundle published in a previous app session could never be answered again
+     * after a restart.
+     */
+    @Throws(FfiException::class) fun `fromBytes`(`bytes`: kotlin.ByteArray): FfiHybridPrekeyPool {
+            return FfiConverterTypeFfiHybridPrekeyPool.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffihybridprekeypool_from_bytes(
+        FfiConverterByteArray.lower(`bytes`),_status)
+}
+    )
+    }
     
-    companion object
+
+        
+    }
     
 }
 
