@@ -195,14 +195,22 @@ class DirectMessenger(private val identity: FfiIdentity, private val coordinator
                     sendFrame(contact.fingerprintHex, MSG_TYPE_HANDSHAKE, result.messageToSend)
                 }
                 iAmInitiator(contact) -> {
-                    // Their one follow-up message, completing our initiator side.
-                    contact.session = contact.handshake!!.finishAsInitiator(message)
+                    // Their one follow-up message, completing our initiator side. `handshake`
+                    // is provably non-null here (mutually exclusive with the `== null` branch
+                    // above), but guarded rather than force-unwrapped -- defense in depth so a
+                    // future edit that breaks that invariant logs-and-drops via the catch below
+                    // instead of crashing the app.
+                    val hs = contact.handshake
+                        ?: throw IllegalStateException("handshake missing while completing as initiator")
+                    contact.session = hs.finishAsInitiator(message)
                     contact.handshake = null
                     contact.status = ContactStatus.CONNECTED
                 }
                 else -> {
                     // We're the responder mid-exchange -- feed message 3 ("-> s, se").
-                    contact.handshake!!.readMessage(message)
+                    val hs = contact.handshake
+                        ?: throw IllegalStateException("handshake missing mid-exchange")
+                    hs.readMessage(message)
                 }
             }
         } catch (e: Exception) {
