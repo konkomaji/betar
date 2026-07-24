@@ -1,7 +1,9 @@
 package india.projectmesh.app.messaging
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import india.projectmesh.app.KeystoreSecretBox
 import india.projectmesh.app.MeshCoordinator
 import uniffi.mesh_core.FfiChannel
 import uniffi.mesh_core.envelopePack
@@ -9,6 +11,11 @@ import uniffi.mesh_core.envelopeUnpack
 
 private const val TAG = "ChannelMessaging"
 private const val CHANNEL_TTL_HOPS: UByte = 8u
+
+private const val PERSIST_KEY_ALIAS = "mesh_channel_passphrases_wrap"
+private const val PERSIST_PREFS_NAME = "mesh_channels"
+private const val PERSIST_PREFS_KEY = "joined_passphrases_wrapped_b64"
+private const val PERSIST_DELIMITER = "\n"
 
 // Channels are meant to behave like a durable community board (a relief camp's "north-gate-42"
 // board someone might check hours later), not ephemeral chat -- longer TTL than plain broadcast's.
@@ -44,19 +51,37 @@ class ChannelSession(val label: String, internal val channel: FfiChannel) {
  * for contacts, not [BroadcastMessenger]'s single global feed, since a channel is something you
  * explicitly join by passphrase rather than something that's just always there.
  *
+ * **Joined channels now persist across restarts** (this pass) -- the list of passphrases you've
+ * joined is Keystore-wrapped (`KeystoreSecretBox`, same design as the master key and identity)
+ * and reloaded on construction, re-deriving each `FfiChannel` fresh via `fromPassphrase` (cheap
+ * and deterministic, so there's nothing to persist beyond the passphrase itself). **Message
+ * history still does not persist** -- only *which channels you've joined*, not their posts;
+ * reopening a channel after a restart starts with an empty feed again, same as it always has.
+ * That's a real, separate gap (would need envelope-level persistence keyed per-channel, not
+ * attempted this pass), not silently folded into "channels persist now."
+ *
  * **Not done, stated plainly:** unsigned -- same `FfiIdentity.sign`-not-exported-yet gap every
- * other messaging feature in this app already has. Joined channels are session-only, not
- * persisted (lost on process restart, mirrors identity's own non-persistence). No leave/forget
- * action, only join -- re-entering the same passphrase is idempotent (returns the existing
- * session) rather than duplicating it, but there's no way to remove one from the list.
+ * other messaging feature in this app already has. No leave/forget action, only join --
+ * re-entering the same passphrase is idempotent (returns the existing session) rather than
+ * creating a duplicate, but there's no way to remove one from the list (or its persisted entry).
  */
-class ChannelMessenger(private val coordinator: MeshCoordinator) {
+class ChannelMessenger(private val context: Context, private val coordinator: MeshCoordinator) {
     val sessions = mutableStateListOf<ChannelSession>()
+
+    init {
+        loadPersistedPassphrases().forEach { passphrase -> joinInternal(passphrase) }
+    }
 
     /** Derive and join a channel from a passphrase. Idempotent -- re-joining the same passphrase
      *  returns the already-joined session rather than creating a duplicate. Null on a blank
      *  passphrase or an FFI-layer failure (logged, not surfaced as a crash). */
     fun join(passphrase: String): ChannelSession? {
+        val session = joinInternal(passphrase) ?: return null
+        persistPassphrases()
+        return session
+    }
+
+    private fun joinInternal(passphrase: String): ChannelSession? {
         val trimmed = passphrase.trim()
         if (trimmed.isEmpty()) return null
         val channel = try {
@@ -70,6 +95,24 @@ class ChannelMessenger(private val coordinator: MeshCoordinator) {
         val session = ChannelSession(trimmed, channel)
         sessions.add(session)
         return session
+    }
+
+    private fun persistPassphrases() {
+        val prefs = context.getSharedPreferences(PERSIST_PREFS_NAME, Context.MODE_PRIVATE)
+        val blob = sessions.joinToString(PERSIST_DELIMITER) { it.label }
+        val wrapped = KeystoreSecretBox.wrap(PERSIST_KEY_ALIAS, blob.toByteArray(Charsets.UTF_8))
+        prefs.edit().putString(PERSIST_PREFS_KEY, wrapped).apply()
+    }
+
+    private fun loadPersistedPassphrases(): List<String> {
+        val prefs = context.getSharedPreferences(PERSIST_PREFS_NAME, Context.MODE_PRIVATE)
+        val encoded = prefs.getString(PERSIST_PREFS_KEY, null) ?: return emptyList()
+        val bytes = KeystoreSecretBox.unwrap(PERSIST_KEY_ALIAS, encoded) ?: run {
+            Log.w(TAG, "stored joined-channels list failed to decrypt -- starting with none")
+            return emptyList()
+        }
+        val blob = String(bytes, Charsets.UTF_8)
+        return if (blob.isEmpty()) emptyList() else blob.split(PERSIST_DELIMITER)
     }
 
     fun send(session: ChannelSession, text: String) {

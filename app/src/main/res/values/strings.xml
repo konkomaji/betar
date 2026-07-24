@@ -5,7 +5,7 @@
     <string name="mesh_relay_notification_text">Advertising and relaying for nearby devices</string>
 
     <!-- Identity screen -->
-    <string name="identity_subtitle">One stable identity per app session (not persisted across restarts yet).</string>
+    <string name="identity_subtitle">One stable identity, persisted across restarts.</string>
     <string name="identity_show_button">Show my identity</string>
     <string name="identity_fingerprint_label">Fingerprint:</string>
     <string name="identity_safety_string_label">Safety string:</string>

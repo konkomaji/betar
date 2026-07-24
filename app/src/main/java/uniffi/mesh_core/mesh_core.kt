@@ -918,6 +918,10 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1006,11 +1010,15 @@ internal interface UniffiLib : Library {
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffiidentity(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffiidentity_from_bytes(`bytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
     fun uniffi_mesh_core_fn_constructor_ffiidentity_generate(uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_method_ffiidentity_fingerprint_hex(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffiidentity_safety_string(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffiidentity_to_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_clone_ffimeshnode(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
@@ -1296,6 +1304,8 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_safety_string(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffiidentity_to_bytes(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshnode_all_ids_hex(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshnode_compose_local(
@@ -1389,6 +1399,8 @@ internal interface UniffiLib : Library {
     fun uniffi_mesh_core_checksum_constructor_ffihandshake_new_initiator(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffihandshake_new_responder(
+    ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffiidentity_from_bytes(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffiidentity_generate(
     ): Short
@@ -1484,6 +1496,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffiidentity_safety_string() != 36173.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffiidentity_to_bytes() != 23619.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_all_ids_hex() != 7950.toShort()) {
@@ -1627,7 +1642,10 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_mesh_core_checksum_constructor_ffihandshake_new_responder() != 28074.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mesh_core_checksum_constructor_ffiidentity_generate() != 4527.toShort()) {
+    if (lib.uniffi_mesh_core_checksum_constructor_ffiidentity_from_bytes() != 7075.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffiidentity_generate() != 29664.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffimeshnode_open() != 50394.toShort()) {
@@ -3423,6 +3441,16 @@ public interface FfiIdentityInterface {
      */
     fun `safetyString`(): kotlin.String
     
+    /**
+     * Export this identity's raw key material for the native layer to persist (e.g.
+     * Android-Keystore-wrapped, matching `MeshCoordinator`'s master-key pattern) and hand back
+     * to [`from_bytes`](Self::from_bytes) on the next launch. **The caller is entirely
+     * responsible for protecting these bytes at rest** — this is the device's long-term
+     * identity; whoever holds these bytes can impersonate it indefinitely. This module does not
+     * encrypt, store, or transmit them itself.
+     */
+    fun `toBytes`(): kotlin.ByteArray
+    
     companion object
 }
 
@@ -3545,14 +3573,53 @@ open class FfiIdentity: Disposable, AutoCloseable, FfiIdentityInterface {
     
 
     
+    /**
+     * Export this identity's raw key material for the native layer to persist (e.g.
+     * Android-Keystore-wrapped, matching `MeshCoordinator`'s master-key pattern) and hand back
+     * to [`from_bytes`](Self::from_bytes) on the next launch. **The caller is entirely
+     * responsible for protecting these bytes at rest** — this is the device's long-term
+     * identity; whoever holds these bytes can impersonate it indefinitely. This module does not
+     * encrypt, store, or transmit them itself.
+     */override fun `toBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffiidentity_to_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
 
     
     companion object {
         
     /**
-     * Generate a fresh identity from the platform CSPRNG. Call once, at first launch, and
-     * persist the result (persistence is not yet implemented — see
-     * `docs/IMPLEMENTATION-STATUS.md`; today, callers must hold onto the returned handle).
+     * Reconstruct a previously-generated identity from [`to_bytes`](Self::to_bytes)'s output.
+     * `bytes` must be exactly 64 bytes (`[signing_seed:32][agreement_scalar:32]`) — anything
+     * else is rejected structurally, but 64 bytes that didn't actually come from `to_bytes`
+     * produce a different, internally-consistent identity rather than an error (see
+     * `crate::identity::Identity::from_bytes`'s doc comment for why that's the best this layer
+     * can do without an expected fingerprint to compare against).
+     */
+    @Throws(FfiException::class) fun `fromBytes`(`bytes`: kotlin.ByteArray): FfiIdentity {
+            return FfiConverterTypeFfiIdentity.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffiidentity_from_bytes(
+        FfiConverterByteArray.lower(`bytes`),_status)
+}
+    )
+    }
+    
+
+        
+    /**
+     * Generate a fresh identity from the platform CSPRNG. Call once, at first launch; persist
+     * the result via [`to_bytes`](Self::to_bytes) and restore future launches via
+     * [`from_bytes`](Self::from_bytes) rather than generating a new one every time.
      */ fun `generate`(): FfiIdentity {
             return FfiConverterTypeFfiIdentity.lift(
     uniffiRustCall() { _status ->

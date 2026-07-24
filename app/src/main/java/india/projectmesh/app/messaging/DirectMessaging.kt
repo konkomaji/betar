@@ -1,5 +1,6 @@
 package india.projectmesh.app.messaging
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -22,6 +23,14 @@ private const val MSG_TYPE_RATCHET: Byte = 1
 private const val FINGERPRINT_BYTES = 32
 private const val DIRECT_TTL_HOPS: UByte = 8u
 private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOCOL.md's example 24-72h range
+
+// Fingerprints are public values (already meant to be read aloud/shared), so unlike the master
+// key/identity/channel-passphrase stores, this deliberately does NOT go through
+// KeystoreSecretBox -- there's no confidentiality property to protect, only "did we already know
+// this contact." Plain SharedPreferences is the right amount of mechanism here, not more.
+private const val PERSIST_PREFS_NAME = "mesh_contacts"
+private const val PERSIST_PREFS_KEY = "contact_fingerprints"
+private const val PERSIST_DELIMITER = ","
 
 enum class ContactStatus { NO_SESSION, HANDSHAKING, CONNECTED }
 
@@ -60,26 +69,46 @@ class Contact(val fingerprintHex: String) {
  * [pollForNewEnvelopes] must be called periodically (the UI does this the same way it already
  * polls connected-peer count).
  *
- * **Not done, stated plainly:** no persistence — contacts, sessions, and message history all
- * live only in process memory and are lost on restart (mirrors the "no identity persistence"
- * gap `FfiIdentity.generate()`'s own doc comment already states); no QR-code trust
- * establishment (`CRYPTOGRAPHY.md` §3's ideal is scanning a QR in person — this pass only
- * supports pasting a fingerprint hex, with the safety string still available for spoken/visual
- * comparison); no prekey/async bootstrap wiring (the interactive Noise handshake requires both
- * parties to have a mesh contact window open around the same time — `crypto::prekey`'s X3DH
- * bootstrap for genuinely offline first contact isn't exported over FFI yet).
+ * **Contact list now persists across restarts** (this pass) -- fingerprints are saved to plain
+ * `SharedPreferences` (see the file-level constants' comment for why no encryption is needed
+ * here) and reloaded on construction. **Sessions and message history still do not persist** --
+ * a restored contact starts at `NO_SESSION` and needs a fresh Noise handshake next contact
+ * window, same as any other new contact; only the fact that you'd already added them survives.
+ * Persisting the live ratchet session itself is a separate, larger task (it's forward-secret key
+ * material, not inert metadata like a fingerprint — serializing it to disk is a real security
+ * design question, not attempted this pass) — not silently folded into "Direct persists now."
+ * No QR-code trust establishment (`CRYPTOGRAPHY.md` §3's ideal is scanning a QR in person — this
+ * pass only supports pasting a fingerprint hex, with the safety string still available for
+ * spoken/visual comparison); no prekey/async bootstrap wiring (the interactive Noise handshake
+ * requires both parties to have a mesh contact window open around the same time —
+ * `crypto::prekey`'s X3DH bootstrap for genuinely offline first contact isn't exported over FFI
+ * yet).
  */
-class DirectMessenger(private val identity: FfiIdentity, private val coordinator: MeshCoordinator) {
+class DirectMessenger(
+    private val context: Context,
+    private val identity: FfiIdentity,
+    private val coordinator: MeshCoordinator,
+) {
     val myFingerprintHex: String = identity.fingerprintHex()
     private val myFingerprintBytes: ByteArray = hexToBytes(myFingerprintHex)
 
     val contacts = mutableStateListOf<Contact>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
+    init {
+        loadPersistedContacts().forEach { fingerprintHex -> addContactInternal(fingerprintHex) }
+    }
+
     /** Add (or return the existing) contact by their fingerprint hex, kicking off a handshake
      * if we're the side that should initiate. Returns null if `fingerprintHex` isn't a
      * well-formed 64-hex-char fingerprint or is our own. */
     fun addContact(fingerprintHex: String): Contact? {
+        val contact = addContactInternal(fingerprintHex) ?: return null
+        persistContacts()
+        return contact
+    }
+
+    private fun addContactInternal(fingerprintHex: String): Contact? {
         val normalized = fingerprintHex.trim().lowercase()
         if (normalized.length != FINGERPRINT_BYTES * 2 || normalized.any { it !in "0123456789abcdef" }) return null
         if (normalized == myFingerprintHex) return null
@@ -89,6 +118,17 @@ class DirectMessenger(private val identity: FfiIdentity, private val coordinator
         contacts.add(contact)
         maybeInitiateHandshake(contact)
         return contact
+    }
+
+    private fun persistContacts() {
+        val prefs = context.getSharedPreferences(PERSIST_PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(PERSIST_PREFS_KEY, contacts.joinToString(PERSIST_DELIMITER) { it.fingerprintHex }).apply()
+    }
+
+    private fun loadPersistedContacts(): List<String> {
+        val prefs = context.getSharedPreferences(PERSIST_PREFS_NAME, Context.MODE_PRIVATE)
+        val stored = prefs.getString(PERSIST_PREFS_KEY, null) ?: return emptyList()
+        return if (stored.isEmpty()) emptyList() else stored.split(PERSIST_DELIMITER)
     }
 
     fun sendMessage(contact: Contact, text: String) {
