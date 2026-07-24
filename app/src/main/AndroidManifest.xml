@@ -6,10 +6,12 @@
          by design (docs/ARCHITECTURE.md §1, docs/DISTRIBUTION.md §1). Add only if/when an
          explicitly opt-in feature genuinely needs it, never by default. -->
 
-    <!-- Legacy Bluetooth model, API < 31 -->
+    <!-- Legacy Bluetooth model, API < 31. ACCESS_FINE_LOCATION's ceiling is 32, not 30:
+         BLE only needs it through API 30, but Wi-Fi Direct service discovery (WifiDirectTransportDriver)
+         needs it through API 32, until NEARBY_WIFI_DEVICES (API 33+, below) takes over. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="32" />
 
     <!-- Current Bluetooth permission model, API 31+ (Android 12+) -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
@@ -17,6 +19,16 @@
         tools:targetApi="s" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Wi-Fi Direct (WifiDirectTransportDriver, docs/TRANSPORT.md §4). NEARBY_WIFI_DEVICES
+         (API 33+) declares neverForLocation since P2P service discovery here doesn't derive
+         physical location from scan results; ACCESS_FINE_LOCATION above covers API 29-32,
+         where the framework requires it for Wi-Fi Direct peer/service discovery regardless. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="tiramisu" />
 
     <!-- Foreground relay service (MeshRelayService): keeps the mesh running while backgrounded,
          docs/ARCHITECTURE.md §4, docs/TRANSPORT.md §6. Android 14+ requires an explicit
@@ -32,6 +44,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+    <uses-feature android:name="android.hardware.wifi.direct" android:required="true" />
 
     <application
         android:name=".MeshApplication"
