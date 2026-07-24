@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mesh-network glyph (hub-and-spoke nodes over a connecting ring: both a network-topology
+     diagram and, deliberately, evocative of the Ashoka Chakra's spokes) on a white disc for
+     contrast against whichever third of the tricolor background shows through the launcher's
+     mask shape. All geometry stays within the 66dp/108dp adaptive-icon safe zone (center 54,54,
+     radius 33) per Android's adaptive-icon spec. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,54 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#16205E"
+        android:strokeWidth="2.2"
+        android:pathData="M78,54 L70.97,37.03 L54,30 L37.03,37.03 L30,54 L37.03,70.97 L54,78 L70.97,70.97 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#16205E"
+        android:strokeWidth="2.2"
+        android:pathData="M54,54 L78,54 M54,54 L70.97,37.03 M54,54 L54,30 M54,54 L37.03,37.03 M54,54 L30,54 M54,54 L37.03,70.97 M54,54 L54,78 M54,54 L70.97,70.97" />
+    <path
+        android:fillColor="#16205E"
+        android:pathData="M47,54 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
+    <path
+        android:fillColor="#16205E"
+        android:pathData="
+            M73.5,54 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M66.47,37.03 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M49.5,30 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M32.53,37.03 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M25.5,54 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M32.53,70.97 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M49.5,78 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
+            M66.47,70.97 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z" />
+</vector>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Indian tricolor, in equal horizontal thirds: the adaptive-icon background layer, per
+     Android's adaptive-icon spec (fills the full 108x108dp canvas; the launcher masks it to
+     whatever shape that device/theme uses: circle, squircle, rounded square). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF9933"
+        android:pathData="M0,0 L108,0 L108,36 L0,36 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,36 L108,36 L108,72 L0,72 Z" />
+    <path
+        android:fillColor="#138808"
+        android:pathData="M0,72 L108,72 L108,108 L0,108 Z" />
+</vector>
