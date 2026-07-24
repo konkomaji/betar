@@ -30,11 +30,11 @@ import kotlinx.coroutines.delay
 private const val POLL_INTERVAL_MS = 1000L
 
 /**
- * Real messaging UI for the two addressing modes actually wireable today -- Direct and
- * Broadcast. Channel and Group aren't here: neither is exported over UniFFI yet (`Channel` from
- * `core/src/crypto/channel.rs`, MLS groups from `core/src/groups.rs` -- both built and tested in
- * Rust, neither reachable from Kotlin), so a UI claiming to drive them would be UI theater over
- * nothing. Tracked as separate follow-ups rather than stubbed in here.
+ * Real messaging UI for the three addressing modes wireable today -- Direct, Broadcast, and
+ * Channel. Group isn't here: MLS (`core/src/groups.rs`) is still not exported over UniFFI, so a
+ * UI claiming to drive it would be UI theater over nothing. Tracked as a separate follow-up
+ * rather than stubbed in here. Channel joined this pass now that `FfiChannel` (`core/src/ffi.rs`)
+ * is exported -- see `ChannelMessaging.kt`.
  */
 @Composable
 fun MessagingScreen() {
@@ -46,6 +46,8 @@ fun MessagingScreen() {
         Text(stringResource(R.string.messaging_subtitle), style = MaterialTheme.typography.bodySmall)
 
         BroadcastSection(app.broadcastMessenger)
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+        ChannelSection(app.channelMessenger)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         DirectSection(app.directMessenger)
     }
@@ -83,6 +85,92 @@ private fun BroadcastSection(messenger: BroadcastMessenger) {
         LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
             items(messenger.posts) { post ->
                 Text(post.text, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChannelSection(messenger: ChannelMessenger) {
+    var passphraseDraft by remember { mutableStateOf("") }
+    var selectedSession by remember { mutableStateOf<ChannelSession?>(null) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            messenger.pollForNewPosts()
+            delay(POLL_INTERVAL_MS)
+        }
+    }
+
+    val sessionRowFormat = stringResource(R.string.channel_session_row)
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.channel_title), style = MaterialTheme.typography.titleMedium)
+
+        val session = selectedSession
+        if (session == null) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = passphraseDraft,
+                    onValueChange = { passphraseDraft = it },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.channel_passphrase_label)) },
+                )
+                Button(onClick = {
+                    val joined = messenger.join(passphraseDraft)
+                    if (joined != null) {
+                        passphraseDraft = ""
+                        selectedSession = joined
+                    }
+                }) {
+                    Text(stringResource(R.string.channel_join_button))
+                }
+            }
+            LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
+                items(messenger.sessions) { s ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(sessionRowFormat.format(s.label, s.selectorHex.take(8)), style = MaterialTheme.typography.bodySmall)
+                        Button(onClick = { selectedSession = s }) { Text(stringResource(R.string.action_open)) }
+                    }
+                }
+            }
+        } else {
+            ChannelThread(messenger, session, onBack = { selectedSession = null })
+        }
+    }
+}
+
+@Composable
+private fun ChannelThread(messenger: ChannelMessenger, session: ChannelSession, onBack: () -> Unit) {
+    var draft by remember { mutableStateOf("") }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onBack) { Text(stringResource(R.string.action_back)) }
+            Text(session.label, style = MaterialTheme.typography.bodyMedium)
+        }
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
+            items(session.posts) { post ->
+                Text(post.text, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = draft,
+                onValueChange = { draft = it },
+                modifier = Modifier.weight(1f),
+                label = { Text(stringResource(R.string.message_label)) },
+            )
+            Button(onClick = {
+                if (draft.isNotBlank()) {
+                    messenger.send(session, draft)
+                    draft = ""
+                }
+            }) {
+                Text(stringResource(R.string.action_post))
             }
         }
     }

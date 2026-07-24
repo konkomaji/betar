@@ -24,9 +24,9 @@
     <string name="mesh_open_autostart_button">Open device autostart settings</string>
     <string name="mesh_no_autostart_setting">No known autostart setting for %1$s -- check device settings manually</string>
 
-    <!-- Messaging (Direct + Broadcast) -->
+    <!-- Messaging (Direct + Broadcast + Channel; Group still deferred) -->
     <string name="messaging_title">Messaging</string>
-    <string name="messaging_subtitle">Direct (Noise XX -&gt; Double Ratchet) and Broadcast only -- Channel and Group need their own UniFFI export pass first, see docs/IMPLEMENTATION-STATUS.md.</string>
+    <string name="messaging_subtitle">Direct (Noise XX -&gt; Double Ratchet), Broadcast, and Channel -- Group still needs its own UniFFI export pass, see docs/IMPLEMENTATION-STATUS.md.</string>
     <string name="broadcast_title">Broadcast (everyone nearby, unsigned -- see class doc)</string>
     <string name="message_label">Message</string>
     <string name="direct_title">Direct</string>
@@ -36,6 +36,12 @@
     <string name="direct_waiting_handshake">Waiting for handshake to complete (both devices need mesh contact)…</string>
     <string name="direct_chat_me_prefix">Me: </string>
     <string name="direct_chat_them_prefix">Them: </string>
+
+    <!-- Channel (passphrase-derived shared board, unsigned; see class doc) -->
+    <string name="channel_title">Channel</string>
+    <string name="channel_passphrase_label">Passphrase (e.g. \"north-gate-42\")</string>
+    <string name="channel_join_button">Join</string>
+    <string name="channel_session_row">%1$s (%2$s…)</string>
 
     <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
     <string name="sos_title">Emergency SOS</string>
