@@ -26,7 +26,7 @@
 
     <!-- Messaging (Direct + Broadcast + Channel; Group still deferred) -->
     <string name="messaging_title">Messaging</string>
-    <string name="messaging_subtitle">Direct (Noise XX -&gt; Double Ratchet), Broadcast, and Channel -- Group still needs its own UniFFI export pass, see docs/IMPLEMENTATION-STATUS.md.</string>
+    <string name="messaging_subtitle">Direct (Noise XX -&gt; Double Ratchet), Broadcast, Channel, and Group (MLS).</string>
     <string name="broadcast_title">Broadcast (everyone nearby, unsigned -- see class doc)</string>
     <string name="message_label">Message</string>
     <string name="direct_title">Direct</string>
@@ -42,6 +42,22 @@
     <string name="channel_passphrase_label">Passphrase (e.g. \"north-gate-42\")</string>
     <string name="channel_join_button">Join</string>
     <string name="channel_session_row">%1$s (%2$s…)</string>
+
+    <!-- Group (MLS, real membership; see class doc for the manual key-exchange flow) -->
+    <string name="group_title">Group</string>
+    <string name="group_label_hint">Group name (local label only)</string>
+    <string name="group_create_button">Create</string>
+    <string name="group_my_key_package_button">Show my key package (to be invited)</string>
+    <string name="group_key_package_label">Your key package -- share this with whoever is adding you:</string>
+    <string name="group_welcome_label">Welcome (from whoever added you)</string>
+    <string name="group_join_button">Join</string>
+    <string name="group_add_member_label">New member\'s key package</string>
+    <string name="group_add_member_button">Add</string>
+    <string name="group_add_member_commit_label">Commit -- share with every other existing member:</string>
+    <string name="group_add_member_welcome_label">Welcome -- share with the new member only:</string>
+    <string name="group_apply_commit_label">Commit (from someone else adding a member)</string>
+    <string name="group_apply_commit_button">Apply</string>
+    <string name="group_apply_commit_failed">Commit didn\'t apply -- wrong group or stale epoch</string>
 
     <!-- Offline map (rendering pipeline only this pass; see MapScreen.kt's class doc) -->
     <string name="map_title">Offline map (preview)</string>

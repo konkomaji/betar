@@ -5,6 +5,7 @@ import india.projectmesh.app.messaging.BroadcastMessenger
 import india.projectmesh.app.messaging.BulletinMessenger
 import india.projectmesh.app.messaging.ChannelMessenger
 import india.projectmesh.app.messaging.DirectMessenger
+import india.projectmesh.app.messaging.GroupMessenger
 import india.projectmesh.app.messaging.ResourceMessenger
 import india.projectmesh.app.messaging.SosMessenger
 import uniffi.mesh_core.FfiIdentity
@@ -29,6 +30,7 @@ class MeshApplication : Application() {
     val directMessenger: DirectMessenger by lazy { DirectMessenger(identity, coordinator) }
     val broadcastMessenger: BroadcastMessenger by lazy { BroadcastMessenger(coordinator) }
     val channelMessenger: ChannelMessenger by lazy { ChannelMessenger(coordinator) }
+    val groupMessenger: GroupMessenger by lazy { GroupMessenger(identity, coordinator) }
     val sosMessenger: SosMessenger by lazy { SosMessenger(coordinator) }
     val bulletinMessenger: BulletinMessenger by lazy { BulletinMessenger(coordinator) }
     val resourceMessenger: ResourceMessenger by lazy { ResourceMessenger(coordinator) }

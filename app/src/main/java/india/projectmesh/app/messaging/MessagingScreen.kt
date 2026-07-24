@@ -30,11 +30,11 @@ import kotlinx.coroutines.delay
 private const val POLL_INTERVAL_MS = 1000L
 
 /**
- * Real messaging UI for the three addressing modes wireable today -- Direct, Broadcast, and
- * Channel. Group isn't here: MLS (`core/src/groups.rs`) is still not exported over UniFFI, so a
- * UI claiming to drive it would be UI theater over nothing. Tracked as a separate follow-up
- * rather than stubbed in here. Channel joined this pass now that `FfiChannel` (`core/src/ffi.rs`)
- * is exported -- see `ChannelMessaging.kt`.
+ * Real messaging UI for all four addressing modes now wireable -- Direct, Broadcast, Channel, and
+ * Group (MLS, via `FfiMlsMember`/`FfiMlsGroupHandle`, `core/src/ffi_groups.rs`). Group joined this
+ * pass now that the MLS UniFFI export exists -- see `GroupMessaging.kt`, including its class doc
+ * for the deliberately manual key-exchange flow (paste KeyPackage/Welcome/Commit hex, same
+ * simplification `DirectMessenger` already uses for fingerprints).
  */
 @Composable
 fun MessagingScreen() {
@@ -48,6 +48,8 @@ fun MessagingScreen() {
         BroadcastSection(app.broadcastMessenger)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         ChannelSection(app.channelMessenger)
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+        GroupSection(app.groupMessenger)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         DirectSection(app.directMessenger)
     }
@@ -175,6 +177,175 @@ private fun ChannelThread(messenger: ChannelMessenger, session: ChannelSession, 
         }
     }
 }
+
+@Composable
+private fun GroupSection(messenger: GroupMessenger) {
+    var labelDraft by remember { mutableStateOf("") }
+    var keyPackageHex by remember { mutableStateOf<String?>(null) }
+    var welcomeDraft by remember { mutableStateOf("") }
+    var selectedSession by remember { mutableStateOf<GroupSession?>(null) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            messenger.pollForNewPosts()
+            delay(POLL_INTERVAL_MS)
+        }
+    }
+
+    val sessionRowFormat = stringResource(R.string.channel_session_row)
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.group_title), style = MaterialTheme.typography.titleMedium)
+
+        val session = selectedSession
+        if (session == null) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = labelDraft,
+                    onValueChange = { labelDraft = it },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.group_label_hint)) },
+                )
+                Button(onClick = {
+                    if (labelDraft.isNotBlank()) {
+                        val created = messenger.createGroup(labelDraft)
+                        if (created != null) {
+                            labelDraft = ""
+                            selectedSession = created
+                        }
+                    }
+                }) {
+                    Text(stringResource(R.string.group_create_button))
+                }
+            }
+
+            Button(onClick = { keyPackageHex = messenger.pendingKeyPackageHex() }) {
+                Text(stringResource(R.string.group_my_key_package_button))
+            }
+            keyPackageHex?.let {
+                Text(stringResource(R.string.group_key_package_label), style = MaterialTheme.typography.bodySmall)
+                Text(it, style = MaterialTheme.typography.bodySmall)
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = welcomeDraft,
+                    onValueChange = { welcomeDraft = it },
+                    modifier = Modifier.weight(1f),
+                    label = { Text(stringResource(R.string.group_welcome_label)) },
+                )
+                Button(onClick = {
+                    if (welcomeDraft.isNotBlank()) {
+                        val joined = messenger.joinFromWelcome(labelDraft.ifBlank { "group" }, welcomeDraft)
+                        if (joined != null) {
+                            welcomeDraft = ""
+                            keyPackageHex = null
+                            selectedSession = joined
+                        }
+                    }
+                }) {
+                    Text(stringResource(R.string.group_join_button))
+                }
+            }
+
+            LazyColumn(modifier = Modifier.fillMaxWidth().height(120.dp)) {
+                items(messenger.sessions) { s ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(sessionRowFormat.format(s.label, s.selectorHex.take(8)), style = MaterialTheme.typography.bodySmall)
+                        Button(onClick = { selectedSession = s }) { Text(stringResource(R.string.action_open)) }
+                    }
+                }
+            }
+        } else {
+            GroupThread(messenger, session, onBack = { selectedSession = null })
+        }
+    }
+}
+
+@Composable
+private fun GroupThread(messenger: GroupMessenger, session: GroupSession, onBack: () -> Unit) {
+    var draft by remember { mutableStateOf("") }
+    var addMemberKeyPackage by remember { mutableStateOf("") }
+    var addMemberResult by remember { mutableStateOf<Pair<String, String>?>(null) } // commit, welcome (hex)
+    var applyCommitDraft by remember { mutableStateOf("") }
+    var applyCommitStatus by remember { mutableStateOf<Boolean?>(null) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onBack) { Text(stringResource(R.string.action_back)) }
+            Text(session.label, style = MaterialTheme.typography.bodyMedium)
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = addMemberKeyPackage,
+                onValueChange = { addMemberKeyPackage = it },
+                modifier = Modifier.weight(1f),
+                label = { Text(stringResource(R.string.group_add_member_label)) },
+            )
+            Button(onClick = {
+                val output = messenger.addMember(session, addMemberKeyPackage)
+                if (output != null) {
+                    addMemberKeyPackage = ""
+                    addMemberResult = output.commitBytes.toHexString() to output.welcomeBytes.toHexString()
+                }
+            }) {
+                Text(stringResource(R.string.group_add_member_button))
+            }
+        }
+        addMemberResult?.let { (commitHex, welcomeHex) ->
+            Text(stringResource(R.string.group_add_member_commit_label), style = MaterialTheme.typography.bodySmall)
+            Text(commitHex, style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.group_add_member_welcome_label), style = MaterialTheme.typography.bodySmall)
+            Text(welcomeHex, style = MaterialTheme.typography.bodySmall)
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = applyCommitDraft,
+                onValueChange = { applyCommitDraft = it },
+                modifier = Modifier.weight(1f),
+                label = { Text(stringResource(R.string.group_apply_commit_label)) },
+            )
+            Button(onClick = {
+                applyCommitStatus = messenger.processCommit(session, applyCommitDraft)
+                if (applyCommitStatus == true) applyCommitDraft = ""
+            }) {
+                Text(stringResource(R.string.group_apply_commit_button))
+            }
+        }
+        if (applyCommitStatus == false) {
+            Text(stringResource(R.string.group_apply_commit_failed), color = MaterialTheme.colorScheme.error)
+        }
+
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(150.dp)) {
+            items(session.posts) { post ->
+                Text(post.text, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = draft,
+                onValueChange = { draft = it },
+                modifier = Modifier.weight(1f),
+                label = { Text(stringResource(R.string.message_label)) },
+            )
+            Button(onClick = {
+                if (draft.isNotBlank()) {
+                    messenger.send(session, draft)
+                    draft = ""
+                }
+            }) {
+                Text(stringResource(R.string.action_post))
+            }
+        }
+    }
+}
+
+private fun ByteArray.toHexString(): String = joinToString("") { "%02x".format(it) }
 
 @Composable
 private fun DirectSection(messenger: DirectMessenger) {
