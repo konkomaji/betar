@@ -886,6 +886,38 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1018,6 +1050,42 @@ internal interface UniffiLib : Library {
     ): Unit
     fun uniffi_mesh_core_fn_method_ffimeshtransport_send(`ptr`: Pointer,`peerHandle`: Long,`frame`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_mesh_core_fn_clone_ffimlsgrouphandle(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_free_ffimlsgrouphandle(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_add_member(`ptr`: Pointer,`keyPackageBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_group_id_hex(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_group_selector_hex(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_open(`ptr`: Pointer,`sealed`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_open_from_envelope(`ptr`: Pointer,`envelopeBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_process_commit(`ptr`: Pointer,`commitBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_seal(`ptr`: Pointer,`plaintext`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_seal_as_envelope(`ptr`: Pointer,`plaintext`: RustBuffer.ByValue,`priorityTag`: Byte,`ttlHops`: Byte,`expiresAt`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsgrouphandle_snapshot_to_disk(`ptr`: Pointer,`path`: RustBuffer.ByValue,`masterKey`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_clone_ffimlsmember(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_free_ffimlsmember(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffimlsmember_new(`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffimlsmember_create_group(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffimlsmember_join_from_welcome(`ptr`: Pointer,`welcomeBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_mesh_core_fn_method_ffimlsmember_key_package_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffimlsmember_load_group_from_disk(`ptr`: Pointer,`path`: RustBuffer.ByValue,`masterKey`: RustBuffer.ByValue,`groupIdHex`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
     fun uniffi_mesh_core_fn_clone_ffisession(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffisession(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1254,6 +1322,32 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshtransport_send(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_add_member(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_group_id_hex(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_group_selector_hex(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_open(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_open_from_envelope(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_process_commit(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal_as_envelope(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsgrouphandle_snapshot_to_disk(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsmember_create_group(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsmember_join_from_welcome(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsmember_key_package_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsmember_load_group_from_disk(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffisession_decrypt(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffisession_encrypt(
@@ -1299,6 +1393,8 @@ internal interface UniffiLib : Library {
     fun uniffi_mesh_core_checksum_constructor_ffiidentity_generate(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffimeshnode_open(
+    ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffimlsmember_new(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffistore_new(
     ): Short
@@ -1429,6 +1525,45 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_mesh_core_checksum_method_ffimeshtransport_send() != 2136.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_add_member() != 49803.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_group_id_hex() != 59897.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_group_selector_hex() != 52349.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_open() != 44297.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_open_from_envelope() != 17216.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_process_commit() != 35498.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal() != 16363.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal_as_envelope() != 18547.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_snapshot_to_disk() != 12729.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_create_group() != 16807.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_join_from_welcome() != 30515.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_key_package_bytes() != 27890.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_load_group_from_disk() != 51251.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_mesh_core_checksum_method_ffisession_decrypt() != 3727.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1496,6 +1631,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffimeshnode_open() != 50394.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffimlsmember_new() != 3200.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffistore_new() != 14010.toShort()) {
@@ -4392,6 +4530,772 @@ public object FfiConverterTypeFfiMeshTransport: FfiConverter<FfiMeshTransport, P
 
 
 /**
+ * A member's live view of one specific group. Interior mutability (`Mutex`) because UniFFI
+ * object methods take `&self`, but every real operation here (`add_member`, `seal`, `open`,
+ * ...) mutates `openmls`'s group state.
+ */
+public interface FfiMlsGroupHandleInterface {
+    
+    /**
+     * Add a member from their published `KeyPackage`'s wire bytes and commit immediately.
+     */
+    fun `addMember`(`keyPackageBytes`: kotlin.ByteArray): FfiAddMemberOutput
+    
+    fun `groupIdHex`(): kotlin.String
+    
+    /**
+     * Public, routable, membership-revealing-nothing identifier for `Addressing::Group` — see
+     * `groups.rs`'s module doc's "routing integration" section.
+     */
+    fun `groupSelectorHex`(): kotlin.String
+    
+    /**
+     * Open an application message's wire bytes (from [`seal`](Self::seal)).
+     */
+    fun `open`(`sealed`: kotlin.ByteArray): kotlin.ByteArray
+    
+    /**
+     * Open an envelope's wire bytes produced by [`seal_as_envelope`](Self::seal_as_envelope)
+     * (by any member of this group). Rejects envelopes not addressed to this group.
+     */
+    fun `openFromEnvelope`(`envelopeBytes`: kotlin.ByteArray): kotlin.ByteArray
+    
+    /**
+     * Process an incoming Commit (from [`add_member`](Self::add_member)'s `commit_bytes`) and
+     * merge it into this member's view of the group.
+     */
+    fun `processCommit`(`commitBytes`: kotlin.ByteArray)
+    
+    /**
+     * Seal an application message for the current group. Returns wire bytes. Prefer
+     * [`seal_as_envelope`](Self::seal_as_envelope) when the result is going straight into
+     * `FfiMeshNode::compose_local` — this method is the lower-level primitive underneath it.
+     */
+    fun `seal`(`plaintext`: kotlin.ByteArray): kotlin.ByteArray
+    
+    /**
+     * Seal an application message and wrap it as a full mesh envelope's wire bytes, ready to
+     * hand straight to `FfiMeshNode::compose_local` — same design as `FfiChannel::seal` +
+     * `envelope_pack` (`ffi.rs`), except the envelope construction happens here since
+     * `Addressing::Group`'s selector is derived from live group state, not a passphrase.
+     * `priority_tag`: 0=Sos, 1=Bulletin, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
+     */
+    fun `sealAsEnvelope`(`plaintext`: kotlin.ByteArray, `priorityTag`: kotlin.UByte, `ttlHops`: kotlin.UByte, `expiresAt`: kotlin.ULong): kotlin.ByteArray
+    
+    /**
+     * Snapshot this group's entire persisted state to an AEAD-sealed file. See `groups.rs`'s
+     * module doc for what this does and doesn't cover (signer/credential are explicitly not
+     * included — see this module's own doc comment).
+     */
+    fun `snapshotToDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray)
+    
+    companion object
+}
+
+/**
+ * A member's live view of one specific group. Interior mutability (`Mutex`) because UniFFI
+ * object methods take `&self`, but every real operation here (`add_member`, `seal`, `open`,
+ * ...) mutates `openmls`'s group state.
+ */
+open class FfiMlsGroupHandle: Disposable, AutoCloseable, FfiMlsGroupHandleInterface {
+
+    constructor(pointer: Pointer) {
+        this.pointer = pointer
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    /**
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noPointer: NoPointer) {
+        this.pointer = null
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    protected val pointer: Pointer?
+    protected val cleanable: UniffiCleaner.Cleanable
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithPointer(block: (ptr: Pointer) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the pointer being freed concurrently.
+        try {
+            return block(this.uniffiClonePointer())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
+        override fun run() {
+            pointer?.let { ptr ->
+                uniffiRustCall { status ->
+                    UniffiLib.INSTANCE.uniffi_mesh_core_fn_free_ffimlsgrouphandle(ptr, status)
+                }
+            }
+        }
+    }
+
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
+            UniffiLib.INSTANCE.uniffi_mesh_core_fn_clone_ffimlsgrouphandle(pointer!!, status)
+        }
+    }
+
+    
+    /**
+     * Add a member from their published `KeyPackage`'s wire bytes and commit immediately.
+     */
+    @Throws(FfiException::class)override fun `addMember`(`keyPackageBytes`: kotlin.ByteArray): FfiAddMemberOutput {
+            return FfiConverterTypeFfiAddMemberOutput.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_add_member(
+        it, FfiConverterByteArray.lower(`keyPackageBytes`),_status)
+}
+    }
+    )
+    }
+    
+
+    override fun `groupIdHex`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_group_id_hex(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Public, routable, membership-revealing-nothing identifier for `Addressing::Group` — see
+     * `groups.rs`'s module doc's "routing integration" section.
+     */override fun `groupSelectorHex`(): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_group_selector_hex(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Open an application message's wire bytes (from [`seal`](Self::seal)).
+     */
+    @Throws(FfiException::class)override fun `open`(`sealed`: kotlin.ByteArray): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_open(
+        it, FfiConverterByteArray.lower(`sealed`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Open an envelope's wire bytes produced by [`seal_as_envelope`](Self::seal_as_envelope)
+     * (by any member of this group). Rejects envelopes not addressed to this group.
+     */
+    @Throws(FfiException::class)override fun `openFromEnvelope`(`envelopeBytes`: kotlin.ByteArray): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_open_from_envelope(
+        it, FfiConverterByteArray.lower(`envelopeBytes`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Process an incoming Commit (from [`add_member`](Self::add_member)'s `commit_bytes`) and
+     * merge it into this member's view of the group.
+     */
+    @Throws(FfiException::class)override fun `processCommit`(`commitBytes`: kotlin.ByteArray)
+        = 
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_process_commit(
+        it, FfiConverterByteArray.lower(`commitBytes`),_status)
+}
+    }
+    
+    
+
+    
+    /**
+     * Seal an application message for the current group. Returns wire bytes. Prefer
+     * [`seal_as_envelope`](Self::seal_as_envelope) when the result is going straight into
+     * `FfiMeshNode::compose_local` — this method is the lower-level primitive underneath it.
+     */
+    @Throws(FfiException::class)override fun `seal`(`plaintext`: kotlin.ByteArray): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_seal(
+        it, FfiConverterByteArray.lower(`plaintext`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Seal an application message and wrap it as a full mesh envelope's wire bytes, ready to
+     * hand straight to `FfiMeshNode::compose_local` — same design as `FfiChannel::seal` +
+     * `envelope_pack` (`ffi.rs`), except the envelope construction happens here since
+     * `Addressing::Group`'s selector is derived from live group state, not a passphrase.
+     * `priority_tag`: 0=Sos, 1=Bulletin, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
+     */
+    @Throws(FfiException::class)override fun `sealAsEnvelope`(`plaintext`: kotlin.ByteArray, `priorityTag`: kotlin.UByte, `ttlHops`: kotlin.UByte, `expiresAt`: kotlin.ULong): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_seal_as_envelope(
+        it, FfiConverterByteArray.lower(`plaintext`),FfiConverterUByte.lower(`priorityTag`),FfiConverterUByte.lower(`ttlHops`),FfiConverterULong.lower(`expiresAt`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Snapshot this group's entire persisted state to an AEAD-sealed file. See `groups.rs`'s
+     * module doc for what this does and doesn't cover (signer/credential are explicitly not
+     * included — see this module's own doc comment).
+     */
+    @Throws(FfiException::class)override fun `snapshotToDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray)
+        = 
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsgrouphandle_snapshot_to_disk(
+        it, FfiConverterString.lower(`path`),FfiConverterByteArray.lower(`masterKey`),_status)
+}
+    }
+    
+    
+
+    
+
+    
+    
+    companion object
+    
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiMlsGroupHandle: FfiConverter<FfiMlsGroupHandle, Pointer> {
+
+    override fun lower(value: FfiMlsGroupHandle): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): FfiMlsGroupHandle {
+        return FfiMlsGroupHandle(value)
+    }
+
+    override fun read(buf: ByteBuffer): FfiMlsGroupHandle {
+        // The Rust code always writes pointers as 8 bytes, and will
+        // fail to compile if they don't fit.
+        return lift(Pointer(buf.getLong()))
+    }
+
+    override fun allocationSize(value: FfiMlsGroupHandle) = 8UL
+
+    override fun write(value: FfiMlsGroupHandle, buf: ByteBuffer) {
+        // The Rust code always expects pointers written as 8 bytes,
+        // and will fail to compile if they don't fit.
+        buf.putLong(Pointer.nativeValue(lower(value)))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a Pointer/Arc<T>
+// to the live Rust struct on the other side of the FFI.
+//
+// Each instance implements core operations for working with the Rust `Arc<T>` and the
+// Kotlin Pointer to work with the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque pointer to the underlying Rust struct.
+//     Method calls need to read this pointer from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its pointer should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the pointer, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the pointer, but is interrupted
+//      before it can pass the pointer over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read pointer value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+/**
+ * A member not yet tied to any specific group — see the module doc's "consuming-constructor"
+ * note for why this wraps `Option`.
+ */
+public interface FfiMlsMemberInterface {
+    
+    /**
+     * Create a brand-new group with this member as its sole, founding member. Consumes.
+     */
+    fun `createGroup`(): FfiMlsGroupHandle
+    
+    /**
+     * Join a group from a `Welcome` message's wire bytes (from
+     * [`FfiMlsGroupHandle::add_member`]'s `welcome_bytes`). Consumes.
+     */
+    fun `joinFromWelcome`(`welcomeBytes`: kotlin.ByteArray): FfiMlsGroupHandle
+    
+    /**
+     * This member's `KeyPackage`, wire-serialized, to publish so someone else can add them to
+     * a group via [`FfiMlsGroupHandle::add_member`]. Does not consume — callable repeatedly
+     * (each call builds a fresh `KeyPackage`, per `groups::MlsMember::key_package`).
+     */
+    fun `keyPackageBytes`(): kotlin.ByteArray
+    
+    /**
+     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. **Honest
+     * limitation, matching `groups.rs`'s own module doc:** since [`new`](Self::new) always
+     * generates a fresh MLS signing keypair, this cannot yet actually resume signing as the
+     * group's pre-restart member — exposed because the read path is straightforward and
+     * harmless on its own, not because the restart story is complete end to end.
+     */
+    fun `loadGroupFromDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray, `groupIdHex`: kotlin.String): FfiMlsGroupHandle
+    
+    companion object
+}
+
+/**
+ * A member not yet tied to any specific group — see the module doc's "consuming-constructor"
+ * note for why this wraps `Option`.
+ */
+open class FfiMlsMember: Disposable, AutoCloseable, FfiMlsMemberInterface {
+
+    constructor(pointer: Pointer) {
+        this.pointer = pointer
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+
+    /**
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noPointer: NoPointer) {
+        this.pointer = null
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
+    }
+    constructor(`identity`: FfiIdentity) :
+        this(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffimlsmember_new(
+        FfiConverterTypeFfiIdentity.lower(`identity`),_status)
+}
+    )
+
+    protected val pointer: Pointer?
+    protected val cleanable: UniffiCleaner.Cleanable
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithPointer(block: (ptr: Pointer) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the pointer being freed concurrently.
+        try {
+            return block(this.uniffiClonePointer())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
+        override fun run() {
+            pointer?.let { ptr ->
+                uniffiRustCall { status ->
+                    UniffiLib.INSTANCE.uniffi_mesh_core_fn_free_ffimlsmember(ptr, status)
+                }
+            }
+        }
+    }
+
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
+            UniffiLib.INSTANCE.uniffi_mesh_core_fn_clone_ffimlsmember(pointer!!, status)
+        }
+    }
+
+    
+    /**
+     * Create a brand-new group with this member as its sole, founding member. Consumes.
+     */
+    @Throws(FfiException::class)override fun `createGroup`(): FfiMlsGroupHandle {
+            return FfiConverterTypeFfiMlsGroupHandle.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsmember_create_group(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Join a group from a `Welcome` message's wire bytes (from
+     * [`FfiMlsGroupHandle::add_member`]'s `welcome_bytes`). Consumes.
+     */
+    @Throws(FfiException::class)override fun `joinFromWelcome`(`welcomeBytes`: kotlin.ByteArray): FfiMlsGroupHandle {
+            return FfiConverterTypeFfiMlsGroupHandle.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsmember_join_from_welcome(
+        it, FfiConverterByteArray.lower(`welcomeBytes`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * This member's `KeyPackage`, wire-serialized, to publish so someone else can add them to
+     * a group via [`FfiMlsGroupHandle::add_member`]. Does not consume — callable repeatedly
+     * (each call builds a fresh `KeyPackage`, per `groups::MlsMember::key_package`).
+     */
+    @Throws(FfiException::class)override fun `keyPackageBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsmember_key_package_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. **Honest
+     * limitation, matching `groups.rs`'s own module doc:** since [`new`](Self::new) always
+     * generates a fresh MLS signing keypair, this cannot yet actually resume signing as the
+     * group's pre-restart member — exposed because the read path is straightforward and
+     * harmless on its own, not because the restart story is complete end to end.
+     */
+    @Throws(FfiException::class)override fun `loadGroupFromDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray, `groupIdHex`: kotlin.String): FfiMlsGroupHandle {
+            return FfiConverterTypeFfiMlsGroupHandle.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsmember_load_group_from_disk(
+        it, FfiConverterString.lower(`path`),FfiConverterByteArray.lower(`masterKey`),FfiConverterString.lower(`groupIdHex`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+
+    
+    
+    companion object
+    
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiMlsMember: FfiConverter<FfiMlsMember, Pointer> {
+
+    override fun lower(value: FfiMlsMember): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): FfiMlsMember {
+        return FfiMlsMember(value)
+    }
+
+    override fun read(buf: ByteBuffer): FfiMlsMember {
+        // The Rust code always writes pointers as 8 bytes, and will
+        // fail to compile if they don't fit.
+        return lift(Pointer(buf.getLong()))
+    }
+
+    override fun allocationSize(value: FfiMlsMember) = 8UL
+
+    override fun write(value: FfiMlsMember, buf: ByteBuffer) {
+        // The Rust code always expects pointers written as 8 bytes,
+        // and will fail to compile if they don't fit.
+        buf.putLong(Pointer.nativeValue(lower(value)))
+    }
+}
+
+
+// This template implements a class for working with a Rust struct via a Pointer/Arc<T>
+// to the live Rust struct on the other side of the FFI.
+//
+// Each instance implements core operations for working with the Rust `Arc<T>` and the
+// Kotlin Pointer to work with the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque pointer to the underlying Rust struct.
+//     Method calls need to read this pointer from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its pointer should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the pointer, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the pointer, but is interrupted
+//      before it can pass the pointer over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read pointer value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+/**
  * An established Double Ratchet session (`docs/CRYPTOGRAPHY.md` §5) — forward secrecy and
  * post-compromise security for ongoing 1:1 messaging. Obtained from
  * [`FfiHandshake::finish_as_initiator`] / [`FfiHandshake::finish_as_responder`], never
@@ -5251,6 +6155,38 @@ public object FfiConverterTypeFfiTransportHub: FfiConverter<FfiTransportHub, Poi
         // The Rust code always expects pointers written as 8 bytes,
         // and will fail to compile if they don't fit.
         buf.putLong(Pointer.nativeValue(lower(value)))
+    }
+}
+
+
+
+data class FfiAddMemberOutput (
+    var `commitBytes`: kotlin.ByteArray, 
+    var `welcomeBytes`: kotlin.ByteArray
+) {
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiAddMemberOutput: FfiConverterRustBuffer<FfiAddMemberOutput> {
+    override fun read(buf: ByteBuffer): FfiAddMemberOutput {
+        return FfiAddMemberOutput(
+            FfiConverterByteArray.read(buf),
+            FfiConverterByteArray.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: FfiAddMemberOutput) = (
+            FfiConverterByteArray.allocationSize(value.`commitBytes`) +
+            FfiConverterByteArray.allocationSize(value.`welcomeBytes`)
+    )
+
+    override fun write(value: FfiAddMemberOutput, buf: ByteBuffer) {
+            FfiConverterByteArray.write(value.`commitBytes`, buf)
+            FfiConverterByteArray.write(value.`welcomeBytes`, buf)
     }
 }
 
