@@ -444,6 +444,11 @@ private fun ContactThread(messenger: DirectMessenger, contact: Contact, onBack: 
         }
         if (contact.status != ContactStatus.CONNECTED) {
             Text(stringResource(R.string.direct_waiting_handshake), style = MaterialTheme.typography.bodySmall)
+            if (messenger.hasKnownBundle(contact.fingerprintHex)) {
+                Button(onClick = { messenger.initiateAsync(contact) }) {
+                    Text(stringResource(R.string.direct_async_init_button))
+                }
+            }
         }
     }
 }

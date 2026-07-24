@@ -34,6 +34,7 @@
     <string name="direct_contact_fingerprint_label">Contact\'s fingerprint (64 hex chars)</string>
     <string name="direct_contact_row">%1$s… (%2$s)</string>
     <string name="direct_waiting_handshake">Waiting for handshake to complete (both devices need mesh contact)…</string>
+    <string name="direct_async_init_button">Message now via their prekey bundle (works even offline)</string>
     <string name="direct_chat_me_prefix">Me: </string>
     <string name="direct_chat_them_prefix">Them: </string>
 

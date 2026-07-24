@@ -11,6 +11,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import uniffi.mesh_core.FfiHandshake
 import uniffi.mesh_core.FfiHeader
+import uniffi.mesh_core.FfiHybridBundle
+import uniffi.mesh_core.FfiHybridPrekeyPool
 import uniffi.mesh_core.FfiIdentity
 import uniffi.mesh_core.FfiSealed
 import uniffi.mesh_core.FfiSession
@@ -20,9 +22,17 @@ import uniffi.mesh_core.envelopeUnpack
 private const val TAG = "DirectMessaging"
 private const val MSG_TYPE_HANDSHAKE: Byte = 0
 private const val MSG_TYPE_RATCHET: Byte = 1
+private const val MSG_TYPE_ASYNC_INIT: Byte = 2
 private const val FINGERPRINT_BYTES = 32
 private const val DIRECT_TTL_HOPS: UByte = 8u
 private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOCOL.md's example 24-72h range
+
+// One-byte magic prefix distinguishing a prekey-bundle announcement from plain broadcast chat --
+// same "Rust core never needs to know" framing `CivicPost.kt` already uses for SOS/bulletin/
+// resource-board broadcasts, applied to `docs/ROUTING-PROTOCOL.md` §5.1's bundle-transport
+// decision (a magic-byte-prefixed Broadcast envelope).
+private const val MAGIC_PREKEY_BUNDLE: Byte = 0xF4.toByte()
+private const val PREKEY_INITIAL_BATCH: UInt = 10u
 
 // Fingerprints are public values (already meant to be read aloud/shared), so unlike the master
 // key/identity/channel-passphrase stores, this deliberately does NOT go through
@@ -79,10 +89,27 @@ class Contact(val fingerprintHex: String) {
  * design question, not attempted this pass) — not silently folded into "Direct persists now."
  * No QR-code trust establishment (`CRYPTOGRAPHY.md` §3's ideal is scanning a QR in person — this
  * pass only supports pasting a fingerprint hex, with the safety string still available for
- * spoken/visual comparison); no prekey/async bootstrap wiring (the interactive Noise handshake
- * requires both parties to have a mesh contact window open around the same time —
- * `crypto::prekey`'s X3DH bootstrap for genuinely offline first contact isn't exported over FFI
- * yet).
+ * spoken/visual comparison).
+ *
+ * **Async (offline-first-contact) bootstrap, wired this pass:** the interactive Noise handshake
+ * above requires both parties to have a mesh contact window open around the same time — this
+ * device's own [FfiHybridPrekeyPool] (hybrid X3DH + PQXDH, `core/src/ffi_prekey.rs`) is published
+ * as a magic-byte-prefixed Broadcast envelope (`MAGIC_PREKEY_BUNDLE`, mirrors `CivicPost.kt`'s
+ * framing) so a contact who's never online at the same time can still bootstrap a session:
+ * whoever last received this device's bundle can [initiateAsync] against it, which composes a
+ * ready-to-use session locally and sends the resulting "first contact" message
+ * (`MSG_TYPE_ASYNC_INIT`) through the ordinary store-and-forward mesh for this device to consume
+ * whenever it's next in contact — no live round trip needed on either side. Deliberately **opt-in
+ * per contact**, not auto-fired alongside every interactive attempt, to avoid two different
+ * session-establishment mechanisms racing for the same contact.
+ *
+ * **Honest limit, stated plainly:** [prekeyPool] is in-memory only, regenerated fresh every app
+ * launch — there is no Keystore-wrapped persistence for its signed-prekey/one-time-prekey/PQ
+ * secrets yet (same kind of deferred-persistence gap this session's MLS group work has for
+ * signer/credential export). A bundle published in a previous app session can no longer be
+ * responded to after a restart, since the pool that held its secrets is gone; only bundles
+ * published this session are answerable. Republish (call [publishPrekeyBundle] again) after every
+ * restart to keep this device reachable.
  */
 class DirectMessenger(
     private val context: Context,
@@ -95,8 +122,69 @@ class DirectMessenger(
     val contacts = mutableStateListOf<Contact>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
+    // See the class doc's "honest limit" note -- in-memory only, not Keystore-persisted.
+    private val prekeyPool = FfiHybridPrekeyPool(identity, PREKEY_INITIAL_BATCH)
+
+    // Other devices' prekey bundles this device has seen broadcast, keyed by their fingerprint --
+    // what [initiateAsync] looks up. Not persisted; rebuilt from whatever gets re-broadcast/
+    // gossiped after a restart, same as everything else about this pool. Plain (non-Compose) map
+    // since [FfiHybridBundle] isn't a stable Compose type -- [knownBundleFingerprints] mirrors its
+    // key set as observable state so the UI can react to a bundle actually arriving.
+    private val knownBundles = mutableMapOf<String, FfiHybridBundle>()
+    val knownBundleFingerprints = mutableStateListOf<String>()
+
     init {
         loadPersistedContacts().forEach { fingerprintHex -> addContactInternal(fingerprintHex) }
+        publishPrekeyBundle()
+    }
+
+    /** Broadcast this device's current hybrid prekey bundle so others can bootstrap a session
+     * with it later via [initiateAsync], even while this device is offline. Safe to call again
+     * later (e.g. after rotating prekeys) -- each call is just another Broadcast envelope. */
+    fun publishPrekeyBundle() {
+        val bundleBytes = prekeyPool.currentBundleBytes(identity)
+        val sealed = ByteArray(1 + bundleBytes.size)
+        sealed[0] = MAGIC_PREKEY_BUNDLE
+        bundleBytes.copyInto(sealed, 1)
+        val bytes = envelopePack(
+            addressingTag = 0u, // Broadcast
+            addressingTarget = null,
+            priorityTag = 2u, // Normal
+            ttlHops = DIRECT_TTL_HOPS,
+            expiresAt = (nowSeconds() + DIRECT_EXPIRES_SECONDS).toULong(),
+            sealed = sealed,
+        )
+        try {
+            coordinator.node().composeLocal(bytes, nowSeconds().toULong())
+        } catch (e: Exception) {
+            Log.w(TAG, "failed to publish prekey bundle", e)
+        }
+    }
+
+    /** Whether a contact's prekey bundle has been seen broadcast, i.e. whether [initiateAsync]
+     * has something to bootstrap against right now. Backed by [knownBundleFingerprints] so
+     * Compose recomposes when the answer changes. */
+    fun hasKnownBundle(fingerprintHex: String): Boolean = fingerprintHex in knownBundleFingerprints
+
+    /** Bootstrap a session with [contact] from their last-seen prekey bundle instead of an
+     * interactive Noise handshake -- works even if they're not in mesh contact right now. Returns
+     * false (no-op) if no bundle has been seen for them yet, or if a session already exists. The
+     * resulting "first contact" message is sent through the ordinary store-and-forward mesh for
+     * them to consume whenever they're next reachable. */
+    fun initiateAsync(contact: Contact): Boolean {
+        if (contact.session != null) return false
+        val bundle = knownBundles[contact.fingerprintHex] ?: return false
+        return try {
+            val result = bundle.initiate(identity)
+            contact.session = result.session
+            contact.handshake = null
+            contact.status = ContactStatus.CONNECTED
+            sendFrame(contact.fingerprintHex, MSG_TYPE_ASYNC_INIT, result.messageToSend)
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "async bootstrap failed against ${contact.fingerprintHex}'s bundle", e)
+            false
+        }
     }
 
     /** Add (or return the existing) contact by their fingerprint hex, kicking off a handshake
@@ -198,6 +286,10 @@ class DirectMessenger(
         } catch (e: Exception) {
             return
         }
+        if (parsed.addressingTag == 0.toUByte()) {
+            handlePossiblePrekeyBundleBroadcast(parsed.sealed)
+            return
+        }
         if (parsed.addressingTag != 3.toUByte()) return // not Direct
         if (parsed.addressingTarget?.contentEquals(myFingerprintBytes) != true) return // not addressed to me
 
@@ -214,7 +306,41 @@ class DirectMessenger(
         when (msgType) {
             MSG_TYPE_HANDSHAKE -> handleHandshakeFrame(contact, payload)
             MSG_TYPE_RATCHET -> handleRatchetFrame(contact, payload)
+            MSG_TYPE_ASYNC_INIT -> handleAsyncInitFrame(contact, payload)
             else -> Log.w(TAG, "unknown direct message type $msgType from $senderFingerprintHex")
+        }
+    }
+
+    /** A Broadcast envelope that might carry a prekey-bundle announcement (`MAGIC_PREKEY_BUNDLE`)
+     * -- every other broadcast kind (plain chat, SOS, bulletins, resource posts) is silently
+     * ignored here, same "each messenger scans everything, filters to what it cares about"
+     * pattern already used for addressing tags. */
+    private fun handlePossiblePrekeyBundleBroadcast(sealed: ByteArray) {
+        if (sealed.isEmpty() || sealed[0] != MAGIC_PREKEY_BUNDLE) return
+        try {
+            val bundle = FfiHybridBundle.fromBytes(sealed.copyOfRange(1, sealed.size))
+            if (!bundle.verify()) return
+            val fingerprintHex = bundle.identityFingerprintHex()
+            if (fingerprintHex == myFingerprintHex) return // our own broadcast, seen again via gossip
+            knownBundles[fingerprintHex] = bundle
+            if (fingerprintHex !in knownBundleFingerprints) knownBundleFingerprints.add(fingerprintHex)
+        } catch (e: Exception) {
+            // Not a (valid) prekey bundle -- some other magic byte's payload, or corrupt. Ignore.
+        }
+    }
+
+    /** Bob's side of [initiateAsync]: someone bootstrapped a session against one of our
+     * previously-published bundles. Consumes the referenced one-time prekey (via [prekeyPool])
+     * and completes the session immediately -- no reply message needed, unlike the interactive
+     * Noise handshake. */
+    private fun handleAsyncInitFrame(contact: Contact, message: ByteArray) {
+        if (contact.session != null) return // already connected; ignore a stray/duplicate init
+        try {
+            contact.session = prekeyPool.respond(identity, message)
+            contact.handshake = null
+            contact.status = ContactStatus.CONNECTED
+        } catch (e: Exception) {
+            Log.w(TAG, "async bootstrap respond failed from ${contact.fingerprintHex}", e)
         }
     }
 
