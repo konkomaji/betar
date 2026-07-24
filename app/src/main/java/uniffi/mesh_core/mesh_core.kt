@@ -952,6 +952,10 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1148,6 +1152,8 @@ internal interface UniffiLib : Library {
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffimlsmember(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
+    fun uniffi_mesh_core_fn_constructor_ffimlsmember_from_identity_and_signer(`identity`: Pointer,`signerBytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
     fun uniffi_mesh_core_fn_constructor_ffimlsmember_new(`identity`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_method_ffimlsmember_create_group(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1158,6 +1164,8 @@ internal interface UniffiLib : Library {
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffimlsmember_load_group_from_disk(`ptr`: Pointer,`path`: RustBuffer.ByValue,`masterKey`: RustBuffer.ByValue,`groupIdHex`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
+    fun uniffi_mesh_core_fn_method_ffimlsmember_signer_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_clone_ffisession(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
     fun uniffi_mesh_core_fn_free_ffisession(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
@@ -1444,6 +1452,8 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimlsmember_load_group_from_disk(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffimlsmember_signer_bytes(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffisession_decrypt(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffisession_encrypt(
@@ -1495,6 +1505,8 @@ internal interface UniffiLib : Library {
     fun uniffi_mesh_core_checksum_constructor_ffiidentity_generate(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffimeshnode_open(
+    ): Short
+    fun uniffi_mesh_core_checksum_constructor_ffimlsmember_from_identity_and_signer(
     ): Short
     fun uniffi_mesh_core_checksum_constructor_ffimlsmember_new(
     ): Short
@@ -1699,7 +1711,10 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_key_package_bytes() != 27890.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_load_group_from_disk() != 51251.toShort()) {
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_load_group_from_disk() != 33733.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsmember_signer_bytes() != 56014.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffisession_decrypt() != 3727.toShort()) {
@@ -1778,6 +1793,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffimeshnode_open() != 50394.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_constructor_ffimlsmember_from_identity_and_signer() != 29262.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_constructor_ffimlsmember_new() != 3200.toShort()) {
@@ -5883,13 +5901,21 @@ public interface FfiMlsMemberInterface {
     fun `keyPackageBytes`(): kotlin.ByteArray
     
     /**
-     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. **Honest
-     * limitation, matching `groups.rs`'s own module doc:** since [`new`](Self::new) always
-     * generates a fresh MLS signing keypair, this cannot yet actually resume signing as the
-     * group's pre-restart member — exposed because the read path is straightforward and
-     * harmless on its own, not because the restart story is complete end to end.
+     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. Construct
+     * `self` via [`from_identity_and_signer`](Self::from_identity_and_signer) (not
+     * [`new`](Self::new), which always generates a fresh signing keypair) to actually resume
+     * signing as the group's pre-restart member — see the module doc.
      */
     fun `loadGroupFromDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray, `groupIdHex`: kotlin.String): FfiMlsGroupHandle
+    
+    /**
+     * Export this member's MLS signing keypair for persistence — **the caller is entirely
+     * responsible for protecting these bytes at rest** (whoever holds them can sign as this
+     * member in every group it belongs to), same as `FfiIdentity::toBytes`. Pair with
+     * [`from_identity_and_signer`](Self::from_identity_and_signer) on the next launch. Does not
+     * consume — callable repeatedly, same as [`key_package_bytes`](Self::key_package_bytes).
+     */
+    fun `signerBytes`(): kotlin.ByteArray
     
     companion object
 }
@@ -6039,11 +6065,10 @@ open class FfiMlsMember: Disposable, AutoCloseable, FfiMlsMemberInterface {
 
     
     /**
-     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. **Honest
-     * limitation, matching `groups.rs`'s own module doc:** since [`new`](Self::new) always
-     * generates a fresh MLS signing keypair, this cannot yet actually resume signing as the
-     * group's pre-restart member — exposed because the read path is straightforward and
-     * harmless on its own, not because the restart story is complete end to end.
+     * Load a previously [`FfiMlsGroupHandle::snapshot_to_disk`]'d group. Consumes. Construct
+     * `self` via [`from_identity_and_signer`](Self::from_identity_and_signer) (not
+     * [`new`](Self::new), which always generates a fresh signing keypair) to actually resume
+     * signing as the group's pre-restart member — see the module doc.
      */
     @Throws(FfiException::class)override fun `loadGroupFromDisk`(`path`: kotlin.String, `masterKey`: kotlin.ByteArray, `groupIdHex`: kotlin.String): FfiMlsGroupHandle {
             return FfiConverterTypeFfiMlsGroupHandle.lift(
@@ -6058,10 +6083,51 @@ open class FfiMlsMember: Disposable, AutoCloseable, FfiMlsMemberInterface {
     
 
     
+    /**
+     * Export this member's MLS signing keypair for persistence — **the caller is entirely
+     * responsible for protecting these bytes at rest** (whoever holds them can sign as this
+     * member in every group it belongs to), same as `FfiIdentity::toBytes`. Pair with
+     * [`from_identity_and_signer`](Self::from_identity_and_signer) on the next launch. Does not
+     * consume — callable repeatedly, same as [`key_package_bytes`](Self::key_package_bytes).
+     */
+    @Throws(FfiException::class)override fun `signerBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffimlsmember_signer_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
 
     
+
     
-    companion object
+    companion object {
+        
+    /**
+     * Resume a previously-existing member's signing identity after a restart — pass the same
+     * `identity` used when [`new`](Self::new) first created it, and the signer bytes from
+     * [`signer_bytes`](Self::signer_bytes) (durably stored by the caller in between, e.g.
+     * Keystore-wrapped like the app master key/identity). Closes the gap this module's own doc
+     * has flagged since the MLS export pass: previously `new` always generated a fresh signing
+     * keypair, so [`FfiMlsGroupHandle::load_group_from_disk`]'s restored group could never
+     * actually sign as its pre-restart member — it can now, paired with this constructor.
+     */
+    @Throws(FfiException::class) fun `fromIdentityAndSigner`(`identity`: FfiIdentity, `signerBytes`: kotlin.ByteArray): FfiMlsMember {
+            return FfiConverterTypeFfiMlsMember.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_constructor_ffimlsmember_from_identity_and_signer(
+        FfiConverterTypeFfiIdentity.lower(`identity`),FfiConverterByteArray.lower(`signerBytes`),_status)
+}
+    )
+    }
+    
+
+        
+    }
     
 }
 
