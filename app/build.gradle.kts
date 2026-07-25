@@ -30,8 +30,8 @@ android {
         // docs/LOCALIZATION-UX.md, not for API surface reasons.
         minSdk = 26
         targetSdk = 35 // Android 15
-        versionCode = 2
-        versionName = "0.1.1-prealpha"
+        versionCode = 3
+        versionName = "0.1.2-prealpha"
     }
 
     signingConfigs {
