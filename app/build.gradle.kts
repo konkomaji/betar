@@ -14,8 +14,8 @@ android {
         // docs/LOCALIZATION-UX.md, not for API surface reasons.
         minSdk = 26
         targetSdk = 35 // Android 15
-        versionCode = 1
-        versionName = "0.1.0-prealpha"
+        versionCode = 2
+        versionName = "0.1.1-prealpha"
     }
 
     buildTypes {
