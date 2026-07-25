@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Bengali (bn). Default shipped language alongside English, per docs/LOCALIZATION-UX.md §1:
+  English and Bengali ship by default, every other language is community-contributed.
+
+  First-pass translation, not yet reviewed by a native Bengali speaker. Every safety-critical
+  category term (SOS, medical, water, trapped, etc.) especially needs that review before this
+  is trusted in the field: LOCALIZATION-UX.md's own stance is that a confident-sounding but
+  possibly-wrong translation of a term like "Trapped" or "Fire" is worse than shipping none, so
+  treat this file as a first draft to verify, not a finished translation.
+
+  Format specifiers (%1$s, %1$d etc.) must stay in the same position and type as
+  values/strings.xml: do not reorder or retype them.
+-->
+<resources>
+    <string name="app_name">প্রজেক্ট মেশ</string>
+    <string name="mesh_relay_channel_name">মেশ রিলে</string>
+    <string name="mesh_relay_notification_title">প্রজেক্ট মেশ রিলে চালু</string>
+    <string name="mesh_relay_notification_text">কাছাকাছি ডিভাইসের জন্য বিজ্ঞাপন ও রিলে করা হচ্ছে</string>
+
+    <!-- Identity screen -->
+    <string name="identity_subtitle">একটি স্থায়ী পরিচয়, পুনরায় চালু করলেও বজায় থাকে।</string>
+    <string name="identity_show_button">আমার পরিচয় দেখান</string>
+    <string name="identity_fingerprint_label">ফিঙ্গারপ্রিন্ট:</string>
+    <string name="identity_safety_string_label">সেফটি স্ট্রিং:</string>
+    <string name="identity_native_lib_error">নেটিভ লাইব্রেরি লোড হয়নি: %1$s</string>
+
+    <!-- Mesh (BLE) screen -->
+    <string name="mesh_title">মেশ (BLE)</string>
+    <string name="mesh_description">প্রকৃত android.bluetooth.* ড্রাইভার: বিজ্ঞাপন ও স্ক্যান, GATT সার্ভার ও ক্লায়েন্ট, ফোরগ্রাউন্ড সার্ভিসে চলে যাতে ব্যাকগ্রাউন্ডেও কাজ করে।</string>
+    <string name="mesh_stop_button">মেশ বন্ধ করুন</string>
+    <string name="mesh_start_button">মেশ চালু করুন</string>
+    <string name="mesh_connected_peers">সংযুক্ত পিয়ার: %1$d</string>
+    <string name="mesh_enable_bluetooth_first">প্রথমে ব্লুটুথ চালু করুন</string>
+    <string name="mesh_permissions_denied">অনুমতি প্রত্যাখ্যাত: মেশ চালাতে সবগুলো অনুমতি প্রয়োজন</string>
+    <string name="mesh_battery_guidance">নির্ভরযোগ্য ব্যাকগ্রাউন্ড রিলের জন্য এই অ্যাপকে ব্যাটারি অপ্টিমাইজেশন থেকে বাদ দিন। কিছু ডিভাইসে (Xiaomi, Oppo, Vivo, realme, Samsung...) আলাদা \"অটোস্টার্ট\"/\"প্রোটেক্টেড অ্যাপস\" সেটিংও প্রয়োজন, দেখুন docs/TRANSPORT.md §6।</string>
+    <string name="mesh_allow_background_button">ব্যাকগ্রাউন্ড কার্যকলাপের অনুমতি দিন</string>
+    <string name="mesh_open_autostart_button">ডিভাইসের অটোস্টার্ট সেটিং খুলুন</string>
+    <string name="mesh_no_autostart_setting">%1$s এর জন্য পরিচিত কোনো অটোস্টার্ট সেটিং নেই: ম্যানুয়ালি ডিভাইস সেটিং দেখুন</string>
+
+    <!-- Messaging (Direct + Broadcast + Channel; Group still deferred) -->
+    <string name="messaging_title">মেসেজিং</string>
+    <string name="messaging_subtitle">ডিরেক্ট (Noise XX থেকে ডাবল র‍্যাচেট), ব্রডকাস্ট, চ্যানেল, এবং গ্রুপ (MLS)।</string>
+    <string name="broadcast_title">ব্রডকাস্ট (আশেপাশের সবাই, স্বাক্ষরবিহীন, ক্লাস ডক দেখুন)</string>
+    <string name="message_label">মেসেজ</string>
+    <string name="direct_title">ডিরেক্ট</string>
+    <string name="direct_my_fingerprint_label">আমার ফিঙ্গারপ্রিন্ট (অন্যরা আপনাকে যোগ করতে এটি শেয়ার করুন):</string>
+    <string name="direct_contact_fingerprint_label">পরিচিতির ফিঙ্গারপ্রিন্ট (৬৪টি হেক্স অক্ষর)</string>
+    <string name="direct_contact_row">%1$s… (%2$s)</string>
+    <string name="direct_waiting_handshake">হ্যান্ডশেক সম্পন্ন হওয়ার অপেক্ষায় (উভয় ডিভাইসের মেশ সংযোগ প্রয়োজন)…</string>
+    <string name="direct_async_init_button">তাদের প্রিকি বান্ডেলের মাধ্যমে এখনই মেসেজ পাঠান (অফলাইনেও কাজ করে)</string>
+    <string name="direct_chat_me_prefix">আমি: </string>
+    <string name="direct_chat_them_prefix">তারা: </string>
+
+    <!-- Channel (passphrase-derived shared board, unsigned; see class doc) -->
+    <string name="channel_title">চ্যানেল</string>
+    <string name="channel_passphrase_label">পাসফ্রেজ (যেমন \"north-gate-42\")</string>
+    <string name="channel_join_button">যোগ দিন</string>
+    <string name="channel_session_row">%1$s (%2$s…)</string>
+
+    <!-- Group (MLS, real membership; see class doc for the manual key-exchange flow) -->
+    <string name="group_title">গ্রুপ</string>
+    <string name="group_label_hint">গ্রুপের নাম (শুধু স্থানীয় লেবেল)</string>
+    <string name="group_create_button">তৈরি করুন</string>
+    <string name="group_my_key_package_button">আমার কী প্যাকেজ দেখান (আমন্ত্রণের জন্য)</string>
+    <string name="group_key_package_label">আপনার কী প্যাকেজ, যিনি আপনাকে যোগ করছেন তার সাথে এটি শেয়ার করুন:</string>
+    <string name="group_welcome_label">ওয়েলকাম (যিনি আপনাকে যোগ করেছেন তার কাছ থেকে)</string>
+    <string name="group_join_button">যোগ দিন</string>
+    <string name="group_add_member_label">নতুন সদস্যের কী প্যাকেজ</string>
+    <string name="group_add_member_button">যোগ করুন</string>
+    <string name="group_add_member_commit_label">কমিট: বিদ্যমান প্রতিটি সদস্যের সাথে শেয়ার করুন:</string>
+    <string name="group_add_member_welcome_label">ওয়েলকাম: শুধু নতুন সদস্যের সাথে শেয়ার করুন:</string>
+    <string name="group_apply_commit_label">কমিট (অন্য কেউ সদস্য যোগ করেছেন তার কাছ থেকে)</string>
+    <string name="group_apply_commit_button">প্রয়োগ করুন</string>
+    <string name="group_apply_commit_failed">কমিট প্রয়োগ হয়নি: ভুল গ্রুপ অথবা পুরনো ইপক</string>
+
+    <!-- Offline map (rendering pipeline only this pass; see MapScreen.kt's class doc) -->
+    <string name="map_title">অফলাইন মানচিত্র (প্রিভিউ)</string>
+    <string name="map_subtitle">কোনো নেটওয়ার্ক কল ছাড়াই রেন্ডার হয়, এখনও প্রকৃত মানচিত্র তথ্য লোড হয়নি, ক্লাস ডক দেখুন।</string>
+
+    <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
+    <string name="sos_title">জরুরি এসওএস</string>
+    <string name="sos_subtitle">এক-ট্যাপ উচ্চ-অগ্রাধিকার ব্রডকাস্ট, এই পাসে ডিভাইস লোকেশন নেই, ক্লাস ডক দেখুন।</string>
+    <string name="sos_whats_happening_label">কী ঘটছে</string>
+    <string name="sos_send_button">এসওএস পাঠান</string>
+    <string name="sos_acknowledged">স্বীকৃত</string>
+    <string name="sos_not_acknowledged">এখনও স্বীকৃত হয়নি</string>
+    <string name="bulletin_title">দুর্যোগ বুলেটিন বোর্ড</string>
+    <string name="bulletin_label">বুলেটিন</string>
+    <string name="resource_title">কমিউনিটি রিসোর্স বোর্ড</string>
+    <string name="resource_details_label">বিবরণ</string>
+    <string name="post_prefixed_category">[%1$s] %2$s</string>
+    <string name="resource_post_prefixed">[%1$s/%2$s] %3$s</string>
+
+    <!-- Shared action labels -->
+    <string name="action_post">পোস্ট করুন</string>
+    <string name="action_add">যোগ করুন</string>
+    <string name="action_open">খুলুন</string>
+    <string name="action_back">পেছনে</string>
+    <string name="action_send">পাঠান</string>
+    <string name="action_acknowledge">স্বীকার করুন</string>
+
+    <!-- Category glossary: kept consistent across SOS/bulletin/resource board per
+         docs/LOCALIZATION-UX.md §1's "glossary so safety-critical terms are consistent". -->
+    <string name="category_medical">চিকিৎসা</string>
+    <string name="category_trapped">আটকে আছে</string>
+    <string name="category_fire">আগুন</string>
+    <string name="category_violence">সহিংসতা</string>
+    <string name="category_other">অন্যান্য</string>
+    <string name="category_relief_camp">ত্রাণ শিবির</string>
+    <string name="category_food">খাবার</string>
+    <string name="category_water">পানি</string>
+    <string name="category_medicine">ওষুধ</string>
+    <string name="category_road_status">রাস্তা/সেতুর অবস্থা</string>
+    <string name="category_shelter">আশ্রয়</string>
+    <string name="category_missing_person">নিখোঁজ ব্যক্তি</string>
+    <string name="category_transport">পরিবহন</string>
+    <string name="category_tools">সরঞ্জাম</string>
+    <string name="category_blood_donor">রক্তদাতা</string>
+    <string name="category_charging">চার্জিং পয়েন্ট</string>
+    <string name="category_labour">শ্রমিক</string>
+    <string name="resource_kind_have">আছে</string>
+    <string name="resource_kind_need">প্রয়োজন</string>
+    <string name="category_selected">[%1$s]</string>
+</resources>
