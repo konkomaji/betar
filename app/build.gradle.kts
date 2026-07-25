@@ -1,7 +1,23 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+}
+
+// Real release signing key, per docs/REPRODUCIBLE-BUILD.md §4's own tracked gap. The keystore
+// and its passwords are a genuine secret (losing it means Betar can never be updated under the
+// same identity again; leaking it means anyone could sign a malicious update), so they live in
+// android/keystore/ and android/keystore.properties, both gitignored, never committed. A
+// checkout without that file (any fresh clone, any CI runner) falls back to no release signing
+// config at all rather than failing the build, so `assembleDebug` and `core/` work stay
+// unaffected.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
 }
 
 android {
@@ -18,14 +34,39 @@ android {
         versionName = "0.1.1-prealpha"
     }
 
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false // reproducible builds (docs/DISTRIBUTION.md) come before shrinking
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
     buildFeatures {
         compose = true
+    }
+
+    lint {
+        // AGP 8.7.2's bundled lint crashes analyzing this project under Kotlin 2.1.20 (bumped
+        // this session, see docs/REPRODUCIBLE-BUILD.md): NonNullableMutableLiveDataDetector
+        // throws IncompatibleClassChangeError against the newer Kotlin analysis-api shape, not
+        // a real finding (this project doesn't use LiveData at all). Disabled per the crash's
+        // own suggested workaround, not a general lint bypass -- assembleRelease's mandatory
+        // lintVitalAnalyzeRelease check otherwise fails the build before packaging regardless
+        // of real code issues.
+        disable += "NullSafeMutableLiveData"
     }
 
     compileOptions {

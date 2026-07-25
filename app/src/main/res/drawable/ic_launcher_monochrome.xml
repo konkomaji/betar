@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 13+ themed-icon layer (Material You icon theming): the system replaces this drawable's
-     color with its own single tint, so no white-disc contrast layer here, just the mesh glyph
-     itself, same geometry as ic_launcher_foreground.xml. -->
+<!-- Android 13+ themed-icon layer (Material You icon theming): the system applies its own
+     single tint to this drawable, so it carries only the wire-bar silhouette, same geometry as
+     ic_launcher_foreground.xml, filled rather than tied to the brand's own colours since the
+     system overrides them anyway. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -10,25 +11,7 @@
     <path
         android:fillColor="#00000000"
         android:strokeColor="#000000"
-        android:strokeWidth="2.2"
-        android:pathData="M78,54 L70.97,37.03 L54,30 L37.03,37.03 L30,54 L37.03,70.97 L54,78 L70.97,70.97 Z" />
-    <path
-        android:fillColor="#00000000"
-        android:strokeColor="#000000"
-        android:strokeWidth="2.2"
-        android:pathData="M54,54 L78,54 M54,54 L70.97,37.03 M54,54 L54,30 M54,54 L37.03,37.03 M54,54 L30,54 M54,54 L37.03,70.97 M54,54 L54,78 M54,54 L70.97,70.97" />
-    <path
-        android:fillColor="#000000"
-        android:pathData="M47,54 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
-    <path
-        android:fillColor="#000000"
-        android:pathData="
-            M73.5,54 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M66.47,37.03 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M49.5,30 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M32.53,37.03 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M25.5,54 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M32.53,70.97 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M49.5,78 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z
-            M66.47,70.97 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0 Z" />
+        android:strokeWidth="14"
+        android:strokeLineCap="round"
+        android:pathData="M27,54 L39,54 M69,54 L81,54" />
 </vector>

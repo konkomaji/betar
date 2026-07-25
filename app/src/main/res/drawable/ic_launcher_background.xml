@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Indian tricolor, in equal horizontal thirds: the adaptive-icon background layer, per
-     Android's adaptive-icon spec (fills the full 108x108dp canvas; the launcher masks it to
-     whatever shape that device/theme uses: circle, squircle, rounded square). -->
+<!-- Betar adaptive-icon background layer: solid brand blue, edge to edge. Built inverted per
+     docs/DESIGN-BRIEF.md §7: an adaptive icon's foreground sits on this background layer rather
+     than on the wallpaper, so it cannot have a true hole the way docs/assets/betar-logo.svg
+     does. Same geometry, opposite construction: field colour lives here, the wire's absence is
+     drawn as an off-white mark in ic_launcher_foreground.xml instead of a transparent cut. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:fillColor="#FF9933"
-        android:pathData="M0,0 L108,0 L108,36 L0,36 Z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M0,36 L108,36 L108,72 L0,72 Z" />
-    <path
-        android:fillColor="#138808"
-        android:pathData="M0,72 L108,72 L108,108 L0,108 Z" />
+        android:fillColor="#4BA3E0"
+        android:pathData="M0,0 L108,0 L108,108 L0,108 Z" />
 </vector>

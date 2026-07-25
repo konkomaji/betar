@@ -13,10 +13,44 @@
   values/strings.xml: do not reorder or retype them.
 -->
 <resources>
-    <string name="app_name">প্রজেক্ট মেশ</string>
+    <string name="app_name">বেতার</string>
     <string name="mesh_relay_channel_name">মেশ রিলে</string>
-    <string name="mesh_relay_notification_title">প্রজেক্ট মেশ রিলে চালু</string>
+    <string name="mesh_relay_notification_title">বেতার রিলে চালু</string>
     <string name="mesh_relay_notification_text">কাছাকাছি ডিভাইসের জন্য বিজ্ঞাপন ও রিলে করা হচ্ছে</string>
+
+    <!-- Onboarding (DESIGN-BRIEF.md §9 screens 1-5). -->
+    <string name="onboarding_continue">এগিয়ে যান</string>
+    <string name="onboarding_read_aloud">এটি পড়ে শোনান</string>
+    <string name="onboarding_skip">এড়িয়ে যান</string>
+    <string name="onboarding_panel_1">ইন্টারনেট ছাড়াই কাজ করে</string>
+    <string name="onboarding_panel_2">আপনার ফোন অন্যদের জন্য বার্তা বহন করে</string>
+    <string name="onboarding_panel_3">নেটওয়ার্ক না থাকলেও কাছের যে কাউকে খুঁজে পান</string>
+    <string name="onboarding_nickname_title">লোকে আপনাকে কী বলে ডাকবে?</string>
+    <string name="onboarding_nickname_subtitle">শুধু আপনার কাছাকাছি ফোনগুলোই এটি দেখতে পায়। আপনি এটি বদলাতে পারেন বা যেমন আছে তেমনই রাখতে পারেন।</string>
+    <string name="onboarding_nickname_picked_for_you">আমরা আপনার জন্য এটি বেছে নিয়েছি</string>
+    <string name="onboarding_nickname_privacy_note">কোনো ফোন নম্বর নেই। কোনো ইমেইল নেই। সাইন ইন করার কিছু নেই।</string>
+    <string name="onboarding_nickname_start_button">বেতার ব্যবহার শুরু করুন</string>
+    <string name="onboarding_nickname_skip">এটি এড়িয়ে যান</string>
+    <string name="onboarding_permissions_title">তিনটি জিনিসের অনুমতি দিন</string>
+    <string name="onboarding_permission_nearby_title">কাছাকাছি ডিভাইস</string>
+    <string name="onboarding_permission_nearby_body">যাতে আপনার ফোন অন্য ফোন দেখতে পায় এবং তাদের কাছে বার্তা পৌঁছে দিতে পারে।</string>
+    <string name="onboarding_permission_location_title">ব্যবহারের সময় অবস্থান</string>
+    <string name="onboarding_permission_location_body">শুধু আপনার সতর্কতা মানচিত্রে দেখানোর জন্য। আপনি চালু না করা পর্যন্ত এটি বন্ধ থাকে।</string>
+    <string name="onboarding_permission_mic_title">মাইক্রোফোন</string>
+    <string name="onboarding_permission_mic_body">যাতে আপনি টাইপ করার বদলে ভয়েস নোট পাঠাতে পারেন।</string>
+    <string name="onboarding_permission_notifications_title">বিজ্ঞপ্তি</string>
+    <string name="onboarding_permission_notifications_body">যাতে ফোন পকেটে থাকলেও আপনি সতর্কতা শুনতে পান।</string>
+    <string name="onboarding_permission_no_internet_note">বেতার একেবারেই ইন্টারনেট চায় না। এটি পারে না, আর সেটি ইচ্ছাকৃত।</string>
+    <string name="onboarding_permissions_allow_button">এগুলো অনুমতি দিন</string>
+    <string name="onboarding_battery_title">বেতারকে সচল রাখুন</string>
+    <string name="onboarding_battery_warning">ব্যাটারি বাঁচাতে আপনার ফোন অ্যাপ বন্ধ করে দেয়। বার্তা বহন করতে বেতারকে সচল থাকতে হয়।</string>
+    <string name="onboarding_battery_manufacturer_heading">%1$s ফোনে</string>
+    <string name="onboarding_battery_step_1">সেটিংস খুলুন, তারপর অ্যাপস।</string>
+    <string name="onboarding_battery_step_2">বেতার খুঁজে বের করে ব্যাটারি সেভার খুলুন।</string>
+    <string name="onboarding_battery_step_3">কোনো বিধিনিষেধ নেই বেছে নিন।</string>
+    <string name="onboarding_battery_other_phone">অন্য ফোন? আপনারটি বেছে নিন: Oppo, Vivo, realme, Samsung, OnePlus</string>
+    <string name="onboarding_battery_open_settings">সেটিংস খুলুন</string>
+    <string name="onboarding_battery_later">পরে</string>
 
     <!-- Identity screen -->
     <string name="identity_subtitle">একটি স্থায়ী পরিচয়, পুনরায় চালু করলেও বজায় থাকে।</string>
@@ -78,6 +112,17 @@
     <string name="map_title">অফলাইন মানচিত্র (প্রিভিউ)</string>
     <string name="map_subtitle">কোনো নেটওয়ার্ক কল ছাড়াই রেন্ডার হয়, এখনও প্রকৃত মানচিত্র তথ্য লোড হয়নি, ক্লাস ডক দেখুন।</string>
 
+    <!-- Map tab real screens (DESIGN-BRIEF.md §9 screens 30-32) -->
+    <string name="map_offline_tiles_label">অফলাইন টাইলস, এই ফোনে সংরক্ষিত</string>
+    <string name="map_empty_illustration_label">চিত্র: একটি ভাঁজ করা কাগজের মানচিত্র হস্তান্তর করা হচ্ছে</string>
+    <string name="map_empty_title">এই এলাকার মানচিত্র এখনও নেই</string>
+    <string name="map_empty_body">অন্য সবকিছুর মতোই মানচিত্রও ফোনে ফোনে বহন করা হয়।</string>
+    <string name="map_empty_source_has_data">এই এলাকার মানচিত্র তথ্য আছে</string>
+    <string name="map_empty_take_button">%1$s থেকে মানচিত্র নিন</string>
+    <string name="map_drop_pin_title">একটি পিন রাখুন</string>
+    <string name="map_drop_pin_category_label">বিভাগ</string>
+    <string name="map_drop_pin_button">পিন রাখুন</string>
+
     <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
     <string name="sos_title">জরুরি এসওএস</string>
     <string name="sos_subtitle">এক-ট্যাপ উচ্চ-অগ্রাধিকার ব্রডকাস্ট, এই পাসে ডিভাইস লোকেশন নেই, ক্লাস ডক দেখুন।</string>
@@ -122,4 +167,230 @@
     <string name="resource_kind_have">আছে</string>
     <string name="resource_kind_need">প্রয়োজন</string>
     <string name="category_selected">[%1$s]</string>
+
+    <!-- Nearby tab (DESIGN-BRIEF.md §9 screens 18-20) -->
+    <string name="nearby_empty_title">এখনও কাছাকাছি কোনো ফোন নেই</string>
+    <string name="nearby_empty_body">আপনার ফোন খোঁজা অব্যাহত রাখে। আপনি এখন যা লিখছেন তা কেউ কাছে আসা মাত্র জমা রেখে হস্তান্তর করা হবে।</string>
+    <string name="nearby_permission_needed">মেশ চালাতে অনুমতি প্রয়োজন</string>
+    <string name="nearby_enable_bluetooth_first">প্রথমে ব্লুটুথ চালু করুন</string>
+    <string name="nearby_carry_for_others_title">অন্যদের জন্য বহন করুন</string>
+    <string name="nearby_carry_for_others_body">আপনার আশেপাশের মানুষের জন্য বার্তা ধরে রাখুন ও পৌঁছে দিন।</string>
+    <string name="nearby_detail_link_label">সংযোগ</string>
+    <string name="nearby_detail_signal_label">সিগন্যাল</string>
+
+    <!-- Chats tab (DESIGN-BRIEF.md §9 screens 6-17) -->
+    <string name="chats_row_no_messages_yet">এখনও কোনো বার্তা নেই</string>
+    <string name="chats_empty_title">বার্তা যেভাবে পৌঁছায়</string>
+    <string name="chats_empty_body">আপনি এটি লেখেন। অন্য একটি ফোন কাছে না আসা পর্যন্ত আপনার ফোন এটি ধরে রাখে, তারপর হস্তান্তর করে। আপনি যাকে লিখেছেন তার কাছে না পৌঁছানো পর্যন্ত এটি চলতে থাকে।</string>
+    <string name="chats_empty_cta">কারও পাশে দাঁড়িয়ে থাকলে তার কোড স্ক্যান করে শুরু করুন।</string>
+    <string name="chats_new_conversation_title">নতুন কথোপকথন</string>
+    <string name="chats_new_scan_code">কারও কোড স্ক্যান করুন</string>
+    <string name="chats_new_join_channel">নাম দিয়ে একটি গ্রুপে যোগ দিন</string>
+    <string name="chats_new_create_group">একটি প্রাইভেট গ্রুপ শুরু করুন</string>
+    <string name="chats_scan_camera_not_wired">ক্যামেরা প্রিভিউ (এখনও যুক্ত হয়নি, পরিবর্তে তাদের কোড টাইপ করুন)</string>
+    <string name="chats_scan_instruction">তাদের ফোন বর্গক্ষেত্রে ধরুন</string>
+    <string name="chats_scan_reason">একে অপরের পাশে দাঁড়ান। এটি নিশ্চিত হওয়ার একমাত্র উপায় যে এটি সত্যিই তারাই।</string>
+    <string name="chats_scan_manual_entry_label">অথবা তাদের ফিঙ্গারপ্রিন্ট টাইপ করুন (৬৪টি হেক্স অক্ষর)</string>
+    <string name="chats_scan_add_button">যোগ করুন</string>
+    <string name="chats_verify_instruction">দুটি ফোন একসাথে ধরুন। উভয়েরই একই জিনিস দেখানো উচিত।</string>
+    <string name="chats_verify_mismatch_warning">কোড আলাদা? নিশ্চিত করবেন না। তাদের আবার দেখাতে বলুন।</string>
+    <string name="chats_verify_confirm_button">হ্যাঁ, এগুলো মিলছে</string>
+    <string name="chats_verify_not_now">এখন নয়</string>
+    <string name="chats_unverified_banner">আপনি এখনও এই ব্যক্তির পাশে দাঁড়াননি, তাই এটি তারাই কিনা কেউ নিশ্চিত হতে পারে না।</string>
+    <string name="chats_verified_banner">শুধু এই ব্যক্তিই এগুলো পড়তে পারেন</string>
+    <string name="chats_message_action_resend">আবার পাঠান</string>
+    <string name="chats_message_action_copy">কপি করুন</string>
+    <string name="chats_message_action_delete_for_me">আমার জন্য মুছুন</string>
+    <string name="chats_voice_recording">রেকর্ডিং চলছে</string>
+    <string name="chats_voice_slide_to_cancel">বাতিল করতে স্লাইড করুন</string>
+    <string name="chats_join_channel_warning_title">যে কেউ ঢুকতে পারে</string>
+    <string name="chats_join_channel_warning_body">এই নাম ও পাসফ্রেজ জানা যে কেউ এই গ্রুপে লেখা সবকিছু পড়তে পারে, এমনকি তারা যোগ দেওয়ার আগে লেখা কথাও। এটি গ্রাম নোটিশের জন্য ব্যবহার করুন, ব্যক্তিগত কিছুর জন্য নয়।</string>
+    <string name="chats_open_channel_reminder">নাম ও পাসফ্রেজ জানা যে কেউ এটি পড়তে পারে</string>
+    <string name="chats_group_open_conversation">কথোপকথন খুলুন</string>
+    <string name="chats_open_group_reminder">নাম ও পাসফ্রেজ জানা যে কেউ এটি পড়তে পারে</string>
+
+    <!-- Documents (DESIGN-BRIEF.md §9 screens 40-46). These are long-form legal/policy pages,
+         not short UI labels, and need native-speaker review even more urgently than the rest
+         of this file: a subtly wrong translation of "no warranty" or "not a replacement for
+         emergency services" is a real safety/legal problem, not just an awkward phrase.
+         Treat this section as an unreviewed first draft before trusting it in the field. -->
+    <string name="doc_read_aloud_button">জোরে পড়ুন</string>
+    <string name="doc_stop_reading_button">থামুন</string>
+
+    <string name="doc_privacy_title">গোপনীয়তা</string>
+    <string name="doc_privacy_summary">সংক্ষেপে: বেতার কিছুই সংগ্রহ করে না। কোনো সার্ভার নেই, আর আপনি অ্যাপে যা লেখেন তা যেসব ফোনের মধ্য দিয়ে যায় তার বাইরে কখনও যায় না।</string>
+    <string name="doc_privacy_no_have_title">বেতারের যা নেই</string>
+    <string name="doc_privacy_no_account">কোনো অ্যাকাউন্ট নেই: সাইনআপ নেই, ইমেইল নেই, ফোন নম্বর নেই, লগইন নেই।</string>
+    <string name="doc_privacy_no_analytics">কোনো অ্যানালিটিক্স নেই: ব্যবহারের ট্র্যাকিং নেই, কোথাও ক্র্যাশ রিপোর্ট পাঠানো হয় না।</string>
+    <string name="doc_privacy_no_ads">কোনো বিজ্ঞাপন নেই: বিক্রির কিছু নেই, লক্ষ্য করার কিছু নেই।</string>
+    <string name="doc_privacy_no_internet">কোনো ইন্টারনেট অনুমতি নেই: অ্যাপ এটি একেবারেই চায় না। আপনার তথ্য যাওয়ার কোনো জায়গা নেই।</string>
+    <string name="doc_privacy_stored_title">কী সংরক্ষিত হয়, এবং কোথায়</string>
+    <string name="doc_privacy_stored_body">প্রথম চালুর সময় একটি ডিভাইস পরিচয় এবং তার কী তৈরি হয় এবং শুধু ডিভাইসেই এনক্রিপ্ট করে রাখা হয়। আপনি যে বার্তা পাঠান বা পান তা আপনার ডিভাইসে এবং যেসব ডিভাইস তা বহন করে সেখানে রাখা হয়, যতক্ষণ না তা গন্তব্যে পৌঁছায় বা আপনি তা মুছে ফেলেন। কোনো সার্ভারে কিছু আপলোড হয় না, কারণ কোনো সার্ভার নেই।</string>
+    <string name="doc_privacy_nearby_title">কাছাকাছি ফোন কী দেখতে পারে এবং পারে না</string>
+    <string name="doc_privacy_nearby_body">একটি কাছাকাছি ফোন দেখতে পারে যে আপনার ডিভাইস উপস্থিত আছে এবং মেশের যেকোনো ফোনের মতোই এর মাধ্যমে ঠিকানাযুক্ত বার্তা এগিয়ে দিতে পারে। এটি এমন বার্তা পড়তে পারে না যা তার জন্য নয়: শুধু যাকে আপনি লিখছেন সেই এটি পড়তে পারে।</string>
+    <string name="doc_privacy_permissions_title">অনুমতি, এবং কেন</string>
+    <string name="doc_privacy_permissions_body">কাছাকাছি ফোন খুঁজে বের করতে ও তাদের সাথে কথা বলতে বেতার ব্লুটুথ ও ওয়াই-ফাই ডাইরেক্ট অনুমতি চায়, এবং লোকেশন অনুমতি শুধু তখনই চায় যখন অপারেটিং সিস্টেম সেই একই কাছাকাছি খোঁজার জন্য এটি দাবি করে, আপনাকে ট্র্যাক করার জন্য নয়। এটি ইন্টারনেট অ্যাক্সেস, পরিচিতি, বা কাছাকাছি ডিভাইসের মধ্যে বার্তা পাঠানোর সাথে অসম্পর্কিত কিছু চায় না।</string>
+    <string name="doc_privacy_children_title">শিশুরা</string>
+    <string name="doc_privacy_children_body">বেতার কারও কাছ থেকেই ব্যক্তিগত তথ্য সংগ্রহ করে না, শিশুদের কাছ থেকেও না, কারণ এটি একেবারেই ব্যক্তিগত তথ্য সংগ্রহ করে না।</string>
+    <string name="doc_privacy_verify_title">নিজে কীভাবে যাচাই করবেন</string>
+    <string name="doc_privacy_verify_body">এই পাতার প্রতিটি দাবি সোর্স কোডে যাচাইযোগ্য, এবং অ্যাপ একেবারেই ইন্টারনেট অনুমতি চায় না, যা যে কেউ নিশ্চিত করতে পারে।</string>
+
+    <string name="doc_terms_title">ব্যবহারের শর্তাবলী</string>
+    <string name="doc_terms_summary">সংক্ষিপ্ত এবং মানবিক: ভালোভাবে ব্যবহার করুন, এতে কোনো ওয়ারেন্টি নেই, এবং এটি জরুরি সেবা নয়।</string>
+    <string name="doc_terms_acceptable_use_title">গ্রহণযোগ্য ব্যবহার</string>
+    <string name="doc_terms_acceptable_use_body">নেটওয়ার্ক না থাকলে কাছের মানুষদের কাছে পৌঁছাতে বেতার ব্যবহার করুন। এর মাধ্যমে পৌঁছানো কাউকে ক্ষতি, হয়রানি বা প্রতারণা করতে এটি ব্যবহার করবেন না।</string>
+    <string name="doc_terms_no_warranty_title">কোনো ওয়ারেন্টি নেই</string>
+    <string name="doc_terms_no_warranty_body">সফটওয়্যারটি যেমন আছে তেমনই দেওয়া হয়, স্পষ্ট বা অন্তর্নিহিত কোনো ধরনের ওয়ারেন্টি ছাড়াই।</string>
+    <string name="doc_terms_community_title">কমিউনিটি দ্বারা রক্ষণাবেক্ষিত</string>
+    <string name="doc_terms_community_body">বেতার ওপেন সোর্স সফটওয়্যার হিসেবে এর অবদানকারীরা রক্ষণাবেক্ষণ করেন, কোনো কোম্পানি নয়। এখানে কোনো কোম্পানির নাম নেই কারণ কোনোটিই নেই।</string>
+    <string name="doc_terms_not_emergency_title">জরুরি সেবা নয়</string>
+    <string name="doc_terms_not_emergency_body">যেখানে জরুরি সেবা বিদ্যমান সেখানে বেতার তার বিকল্প নয়। এটি কী করতে পারে এবং পারে না তা জানতে সেফটি অ্যান্ড লিমিটস দেখুন।</string>
+
+    <string name="doc_safety_title">নিরাপত্তা ও সীমাবদ্ধতা</string>
+    <string name="doc_safety_summary">এটি অ্যাপের সবচেয়ে গুরুত্বপূর্ণ ডকুমেন্ট। জরুরি অবস্থায় বেতারের উপর নির্ভর করার আগে এটি পড়ুন।</string>
+    <string name="doc_safety_not_replacement">যেখানে জরুরি সেবা বিদ্যমান সেখানে বেতার তার বিকল্প নয়। যদি ফোন লাইন, অ্যাম্বুলেন্স সেবা বা জরুরি সম্প্রচার আপনার কাছে পাওয়া যায়, তা ব্যবহার করুন। বেতার তখনই, যখন সেগুলোর কোনোটিই আপনার কাছে পৌঁছায় না।</string>
+    <string name="doc_safety_best_effort_title">ডেলিভারি সর্বোচ্চ চেষ্টা মাত্র</string>
+    <string name="doc_safety_best_effort_body">একটি বার্তা তখনই এগোয় যখন আপনার ফোন বেতার চালানো অন্য কোনো ফোনের ব্লুটুথ বা ওয়াই-ফাই ডাইরেক্ট রেঞ্জের মধ্যে আসে। বার্তা পৌঁছানোর কোনো নিশ্চয়তা নেই, এবং কত সময় লাগবে তারও কোনো নিশ্চয়তা নেই: মিনিট, ঘণ্টা, অথবা কখনোই না, সম্পূর্ণভাবে নির্ভর করে কাছাকাছি ও চলাফেরারত ফোনগুলোর উপর।</string>
+    <string name="doc_safety_no_range_body">কাছাকাছি অন্য কোনো ফোন না থাকলে বেতার সাহায্য করতে পারে না। এটি প্রকৃতপক্ষে উপস্থিত ফোনগুলোর মধ্যে বার্তা বহন করে। এটি এমন পথ তৈরি করতে পারে না যা নেই।</string>
+    <string name="doc_safety_no_review_title">এখনও কোনো স্বাধীন নিরাপত্তা পর্যালোচনা হয়নি</string>
+    <string name="doc_safety_no_review_body">ক্রিপ্টোগ্রাফি ও প্রোটোকল ডিজাইন প্রতিষ্ঠিত, প্রকাশিত পদ্ধতি অনুসরণ করে, কিন্তু বাস্তবায়নের এখনও কোনো স্বাধীন অডিট হয়নি। সংবেদনশীল যোগাযোগ পরিচালনাকারী যেকোনো প্রাথমিক পর্যায়ের সফটওয়্যারের মতোই এটিকে দেখুন: কার্যকর, সক্রিয়ভাবে উন্নয়নাধীন, কিন্তু এখনও স্বাধীনভাবে যাচাই করা হয়নি।</string>
+    <string name="doc_safety_alert_title">একটি জরুরি সতর্কতা আসলে কী করে</string>
+    <string name="doc_safety_alert_body">একটি সতর্কতা পাঠানো মানে তা কাছাকাছি ফোনগুলোর হাতে তুলে দেওয়া, ঠিক যেভাবে যেকোনো বার্তা এগোয়। অ্যাপ প্রকৃত সংখ্যা দেখায় (কতগুলো ফোন এটি বহন করছে, কতজন স্বীকার করেছে), কখনও কল্পিত ডেলিভারড স্ট্যাটাস দেখায় না। লোকেশন শেয়ারিং ডিফল্টে বন্ধ থাকে; এটি চালু করলে মানুষ আপনাকে খুঁজে পেতে সাহায্য পায়, এবং এর মানে আপনার অবস্থান সতর্কতার সাথে সেটি যারা পায় তাদের সবার কাছেও যায়।</string>
+
+    <string name="doc_permissions_title">অনুমতিগুলো ব্যাখ্যা করা হলো</string>
+    <string name="doc_permissions_summary">বেতার যে প্রতিটি অনুমতি চায় তা কাছাকাছি ফোন খুঁজে বের করতে ও কথা বলতে ব্যবহৃত হয়। আর কিছু নয়।</string>
+    <string name="doc_permissions_bluetooth">ব্লুটুথ: কাছাকাছি ফোন সরাসরি খুঁজে বের করতে ও সংযুক্ত হতে।</string>
+    <string name="doc_permissions_wifi_direct">ওয়াই-ফাই ডাইরেক্ট: কাছাকাছি ফোন খুঁজে বের করার দ্বিতীয়, স্বতন্ত্র উপায়, ব্লুটুথের পাশাপাশি ব্যবহৃত হয়।</string>
+    <string name="doc_permissions_location">লোকেশন: কিছু অ্যান্ড্রয়েড সংস্করণে কাছাকাছি-ডিভাইস খোঁজার জন্য অপারেটিং সিস্টেমের প্রয়োজন, আপনাকে ট্র্যাক করতে ব্যবহৃত হয় না।</string>
+    <string name="doc_permissions_notifications">বিজ্ঞপ্তি: মেশ রিলে ব্যাকগ্রাউন্ডে চলছে তা দেখাতে।</string>
+    <string name="doc_permissions_battery">ব্যাটারি অপ্টিমাইজেশন থেকে ছাড়: যাতে অ্যাপ ব্যাকগ্রাউন্ডে থাকলেও রিলে কাজ করতে থাকে। ঐচ্ছিক।</string>
+    <string name="doc_permissions_no_internet_title">কেন কোনো ইন্টারনেট অনুমতি নেই</string>
+    <string name="doc_permissions_no_internet_body">বেতার একেবারেই ইন্টারনেট অ্যাক্সেস চায় না। এর কথা বলার কোনো সার্ভার নেই, তাই এর প্রয়োজনও নেই, এবং সোর্স কোডে অ্যাপের ম্যানিফেস্ট পড়ে যে কেউ এটি নিশ্চিত করতে পারে।</string>
+
+    <string name="doc_licenses_title">ওপেন সোর্স লাইসেন্স</string>
+    <string name="doc_licenses_summary">বেতার AGPL-3.0: যে কেউ এটি ব্যবহার, অধ্যয়ন, পরিবর্তন ও শেয়ার করতে পারে, এবং পরিবর্তিত সংস্করণও খোলা রাখতে হবে।</string>
+    <string name="doc_licenses_third_party_title">তৃতীয় পক্ষের উপাদান</string>
+    <string name="doc_licenses_third_party_body">Jetpack Compose, Material3 এবং Navigation Compose (Apache-2.0)। AndroidX Core এবং Activity (Apache-2.0)। Material Components for Android (Apache-2.0)। JNA (Apache-2.0 অথবা LGPL-2.1, দ্বৈত লাইসেন্স)। MapLibre Native Android SDK (BSD-2-Clause)।</string>
+
+    <string name="doc_about_title">বেতার সম্পর্কে</string>
+    <string name="doc_about_summary">বেতার এমন যোগাযোগ ও নিরাপত্তা অবকাঠামো যা কোনো সিম, ইন্টারনেট, রাউটার বা সেল টাওয়ার ছাড়াই কাজ করে। এটি প্রজেক্ট মেশের উপর নির্মিত, যে ওপেন প্রোটোকল ও রাস্ট কোর এটিকে কাজ করায়।</string>
+    <string name="doc_about_name_title">নামটি</string>
+    <string name="doc_about_name_body">বেতার শব্দের অর্থ ওয়্যারলেস: আক্ষরিক অর্থে বে- (ছাড়া) এবং তার (তার)।</string>
+    <string name="doc_about_bose_body">এটি জগদীশ চন্দ্র বসুকে সম্মান জানায়। ১৮৯৫ সালের নভেম্বরে কলকাতায়, তিনি দুটি দেয়াল এবং একজন বসে থাকা মানুষের শরীরের মধ্য দিয়ে বেতার তরঙ্গ পাঠিয়ে একটি ঘণ্টা বাজিয়েছিলেন এবং পাশের ঘরে বারুদ জ্বালিয়েছিলেন, যা মার্কনির আগেই বেতার সঞ্চালনের একটি জনসমক্ষে প্রদর্শনী ছিল। সাধারণ ফোন সেখানে পৌঁছানোর এক শতাব্দী আগেই তিনি মিলিমিটার তরঙ্গদৈর্ঘ্যে কাজ করেছিলেন, এবং তিনি এর কোনোটির পেটেন্ট নেননি কারণ তিনি বিশ্বাস করতেন এই কাজ সবার জন্য।</string>
+    <string name="doc_about_bose_claim_body">তিনি মার্কনির আগেই জনসমক্ষে বেতার সঞ্চালন প্রদর্শন করেছিলেন এবং কাজটি পেটেন্ট ছাড়াই বিলিয়ে দিয়েছিলেন। তিনি সত্যিকার অর্থে \"রেডিও আবিষ্কার\" করেছিলেন কিনা তা প্রকৃতপক্ষে বিতর্কিত, এবং ঐতিহাসিক তথ্য যা সমর্থন করে তার বাইরে এই প্রকল্প কোনো দাবি করে না।</string>
+    <string name="doc_about_license_body">বেতার AGPL-3.0-এর অধীনে ওপেন সোর্স। একই ধারণা, প্রায় একশো ত্রিশ বছর পরে।</string>
+    <string name="doc_about_mesh_title">বেতার ও প্রজেক্ট মেশ</string>
+    <string name="doc_about_mesh_body">প্রজেক্ট মেশ হলো এর নিচে থাকা ওপেন প্রোটোকল ও রাস্ট কোরের নাম: পরিচয়, এনক্রিপশন, বার্তা রাউটিং, যেসব অংশ সার্ভার ছাড়াই ফোন থেকে ফোনে ডেলিভারি সম্ভব করে। বেতার হলো এর উপর নির্মিত অ্যাপ্লিকেশন, এবং যে নামটি বেশিরভাগ মানুষ আসলে ব্যবহার করবে।</string>
+    <string name="doc_about_attribution_title">কৃতিত্ব</string>
+    <string name="doc_about_attribution_body">এখানে কোনো ব্যক্তির নাম নেই, এবং অ্যাপের কোথাও কারও নাম নেই। কৃতিত্ব যায় প্রকল্প ও এর সোর্স কোডের কাছে, যা যে কেউ পড়তে, তৈরি করতে ও যাচাই করতে পারে। অনুবাদক ও অবদানকারীদের একটি দল হিসেবে কৃতিত্ব দেওয়া হয়, নির্দিষ্ট কোনো ব্যক্তি হিসেবে নয়।</string>
+    <string name="doc_about_version">সংস্করণ %1$s</string>
+    <string name="doc_about_repo_button">সোর্স দেখুন</string>
+
+    <string name="doc_storm_guide_title">ঝড়ের সময় এটি কীভাবে ব্যবহার করবেন</string>
+    <string name="doc_storm_guide_summary">ঝড়ের আগে ও সময়ে করণীয় একটি সংক্ষিপ্ত নির্দেশিকা। এটি পড়তে ইন্টারনেট প্রয়োজন নেই।</string>
+    <string name="doc_storm_guide_charge">ঝড় আসার আগেই আপনার ফোন চার্জ দিয়ে রাখুন।</string>
+    <string name="doc_storm_guide_relay">রিলে চালু করুন এবং চালু রাখুন, যাতে আপনার ফোন কাছাকাছি অন্যদের বার্তা বহন করতে পারে।</string>
+    <string name="doc_storm_guide_keep_open">আশ্রয়ে থাকাকালীন অ্যাপটি খোলা রাখুন, অথবা অন্তত ব্যাকগ্রাউন্ডে রাখুন, জোর করে বন্ধ করবেন না।</string>
+    <string name="doc_storm_guide_send_alert">জরুরি সতর্কতা পাঠাতে: এসওএস বাটন খুলুন, একটি বিভাগ বেছে নিন, এবং স্লাইড করে পাঠান।</string>
+    <string name="doc_storm_guide_help_carry">কাছাকাছি অ্যাপ খোলা রাখলেই আপনি অন্যদের সাহায্য করেন: আপনি আর কিছু না করলেও আপনার ফোন তাদের বার্তা এগিয়ে নিয়ে যেতে পারে।</string>
+
+    <string name="documents_index_title">ডকুমেন্টস</string>
+    <string name="documents_index_privacy_hint">বেতার কী সংগ্রহ করে (কিছুই না) এবং কেন।</string>
+    <string name="documents_index_terms_hint">গ্রহণযোগ্য ব্যবহার, কোনো ওয়ারেন্টি নেই, কমিউনিটি রক্ষণাবেক্ষিত।</string>
+    <string name="documents_index_safety_hint">সর্বোচ্চ চেষ্টার ডেলিভারি মানে কী, এবং বেতার কী করতে পারে না।</string>
+    <string name="documents_index_permissions_hint">প্রতিটি অনুমতির জন্য একটি কার্ড, সহজ ভাষায়।</string>
+    <string name="documents_index_licenses_hint">AGPL-3.0 এবং এর ভেতরের তৃতীয় পক্ষের উপাদান।</string>
+    <string name="documents_index_about_hint">নাম, বসু-কে সম্মান, এবং বেতার কীভাবে প্রজেক্ট মেশের সাথে সম্পর্কিত।</string>
+    <string name="documents_index_storm_guide_hint">ঝড়ের আগে ও সময়ে করণীয় একটি সংক্ষিপ্ত অফলাইন নির্দেশিকা।</string>
+
+    <!-- Emergency flow (DESIGN-BRIEF.md §9 screens 25-29) -->
+    <string name="emergency_what_is_happening">কী ঘটছে?</string>
+    <string name="emergency_press_hold_hint">শুনতে চাইলে একটি টাইল চেপে ধরে রাখুন।</string>
+    <string name="emergency_travel_note">আপনার সতর্কতা ফোন থেকে ফোনে ভ্রমণ করে। এটি এখন কাছাকাছি থাকা মানুষের কাছে পৌঁছায়, এবং ফোন সরার সাথে সাথে আরও দূরে পৌঁছায়। এটি জরুরি পরিষেবায় কল নয়।</string>
+    <string name="emergency_share_location_title">আপনি কোথায় আছেন তা শেয়ার করুন</string>
+    <string name="emergency_share_location_off_by_default">ডিফল্টে বন্ধ থাকে।</string>
+    <string name="emergency_share_location_on_note">এই সতর্কতা যিনি পাবেন তিনি দেখবেন আপনি পাঠানোর সময় কোথায় ছিলেন। এভাবেই মানুষ আপনাকে দ্রুত খুঁজে পায়।</string>
+    <string name="emergency_share_location_off_note">কেউ জানবে না আপনাকে কোথায় খুঁজতে হবে। খুঁজে পেতে চাইলে এটি চালু করুন।</string>
+    <string name="emergency_say_whats_wrong">কী ভুল হয়েছে বলুন</string>
+    <string name="emergency_voice_not_wired_note">এই বিল্ডে ভয়েস নোট এখনও যুক্ত করা হয়নি। ঐচ্ছিক।</string>
+    <string name="emergency_add_words_optional">কথা যোগ করুন (ঐচ্ছিক)</string>
+    <string name="emergency_continue">এগিয়ে যান</string>
+    <string name="emergency_send_to_everyone">আশেপাশের সবাইকে এই সতর্কতা পাঠান</string>
+    <string name="emergency_location_included">আপনার অবস্থান অন্তর্ভুক্ত আছে।</string>
+    <string name="emergency_location_not_included">আপনার অবস্থান অন্তর্ভুক্ত নেই।</string>
+    <string name="emergency_slide_to_send">পাঠাতে স্লাইড করুন</string>
+    <string name="emergency_slide_hint">একটি স্লাইড, যাতে এটি আপনার পকেটে ভুলবশত সক্রিয় না হয়।</string>
+    <string name="emergency_alert_travelling">আপনার সতর্কতা ভ্রমণ করছে</string>
+    <string name="emergency_marked_resolved">সমাধান হয়েছে বলে চিহ্নিত</string>
+    <string name="emergency_still_looking">এখনও কাছাকাছি ফোন খোঁজা হচ্ছে</string>
+    <string name="emergency_connected_to_n_phones">এখন কাছাকাছি %1$d টি ফোনের সাথে সংযুক্ত</string>
+    <string name="emergency_acknowledged">কেউ স্বীকার করেছেন</string>
+    <string name="emergency_not_acknowledged">এখনও কেউ স্বীকার করেননি</string>
+    <string name="emergency_disclaimer_note">এটি দেখায় আপনার ডিভাইস এখন কোন ফোনগুলোতে পৌঁছাতে পারে, এই নির্দিষ্ট সতর্কতা সেখানে পৌঁছেছে তার প্রমাণ নয়। ফোন সরে গেলে এই সংখ্যা কমতে পারে। এটি এখন যা সত্য, কোনো প্রতিশ্রুতি নয়।</string>
+    <string name="emergency_i_am_safe">আমি এখন নিরাপদ</string>
+    <string name="emergency_resolved">সমাধান হয়েছে</string>
+    <string name="emergency_cancel_alert">এই সতর্কতা বাতিল করুন</string>
+
+    <!-- Board (DESIGN-BRIEF.md §9 screens 21-24) -->
+    <string name="board_tab_alerts">সতর্কতা</string>
+    <string name="board_tab_notices">বিজ্ঞপ্তি</string>
+    <string name="board_tab_help">সাহায্য</string>
+    <string name="board_alerts_empty_title">আশেপাশে কোনো জরুরি অবস্থা নেই</string>
+    <string name="board_alerts_empty_body">অন্য ফোন থেকে সতর্কতা এলে এখানে দেখা যাবে। অ্যাপ চালু রাখুন যাতে আপনার ফোন তা গ্রহণ করে পাঠিয়ে দিতে পারে।</string>
+    <string name="board_i_am_coming_to_help">আমি সাহায্য করতে আসছি</string>
+    <string name="board_notices_empty_title">এখনও কোনো বিজ্ঞপ্তি নেই</string>
+    <string name="board_notices_empty_body">কাছাকাছি ফোন থেকে বিজ্ঞপ্তি এলে এখানে দেখা যাবে।</string>
+    <string name="board_help_empty_title">এখনও কিছু পোস্ট করা হয়নি</string>
+    <string name="board_help_empty_body">দেওয়ার মতো কিছু আছে, নাকি কিছু প্রয়োজন? একটি বিজ্ঞপ্তি দিন।</string>
+    <string name="board_put_up_notice">একটি বিজ্ঞপ্তি দিন</string>
+    <string name="board_pick_picture_first">প্রথমে একটি ছবি বেছে নিন</string>
+    <string name="board_add_words_optional">কথা যোগ করুন (ঐচ্ছিক)</string>
+    <string name="board_put_it_up">পোস্ট করুন</string>
+    <string name="board_time_just_now">এইমাত্র</string>
+    <string name="board_time_minutes_ago">%1$d মিনিট আগে</string>
+    <string name="board_time_hours_ago">%1$d ঘণ্টা আগে</string>
+    <string name="board_time_days_ago">%1$d দিন আগে</string>
+
+    <!-- You tab (DESIGN-BRIEF.md §9 screens 33-39) -->
+    <string name="you_row_language">ভাষা</string>
+    <string name="you_row_readiness">ঝড়ের জন্য প্রস্তুতি</string>
+    <string name="you_row_carrying">অন্যদের জন্য বহন</string>
+    <string name="you_row_appearance">চেহারা</string>
+    <string name="you_row_privacy">প্রাইভেসি</string>
+    <string name="you_scannable_code_placeholder">স্ক্যান করার কোড</string>
+    <string name="you_verification_code_label">সংক্ষিপ্ত যাচাই কোড</string>
+    <string name="you_copy_identity_button">কপি করুন</string>
+    <string name="you_language_note">এটি বদলালে অ্যাপ সাথে সাথে বদলে যাবে। কিছুই ডাউনলোড হবে না।</string>
+    <string name="you_readiness_bluetooth">ব্লুটুথ চালু আছে</string>
+    <string name="you_readiness_ready">প্রস্তুত</string>
+    <string name="you_readiness_bluetooth_off">মেশ স্ক্রিনে ব্লুটুথ চালু করুন</string>
+    <string name="you_readiness_permissions">কাছাকাছি থাকার অনুমতি দেওয়া আছে</string>
+    <string name="you_readiness_permissions_missing">আপনার অনুমতি প্রয়োজন</string>
+    <string name="you_readiness_background">বেতার সচল থাকতে পারে</string>
+    <string name="you_readiness_background_blocked">আপনার ফোন এটি বন্ধ করে দিচ্ছে</string>
+    <string name="you_readiness_notifications">বিজ্ঞপ্তি চালু আছে</string>
+    <string name="you_readiness_notifications_off">এখনও অনুমতি নেই</string>
+    <string name="you_readiness_needs_fixing">কিছু একটা ঠিক করা দরকার</string>
+    <string name="you_readiness_check_before_storm">খারাপ আবহাওয়ার আগে, সময় থাকতে এই তালিকাটি দেখে নিন।</string>
+    <string name="you_readiness_fix_button">ঠিক করুন</string>
+    <string name="you_carrying_headline">আপনি আশেপাশের মানুষের জন্য %1$d টি বার্তা ধরে রেখেছেন</string>
+    <string name="you_carrying_body">এটি একটি বাস্তব অবদান: আপনি কথোপকথনের অংশ না হলেও আপনার ফোন অন্যদের বার্তা এগিয়ে নিতে থাকে।</string>
+    <string name="you_carrying_storage_title">আলাদা রাখা জায়গা</string>
+    <string name="you_carrying_storage_body">অন্যদের জন্য বার্তা বহন করতে বেতার কতটা জায়গা ব্যবহার করতে পারে।</string>
+    <string name="you_appearance_light">হালকা</string>
+    <string name="you_appearance_dark">গাঢ়</string>
+    <string name="you_appearance_follow_system">ফোন অনুসরণ করুন</string>
+    <string name="you_appearance_sunlight_title">সানলাইট মোড</string>
+    <string name="you_appearance_sunlight_body">বাইরে রোদে পড়ার জন্য গাঢ় রং ও রূপরেখা। কিছুটা বেশি ব্যাটারি খরচ হয়।</string>
+    <string name="you_privacy_intro">আপনি যা লেখেন তা যে ফোনগুলোর মধ্যে দিয়ে যায় তার বাইরে কিছুই যায় না। এই নিয়ন্ত্রণগুলো আপনার হাতে থাকা এই ফোন সম্পর্কে।</string>
+    <string name="you_privacy_decoy_title">ডিকয় পাসফ্রেজ</string>
+    <string name="you_privacy_decoy_body">দ্বিতীয় একটি পাসফ্রেজ যা একটি সাধারণ দেখতে, খালি বেতার খুলে দেয়।</string>
+    <string name="you_privacy_erase_title">সব মুছে ফেলুন</string>
+    <string name="you_privacy_erase_body">আপনার বার্তা, আপনার ডাকনাম, আপনি যা বহন করছিলেন এবং তার নিচের কী মুছে ফেলে। এটি ফিরিয়ে আনা যায় না, এবং এর কোনো কপি আর কোথাও নেই।</string>
+    <string name="you_privacy_wiped_title">সব মুছে গেছে</string>
+    <string name="you_privacy_wiped_body">আপনার বার্তা, আপনার ডাকনাম, আপনি যা বহন করছিলেন এবং তার নিচের কী এই ফোন থেকে মুছে ফেলা হয়েছে। এর কোনো কপি আর কোথাও নেই।</string>
+    <string name="you_privacy_hold_to_erase">মুছতে চেপে ধরুন</string>
+    <string name="you_privacy_keep_holding">চেপে থাকুন…</string>
+    <string name="you_privacy_wipe_done">হয়ে গেছে</string>
+    <string name="you_privacy_hold_hint">তিন সেকেন্ড। একটি ট্যাপে কিছুই হয় না।</string>
 </resources>

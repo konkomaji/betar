@@ -3,6 +3,7 @@ package india.projectmesh.app.ui.nav
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,7 +43,11 @@ fun BetarScaffold(
     content: @Composable (padding: PaddingValues) -> Unit,
 ) {
     Scaffold(
-        topBar = { MeshRibbon(state = ribbonState, modifier = Modifier.padding(12.dp)) },
+        // .statusBarsPadding(): Scaffold does not automatically inset a plain composable
+        // slotted into topBar (only TopAppBar handles that itself) -- without this the ribbon
+        // renders underneath the system status bar, confirmed by a real on-device screenshot
+        // where the clock overlapped the ribbon's text, not assumed from reading the code.
+        topBar = { MeshRibbon(state = ribbonState, modifier = Modifier.statusBarsPadding().padding(12.dp)) },
         bottomBar = { BetarBottomNav(current = current, onSelected = onDestinationSelected) },
         floatingActionButton = {
             FloatingActionButton(
