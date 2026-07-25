@@ -57,6 +57,9 @@ dependencies {
     // instead (see ui/theme/Shape.kt) rather than borrowed from MaterialShapes.
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    // Bottom-nav + screen routing for the real 5-destination IA (DESIGN-BRIEF.md §8), replacing
+    // MainActivity's single scrolling column of every feature stacked in one screen.
+    implementation("androidx.navigation:navigation-compose:2.9.7")
     // Provides the XML Theme.Material3.* base themes (manifest android:theme) -- Compose
     // Material3 alone only supplies the in-Compose theming, not these launch-time resources.
     implementation("com.google.android.material:material:1.12.0")

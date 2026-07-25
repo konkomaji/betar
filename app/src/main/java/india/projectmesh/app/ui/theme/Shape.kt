@@ -67,16 +67,32 @@ private val DiamondShape: Shape = GenericShape { size, _ ->
 }
 
 /**
+ * The full named-shape set from design/Betar Design System.dc.html's `SHAPES` object, geometry
+ * transcribed exactly (same base/amp/rot per shape). Category tiles, the bottom nav's per-tab
+ * icon clip, and the trust chip all draw from this one registry rather than each hand-rolling
+ * their own shape, so a silhouette means the same thing everywhere it appears.
+ */
+object BetarPolygonShapes {
+    val cookie9: Shape = lobedShape(n = 9, base = 0.84f, amp = 0.16f)
+    val clover4: Shape = lobedShape(n = 4, base = 0.74f, amp = 0.26f, rot = (Math.PI / 4).toFloat())
+    val burst8: Shape = lobedShape(n = 8, base = 0.72f, amp = 0.28f)
+    val scallop12: Shape = lobedShape(n = 12, base = 0.88f, amp = 0.12f)
+    val flower6: Shape = lobedShape(n = 6, base = 0.78f, amp = 0.22f)
+    val pentagon: Shape = regularShape(n = 5, rot = (-Math.PI / 2).toFloat())
+    val hexagon: Shape = regularShape(n = 6, rot = (-Math.PI / 2).toFloat())
+    val diamond: Shape = DiamondShape
+}
+
+/**
  * DESIGN-BRIEF.md §6: "Give every emergency and supply category its own shape as well as its
- * own pictogram, so a category is recognisable by silhouette alone." Mapping and exact
- * geometry both transcribed from design/Betar Design System.dc.html's `cats()`/`SHAPES` table:
- * medical=clover (4 lobe), trapped=pentagon, fire=burst (8 point), danger=diamond,
- * other=cookie (9 lobe).
+ * own pictogram, so a category is recognisable by silhouette alone." Mapping transcribed from
+ * design/Betar Design System.dc.html's `cats()` table: medical=clover, trapped=pentagon,
+ * fire=burst, danger=diamond, other=cookie.
  */
 object BetarCategoryShapes {
-    val medical: Shape = lobedShape(n = 4, base = 0.74f, amp = 0.26f, rot = (Math.PI / 4).toFloat())
-    val trapped: Shape = regularShape(n = 5, rot = (-Math.PI / 2).toFloat())
-    val fire: Shape = lobedShape(n = 8, base = 0.72f, amp = 0.28f)
-    val danger: Shape = DiamondShape
-    val other: Shape = lobedShape(n = 9, base = 0.84f, amp = 0.16f)
+    val medical: Shape = BetarPolygonShapes.clover4
+    val trapped: Shape = BetarPolygonShapes.pentagon
+    val fire: Shape = BetarPolygonShapes.burst8
+    val danger: Shape = BetarPolygonShapes.diamond
+    val other: Shape = BetarPolygonShapes.cookie9
 }
