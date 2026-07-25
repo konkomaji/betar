@@ -45,8 +45,16 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.9.3")
-    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    // Bumped from 2024.12.01: Material 3 Expressive (MaterialExpressiveTheme, MaterialShapes,
+    // MotionScheme) needs material3 1.4.0+, which this BOM line pulls in.
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
+    // Stable material3 (1.4.0 via the BOM above), deliberately not the 1.5.0-alpha that
+    // carries MaterialExpressiveTheme/MaterialShapes/MotionScheme: pulling those in means
+    // AGP 9.1.0 + compileSdk 37, a full toolchain migration well past a design-system pass,
+    // and an alpha dependency in a project aiming for a reproducible/F-Droid build. Category
+    // shapes are hand-rolled to match design/Betar Design System.dc.html's own path math
+    // instead (see ui/theme/Shape.kt) rather than borrowed from MaterialShapes.
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     // Provides the XML Theme.Material3.* base themes (manifest android:theme) -- Compose
