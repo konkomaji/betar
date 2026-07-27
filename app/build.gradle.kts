@@ -58,6 +58,15 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
+            // Real phones this project targets (docs/LOCALIZATION-UX.md's "inexpensive Android
+            // phones") are arm64-v8a or armeabi-v7a, never x86/x86_64 (emulator-only) or the
+            // mips/mips64/armeabi JNA ships by default (nothing has shipped those ABIs since
+            // ~2016). Debug keeps every ABI (no filter below) since this dev environment's only
+            // test device is an x86_64 emulator. Found via `unzip -l` on a real built APK: the
+            // 4 unfiltered ABIs of MapLibre's native lib alone were ~49 MB of the ~78 MB total.
+            ndk {
+                abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+            }
         }
     }
 
