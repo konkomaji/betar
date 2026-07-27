@@ -30,8 +30,8 @@ android {
         // docs/LOCALIZATION-UX.md, not for API surface reasons.
         minSdk = 26
         targetSdk = 35 // Android 15
-        versionCode = 3
-        versionName = "0.1.2-prealpha"
+        versionCode = 4
+        versionName = "0.1.3-prealpha"
 
         // Bengali paused, English-only for now (per user decision, not a deletion): restricts
         // what actually gets packaged into the APK without touching values-bn/strings.xml
