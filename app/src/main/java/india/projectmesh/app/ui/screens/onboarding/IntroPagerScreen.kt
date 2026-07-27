@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import india.projectmesh.app.R
+import kotlinx.coroutines.launch
 
 /**
  * DESIGN-BRIEF.md §9 screen 2: three swipeable illustrated panels, eight words or fewer each,
@@ -44,6 +46,7 @@ import india.projectmesh.app.R
 fun IntroPagerScreen(onFinished: () -> Unit) {
     val panels = listOf(R.string.onboarding_panel_1, R.string.onboarding_panel_2, R.string.onboarding_panel_3)
     val pagerState = rememberPagerState(pageCount = { panels.size })
+    val scope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.End) {
@@ -120,10 +123,16 @@ fun IntroPagerScreen(onFinished: () -> Unit) {
             }
             IconButton(
                 onClick = {
-                    if (pagerState.currentPage == panels.lastIndex) onFinished()
-                    // Advancing the pager itself needs a CoroutineScope (animateScrollToPage is
-                    // suspend); the dot indicator and swipe gesture are the primary way to move
-                    // between panels, this button only finishes on the last page.
+                    // Real bug fixed here: this used to only ever call onFinished() on the last
+                    // page and do nothing at all on pages 1-2 (a CoroutineScope was needed for
+                    // animateScrollToPage, punted in an earlier pass), so the "always enabled"
+                    // next arrow the design calls for (Workflow Map FLOW 1) was silently dead on
+                    // two of the three panels -- found via a real on-device tap that did nothing.
+                    if (pagerState.currentPage == panels.lastIndex) {
+                        onFinished()
+                    } else {
+                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                    }
                 },
                 modifier = Modifier.size(64.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
             ) {

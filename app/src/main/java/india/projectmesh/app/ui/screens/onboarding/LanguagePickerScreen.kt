@@ -38,11 +38,19 @@ import india.projectmesh.app.ui.theme.BetarPolygonShapes
  * [onLanguageSelected] receives a BCP-47 tag ("en" or "bn"); the caller is responsible for
  * actually applying it (`AppCompatDelegate.setApplicationLocales` or the per-app-language
  * system settings), this screen only captures the choice.
+ *
+ * **Bengali temporarily paused, English-only for now** (per user decision, not a deletion): the
+ * `values-bn/strings.xml` translation still exists in the repo untouched, and the tile below is
+ * commented out rather than removed so re-enabling is a one-line uncomment, not redone work.
+ * See docs/LOCALIZATION-UX.md §1 and docs/PROGRESS.md for the dated entry explaining why.
  */
 @Composable
 fun LanguagePickerScreen(onLanguageSelected: (String) -> Unit) {
     var selected by remember { mutableStateOf("en") }
-    val languages = listOf("en" to "English", "bn" to "বাংলা")
+    val languages = listOf(
+        "en" to "English",
+        // "bn" to "বাংলা", // paused, see this file's doc comment above
+    )
 
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),

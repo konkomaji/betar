@@ -43,8 +43,15 @@
          mesh relay is this app's actual purpose, not an add-on. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <!-- QR scan-to-add (DESIGN-BRIEF.md §9 screen 9, ScanCodeScreen.kt): requested contextually
+         when that screen opens, not bundled into the onboarding permission set, since it's a
+         single-use camera-only need, not part of the mesh's own always-on permission surface. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     <uses-feature android:name="android.hardware.wifi.direct" android:required="true" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
         android:name=".MeshApplication"

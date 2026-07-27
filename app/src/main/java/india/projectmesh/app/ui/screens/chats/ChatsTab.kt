@@ -31,7 +31,11 @@ fun ChatsTab() {
         }
         is ChatsRoute.ScanCode -> ScanCodeScreen(
             onManualAdd = { contact -> route = ChatsRoute.VerifyInPerson(contact.fingerprintHex) },
+            onShowMyCode = { route = ChatsRoute.ShowMyCode },
             onBack = { route = ChatsRoute.List },
+        )
+        is ChatsRoute.ShowMyCode -> ShowMyCodeScreen(
+            onBack = { route = ChatsRoute.ScanCode },
         )
         is ChatsRoute.VerifyInPerson -> VerifyInPersonScreen(
             fingerprintHex = current.fingerprintHex,

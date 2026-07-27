@@ -27,6 +27,7 @@ sealed class ChatsRoute {
     data object List : ChatsRoute()
     data object NewConversationSheet : ChatsRoute()
     data object ScanCode : ChatsRoute()
+    data object ShowMyCode : ChatsRoute()
     data class VerifyInPerson(val fingerprintHex: String) : ChatsRoute()
     data class DirectThread(val fingerprintHex: String) : ChatsRoute()
     data object JoinChannelByName : ChatsRoute()

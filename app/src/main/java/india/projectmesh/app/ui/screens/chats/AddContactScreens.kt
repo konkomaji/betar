@@ -1,5 +1,14 @@
 package india.projectmesh.app.ui.screens.chats
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,42 +21,99 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import india.projectmesh.app.MeshApplication
 import india.projectmesh.app.R
 import india.projectmesh.app.messaging.Contact
+import india.projectmesh.app.ui.components.QrAnalyzer
+import india.projectmesh.app.ui.components.generateQrBitmap
+import india.projectmesh.app.ui.components.SafetyCode
 import india.projectmesh.app.ui.components.TrustChip
 import india.projectmesh.app.ui.components.TrustState
 import india.projectmesh.app.ui.theme.BetarPolygonShapes
+import java.util.concurrent.Executors
+
+/** Matches every mockup in `design/Betar Chats and Onboarding.dc.html`'s `appBar(title, iconBtn('b','←'))`
+ * pattern: a top-left back arrow plus title, "back is always the top left arrow" per the
+ * Workflow Map's global rules. [ScanCodeScreen]/[ShowMyCodeScreen]/[VerifyInPersonScreen] had
+ * an `onBack` parameter that nothing ever called before this pass -- wired here instead of left
+ * as dead code, the same gap the sibling screens in this tab (JoinChannelScreen,
+ * DirectConversationScreen, etc.) still have, not fixed in this pass. */
+@Composable
+private fun BackTopBar(title: String, onBack: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Text("←", style = MaterialTheme.typography.headlineSmall)
+        }
+        Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+    }
+}
 
 /**
- * DESIGN-BRIEF.md §9 screen 9: "Scan a code to add somebody." No QR/camera library is wired
- * into this app yet (a real scan needs CameraX + a barcode reader, out of scope for this pass),
- * so this is the real screen and gesture affordance with a stubbed camera preview -- flagged,
- * not silently faked as a working scanner. Manual fingerprint entry (already backed by
- * DirectMessenger.addContact) is the working fallback both here and on the mockup's own
- * "type their six characters" line.
+ * DESIGN-BRIEF.md §9 screen 9: "Scan a code to add somebody." Real camera preview + live QR
+ * decode now wired (CameraX + ZXing, see QrCode.kt) -- was a stubbed placeholder box before this
+ * pass. Camera permission is requested contextually here, not folded into the onboarding
+ * permission set, since it's a single, occasional-use need. Manual fingerprint entry stays the
+ * always-available fallback, both for a denied permission and for the "type their six characters"
+ * path the mockup itself lists as an alternative.
  */
 @Composable
-fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onBack: () -> Unit) {
-    val app = LocalContext.current.applicationContext as MeshApplication
+fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onShowMyCode: () -> Unit, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val app = context.applicationContext as MeshApplication
     var fingerprintInput by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
+
+    var cameraGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED,
+        )
+    }
+    var cameraDeniedOnce by remember { mutableStateOf(false) }
+    val permissionLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        cameraGranted = granted
+        if (!granted) cameraDeniedOnce = true
+    }
+    LaunchedEffect(Unit) {
+        if (!cameraGranted) permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    fun tryAdd(hex: String) {
+        val contact = app.directMessenger.addContact(hex)
+        if (contact != null) onManualAdd(contact) else error = "Not a valid fingerprint"
+    }
 
     Column(
         modifier = Modifier
@@ -60,15 +126,18 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onBack: () -> Unit) {
             modifier = Modifier
                 .size(260.dp)
                 .clip(MaterialTheme.shapes.extraLarge)
-                .background(androidx.compose.ui.graphics.Color(0xFF0B1A24)),
+                .background(Color(0xFF0B1A24)),
             contentAlignment = Alignment.Center,
         ) {
-            // No camera library wired yet -- real gap, not a working scanner.
-            Text(
-                stringResource(R.string.chats_scan_camera_not_wired),
-                color = androidx.compose.ui.graphics.Color(0xFF9FB6C6),
-                style = MaterialTheme.typography.labelMedium,
-            )
+            if (cameraGranted) {
+                QrScannerPreview(onDecoded = { text -> tryAdd(text.trim()) })
+            } else {
+                Text(
+                    stringResource(R.string.chats_scan_camera_not_wired),
+                    color = Color(0xFF9FB6C6),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
         }
         Text(
             stringResource(R.string.chats_scan_instruction),
@@ -80,6 +149,25 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onBack: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (cameraDeniedOnce && !cameraGranted) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(Color(0xFFF6EBD2))
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.chats_scan_camera_denied),
+                    color = Color(0xFF5C3D00),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+        TextButton(onClick = onShowMyCode) {
+            Text(stringResource(R.string.chats_scan_show_my_code))
+        }
         OutlinedTextField(
             value = fingerprintInput,
             onValueChange = { fingerprintInput = it; error = null },
@@ -88,11 +176,44 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onBack: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
         )
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-        Button(onClick = {
-            val contact = app.directMessenger.addContact(fingerprintInput)
-            if (contact != null) onManualAdd(contact) else error = "Not a valid fingerprint"
-        }) {
+        Button(onClick = { tryAdd(fingerprintInput) }) {
             Text(stringResource(R.string.chats_scan_add_button))
+        }
+    }
+}
+
+/** Live CameraX preview with a ZXing [QrAnalyzer] bound to it; calls [onDecoded] once and then
+ * stops (the caller navigates away on success, so a second decode is never needed). */
+@Composable
+private fun QrScannerPreview(onDecoded: (String) -> Unit) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val previewView = remember { PreviewView(context) }
+    val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
+
+    DisposableEffect(Unit) {
+        onDispose { analysisExecutor.shutdown() }
+    }
+
+    AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
+
+    LaunchedEffect(Unit) {
+        val cameraProvider = ProcessCameraProvider.getInstance(context).get()
+        val preview = Preview.Builder().build().also {
+            it.surfaceProvider = previewView.surfaceProvider
+        }
+        val analysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+        analysis.setAnalyzer(analysisExecutor, QrAnalyzer(onDecoded))
+        try {
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis,
+            )
+        } catch (_: Exception) {
+            // Camera bind can fail if the device has no usable back camera; the amber
+            // fallback card plus manual entry field on this screen still cover that case.
         }
     }
 }
@@ -102,18 +223,21 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onBack: () -> Unit) {
  * same short code in very large type plus a scannable code, and one confirm action. No
  * cryptographic language anywhere on this screen." Confirming only sets [TrustStore]'s in-memory
  * flag (see its own doc comment for why that's not real persisted/bound trust yet).
+ *
+ * Code shown is [SafetyCode], derived from [fingerprintHex] (the contact being verified, not this
+ * device's own identity -- an earlier pass showed the wrong side's value here since no per-contact
+ * derivation existed yet; fixed now that the derivation lives client-side and can take either
+ * fingerprint). Both people compare the 3 emoji: this device computed them independently from the
+ * fingerprint it received, the other person's device computes the same 3 emoji from its own
+ * identity bytes on [ShowMyCodeScreen] -- a match only happens if both sides really hold the same
+ * key material, catching a substituted identity the same way a Signal-style safety number would,
+ * in a friendlier compare-by-eye form.
  */
 @Composable
 fun VerifyInPersonScreen(fingerprintHex: String, onConfirmed: () -> Unit, onNotNow: () -> Unit) {
-    val app = LocalContext.current.applicationContext as MeshApplication
-    val safetyString = remember(fingerprintHex) {
-        // Both sides derive the same short code from the same session material; this app's own
-        // identity already exposes one via FfiIdentity.safetyString() for the LOCAL identity.
-        // There's no per-contact safety-string derivation exposed yet, so this shows this
-        // device's own string as the "compare by eye" value -- correct for a single-identity
-        // demo, not yet the real per-pair comparison CRYPTOGRAPHY.md §3 describes. Flagged.
-        app.identity.safetyString()
-    }
+    val sixDigit = remember(fingerprintHex) { SafetyCode.sixDigitCode(fingerprintHex) }
+    val emoji = remember(fingerprintHex) { SafetyCode.threeEmoji(fingerprintHex) }
+    val qrBitmap = remember(fingerprintHex) { generateQrBitmap(fingerprintHex, sizePx = 256) }
 
     Column(
         modifier = Modifier
@@ -137,10 +261,26 @@ fun VerifyInPersonScreen(fingerprintHex: String, onConfirmed: () -> Unit, onNotN
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                safetyString.chunked(3).joinToString(" ").take(11),
+                sixDigit,
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                emoji.joinToString("  "),
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.semantics {
+                    contentDescription = "Compare these three: ${emoji.joinToString(", ")}"
+                },
+            )
+            Image(
+                bitmap = qrBitmap,
+                contentDescription = stringResource(R.string.chats_verify_qr_description),
+                modifier = Modifier
+                    .size(160.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(Color.White)
+                    .padding(8.dp),
             )
         }
         Row(
@@ -165,7 +305,62 @@ fun VerifyInPersonScreen(fingerprintHex: String, onConfirmed: () -> Unit, onNotN
         Text(
             stringResource(R.string.chats_verify_not_now),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(8.dp).clickable(onClick = onNotNow),
+        )
+    }
+}
+
+/**
+ * DESIGN-BRIEF.md §9 screen 9 ALT: "Show my code instead" -- the other half of scan-to-add. One
+ * device shows this, the other scans it via [ScanCodeScreen]. New this pass: previously nothing
+ * rendered the local identity as a scannable code at all, so "scan a code" had nothing to scan.
+ */
+@Composable
+fun ShowMyCodeScreen(onBack: () -> Unit) {
+    val app = LocalContext.current.applicationContext as MeshApplication
+    val fingerprintHex = remember { app.identity.fingerprintHex() }
+    val qrBitmap = remember { generateQrBitmap(fingerprintHex, sizePx = 512) }
+    val sixDigit = remember { SafetyCode.sixDigitCode(fingerprintHex) }
+    val emoji = remember { SafetyCode.threeEmoji(fingerprintHex) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            stringResource(R.string.chats_show_my_code_instruction),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+        Image(
+            bitmap = qrBitmap,
+            contentDescription = stringResource(R.string.chats_verify_qr_description),
+            modifier = Modifier
+                .size(260.dp)
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(Color.White)
+                .padding(16.dp),
+        )
+        Text(
+            sixDigit,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            emoji.joinToString("  "),
+            style = MaterialTheme.typography.displayMedium,
+            modifier = Modifier.semantics {
+                contentDescription = "Your three: ${emoji.joinToString(", ")}"
+            },
+        )
+        Text(
+            stringResource(R.string.chats_show_my_code_reason),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

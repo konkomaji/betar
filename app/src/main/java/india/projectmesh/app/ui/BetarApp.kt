@@ -78,10 +78,18 @@ fun BetarApp() {
     var onboarded by rememberSaveable { mutableStateOf(isOnboardingDone(context)) }
 
     if (!onboarded) {
-        OnboardingFlow(onFinished = {
-            markOnboardingDone(context)
-            onboarded = true
-        })
+        // .statusBarsPadding(): OnboardingFlow's own screens are bare full-screen composables,
+        // not hosted inside anything that insets them -- same gap the mesh ribbon/emergency
+        // header both had before being fixed (see PROGRESS.md's 2026-07-26 entry), just never
+        // applied here. Concretely: IntroPagerScreen's top-anchored Skip button sat under the
+        // system status bar's touch-intercept zone, unreachable, found via a real on-device tap
+        // that silently did nothing.
+        Box(Modifier.fillMaxSize().statusBarsPadding()) {
+            OnboardingFlow(onFinished = {
+                markOnboardingDone(context)
+                onboarded = true
+            })
+        }
     } else {
         MainExperience()
     }

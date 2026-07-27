@@ -35,11 +35,13 @@ import india.projectmesh.app.ui.theme.BetarPolygonShapes
 
 private data class LangOption(val code: String, val native: String, val english: String)
 
-// Only English and Bengali ship by default (docs/LOCALIZATION-UX.md §1): no Hindi/Assamese/Bodo
-// tile, unlike the earlier design mockup's 5-language row -- every other language is
-// community-contributed and not part of the default install.
+// Only English ships for now (docs/LOCALIZATION-UX.md §1): Bengali is paused, not deleted -- the
+// `values-bn/strings.xml` translation and this row are both commented out rather than removed,
+// see docs/PROGRESS.md's dated entry for why. Re-enabling is uncommenting this one line, not
+// redoing the translation work. No Hindi/Assamese/Bodo tile either, unlike the earlier design
+// mockup's 5-language row -- those stay community-contributed, not part of the default install.
 private val LANGUAGES = listOf(
-    LangOption("bn", "বাংলা", "Bangla"),
+    // LangOption("bn", "বাংলা", "Bangla"), // paused, see this file's comment above
     LangOption("en", "English", "English"),
 )
 

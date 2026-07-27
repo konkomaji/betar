@@ -32,6 +32,13 @@ android {
         targetSdk = 35 // Android 15
         versionCode = 3
         versionName = "0.1.2-prealpha"
+
+        // Bengali paused, English-only for now (per user decision, not a deletion): restricts
+        // what actually gets packaged into the APK without touching values-bn/strings.xml
+        // itself, so the translation work stays intact in the repo and re-enabling is deleting
+        // this line, not redoing the translation. See docs/LOCALIZATION-UX.md §1 and
+        // docs/PROGRESS.md.
+        resourceConfigurations += listOf("en")
     }
 
     signingConfigs {
@@ -111,6 +118,19 @@ dependencies {
     // (AndroidManifest.xml). This pass wires up the SDK itself; real MBTiles/PMTiles regional
     // tile packs are a separate follow-up (see MapScreen.kt's doc comment).
     implementation("org.maplibre.gl:android-sdk:11.13.0")
+
+    // QR scan-to-add (DESIGN-BRIEF.md §9 screens 9-10): CameraX for the live preview + frame
+    // analysis, ZXing's plain `core` artifact (pure Java, Apache 2.0, no Android Camera API of
+    // its own, no Google Play Services dependency) for both decode and encode. Deliberately not
+    // com.google.mlkit:barcode-scanning: that pulls in a proprietary Google model/runtime, which
+    // conflicts with this project's F-Droid distribution goal (docs/DISTRIBUTION.md) the same way
+    // a Play Services dependency would.
+    val cameraxVersion = "1.4.1"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+    implementation("com.google.zxing:core:3.5.3")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
