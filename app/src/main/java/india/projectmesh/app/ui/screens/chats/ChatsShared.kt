@@ -1,6 +1,43 @@
 package india.projectmesh.app.ui.screens.chats
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+
+/** Matches every mockup in `design/Betar Chats and Onboarding.dc.html`'s `appBar(title, iconBtn('b','←'))`
+ * pattern and the Workflow Map's global rule ("back is always the top left arrow"). Shared across
+ * the Chats tab's sub-screens rather than duplicated per screen; [trailing] is for the rare screen
+ * that needs something else in the bar too (e.g. [DirectConversationScreen]'s trust chip). */
+@Composable
+fun BackTopBar(
+    title: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    trailing: @Composable () -> Unit = {},
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Text("←", style = MaterialTheme.typography.headlineSmall)
+        }
+        Text(
+            title,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f),
+        )
+        trailing()
+    }
+}
 
 /**
  * In-person verification ("met in person" vs "not met yet") tracked here, in the UI layer only,

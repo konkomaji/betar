@@ -280,6 +280,7 @@
     <string name="chats_verify_confirm_button">Yes, they match</string>
     <string name="chats_verify_not_now">Not now</string>
     <string name="chats_verify_qr_description">Scannable code for this identity</string>
+    <string name="chats_show_my_code_title">Show my code</string>
     <string name="chats_show_my_code_instruction">Let them scan this</string>
     <string name="chats_show_my_code_reason">This code is your fingerprint. Scanning it is the same as them typing it by hand.</string>
     <string name="chats_unverified_banner">You have not stood next to this person yet, so nobody can be sure it is them.</string>

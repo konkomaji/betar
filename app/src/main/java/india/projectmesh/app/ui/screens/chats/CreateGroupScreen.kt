@@ -50,7 +50,7 @@ fun CreateGroupScreen(onGroupCreated: (GroupSession) -> Unit, onBack: () -> Unit
         modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text(stringResource(R.string.group_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        BackTopBar(stringResource(R.string.group_title), onBack)
 
         if (session == null) {
             OutlinedTextField(

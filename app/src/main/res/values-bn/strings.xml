@@ -199,6 +199,7 @@
     <string name="chats_verify_confirm_button">হ্যাঁ, এগুলো মিলছে</string>
     <string name="chats_verify_not_now">এখন নয়</string>
     <string name="chats_verify_qr_description">এই পরিচয়ের জন্য স্ক্যানযোগ্য কোড</string>
+    <string name="chats_show_my_code_title">আমার কোড দেখান</string>
     <string name="chats_show_my_code_instruction">তাদের এটি স্ক্যান করতে দিন</string>
     <string name="chats_show_my_code_reason">এই কোডটি আপনার ফিঙ্গারপ্রিন্ট। এটি স্ক্যান করা তাদের হাতে টাইপ করার মতোই।</string>
     <string name="chats_unverified_banner">আপনি এখনও এই ব্যক্তির পাশে দাঁড়াননি, তাই এটি তারাই কিনা কেউ নিশ্চিত হতে পারে না।</string>

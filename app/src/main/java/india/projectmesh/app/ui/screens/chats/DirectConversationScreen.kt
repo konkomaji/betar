@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import india.projectmesh.app.MeshApplication
 import india.projectmesh.app.R
@@ -73,18 +72,12 @@ fun DirectConversationScreen(fingerprintHex: String, onBack: () -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                fingerprintHex.take(6) + "…",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f),
-            )
-            TrustChip(if (verified) TrustState.MetInPerson else TrustState.NotMetYet)
-        }
+        BackTopBar(
+            title = fingerprintHex.take(6) + "…",
+            onBack = onBack,
+            modifier = Modifier.padding(12.dp),
+            trailing = { TrustChip(if (verified) TrustState.MetInPerson else TrustState.NotMetYet) },
+        )
 
         if (!verified) {
             Row(

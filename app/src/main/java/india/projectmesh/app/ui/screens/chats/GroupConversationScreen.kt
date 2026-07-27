@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import india.projectmesh.app.MeshApplication
 import india.projectmesh.app.R
@@ -56,7 +55,7 @@ fun GroupConversationScreen(selectorHex: String, onBack: () -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        Text(session.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(12.dp))
+        BackTopBar(session.label, onBack, modifier = Modifier.padding(12.dp))
         Text(
             stringResource(R.string.chats_open_group_reminder),
             style = MaterialTheme.typography.labelMedium,

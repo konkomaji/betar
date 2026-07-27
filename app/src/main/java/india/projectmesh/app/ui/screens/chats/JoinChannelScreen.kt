@@ -51,6 +51,7 @@ fun JoinChannelScreen(onJoined: (ChannelSession) -> Unit, onBack: () -> Unit) {
         modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        BackTopBar(stringResource(R.string.chats_new_join_channel), onBack)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,7 +105,7 @@ fun ChannelConversationScreen(selectorHex: String, onBack: () -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        Text(session.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(12.dp))
+        BackTopBar(session.label, onBack, modifier = Modifier.padding(12.dp))
         Text(
             stringResource(R.string.chats_open_channel_reminder),
             style = MaterialTheme.typography.labelMedium,

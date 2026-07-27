@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -58,25 +57,6 @@ import india.projectmesh.app.ui.components.TrustChip
 import india.projectmesh.app.ui.components.TrustState
 import india.projectmesh.app.ui.theme.BetarPolygonShapes
 import java.util.concurrent.Executors
-
-/** Matches every mockup in `design/Betar Chats and Onboarding.dc.html`'s `appBar(title, iconBtn('b','←'))`
- * pattern: a top-left back arrow plus title, "back is always the top left arrow" per the
- * Workflow Map's global rules. [ScanCodeScreen]/[ShowMyCodeScreen]/[VerifyInPersonScreen] had
- * an `onBack` parameter that nothing ever called before this pass -- wired here instead of left
- * as dead code, the same gap the sibling screens in this tab (JoinChannelScreen,
- * DirectConversationScreen, etc.) still have, not fixed in this pass. */
-@Composable
-private fun BackTopBar(title: String, onBack: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onBack) {
-            Text("←", style = MaterialTheme.typography.headlineSmall)
-        }
-        Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    }
-}
 
 /**
  * DESIGN-BRIEF.md §9 screen 9: "Scan a code to add somebody." Real camera preview + live QR
@@ -122,6 +102,7 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onShowMyCode: () -> Unit, onB
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        BackTopBar(stringResource(R.string.chats_new_scan_code), onBack)
         Box(
             modifier = Modifier
                 .size(260.dp)
@@ -330,6 +311,7 @@ fun ShowMyCodeScreen(onBack: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        BackTopBar(stringResource(R.string.chats_show_my_code_title), onBack)
         Text(
             stringResource(R.string.chats_show_my_code_instruction),
             style = MaterialTheme.typography.titleMedium,
