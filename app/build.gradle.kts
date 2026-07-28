@@ -21,11 +21,11 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "india.projectmesh.app"
+    namespace = "app.betar.comm"
     compileSdk = 35 // Android 15
 
     defaultConfig {
-        applicationId = "india.projectmesh.app"
+        applicationId = "app.betar.comm"
         // Floor chosen for the "inexpensive Android phones (~2 GB RAM)" target audience in
         // docs/LOCALIZATION-UX.md, not for API surface reasons.
         minSdk = 26
