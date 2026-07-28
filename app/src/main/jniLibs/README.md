@@ -16,10 +16,12 @@ succeeds end to end (`docs/PROGRESS.md`) with these libraries packaged into the 
 `i686-linux-android` (32-bit x86 emulator) target is installed via rustup but not built into
 `jniLibs/` by default — add `-t x86` to the command below if a 32-bit emulator image is needed.
 
-To regenerate after changing `core/`:
+`core/` is a git submodule pointing at [project-mesh](https://github.com/betarcomms/project-mesh)
+— run `git submodule update --init` first if it's empty. To regenerate after changing it, from
+the repo root:
 
 ```sh
-cargo ndk -o android/app/src/main/jniLibs \
+cd core && cargo ndk -o ../app/src/main/jniLibs \
   -t arm64-v8a -t armeabi-v7a -t x86_64 \
   build --release -p mesh-core
 ```

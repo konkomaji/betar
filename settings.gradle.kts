@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "project-mesh"
+rootProject.name = "betar"
 include(":app")
