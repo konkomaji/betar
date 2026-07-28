@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="216" height="216" fill="currentColor" role="img" aria-labelledby="betar-mono-title">
+  <title id="betar-mono-title">Betar</title>
+
+  <!--
+    Single colour version of the mark. The field takes currentColor, so inline
+    it in HTML and it picks up the surrounding text colour, or set fill on the
+    root when using it as a file.
+
+    For: print, stamps, embroidery, Android themed icons, one colour partner
+    lockups, and anywhere a light blue field would be lost or wrong.
+
+    Same geometry as betar-logo.svg. Do not redraw it by eye if this needs
+    editing, copy the mask across so the two stay identical.
+  -->
+
+  <defs>
+    <mask id="betar-void-mono">
+      <rect x="0" y="0" width="108" height="108" rx="28" fill="#FFFFFF"/>
+      <g stroke="#000000" stroke-width="14" stroke-linecap="round">
+        <path d="M27,54 L39,54"/>
+        <path d="M69,54 L81,54"/>
+      </g>
+    </mask>
+  </defs>
+
+  <rect x="0" y="0" width="108" height="108" rx="28" mask="url(#betar-void-mono)"/>
+</svg>

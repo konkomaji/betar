@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betar: connect with no network</title>
+<meta name="description" content="Betar is offline messaging and community safety infrastructure for places the network does not reach. No SIM, no internet, no server, no account. Phones pass messages hop to hop over Bluetooth and Wi-Fi Direct.">
+<link rel="canonical" href="https://betarcomms.github.io/betar/">
+<!-- GitHub Pages URL for this repo's docs/ folder. Swap for a custom domain later by updating
+     every canonical/og:url entry here plus sitemap.xml, and adding a docs/CNAME file. -->
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="assets/betar-logo-compact.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Betar">
+<meta property="og:title" content="Betar: connect with no network">
+<meta property="og:description" content="Offline messaging and community safety infrastructure for remote areas, cyclones, floods and network outages. No SIM, no internet, no server, no account.">
+<meta property="og:url" content="https://betarcomms.github.io/betar/">
+<meta property="og:image" content="https://betarcomms.github.io/betar/assets/betar-banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Betar: connect with no network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Betar: connect with no network">
+<meta name="twitter:description" content="Offline messaging and community safety infrastructure for remote areas, cyclones, floods and network outages.">
+<meta name="twitter:image" content="https://betarcomms.github.io/betar/assets/betar-banner.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Betar",
+  "applicationCategory": "CommunicationApplication",
+  "operatingSystem": "Android",
+  "description": "Offline messaging and community safety infrastructure that works with no SIM, no internet, no router and no cell tower. Phones pass messages directly to each other over Bluetooth and Wi-Fi Direct until a message reaches the person it was meant for.",
+  "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isAccessibleForFree": true,
+  "softwareVersion": "0.1.3-prealpha",
+  "downloadUrl": "https://github.com/betarcomms/betar/releases/latest",
+  "installUrl": "https://github.com/betarcomms/betar/releases/latest",
+  "softwareRequirements": "Android 8.0 (API 26) or later",
+  "author": { "@type": "Organization", "name": "Betar", "url": "https://github.com/betarcomms/betar" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Betar?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Betar is communication and safety infrastructure for places the network does not reach. It carries messaging, emergency alerts, a community notice board, a help and supplies board, and offline maps, all without a SIM card, internet connection, router or cell tower." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Betar need an internet connection?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Betar requests no internet permission at all. Phones pass messages directly to each other over Bluetooth and Wi-Fi Direct, hop to hop, until a message reaches the person it was meant for." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Betar require an account, phone number or login?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. There is no signup, no account, no email, no phone number and no login. A device identity is generated quietly on first launch." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Betar open source?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Betar is built on Project Mesh, an open protocol and Rust core released under the AGPL-3.0 license. Anyone may read, build and check the source." }
+    },
+    {
+      "@type": "Question",
+      "name": "How far can a message travel without internet?",
+      "acceptedAnswer": { "@type": "Answer", "text": "As far as phones happen to carry it. A message hops from phone to phone across Bluetooth and Wi-Fi Direct links, so its reach depends on how many devices are nearby and moving, not on any fixed network coverage." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/betar-logo-compact.svg" alt="" width="40" height="40">
+      <span>Betar</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="about.html">About</a>
+      <a href="safety.html">Safety and limits</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="docs.html">Documents</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero-center">
+      <div class="hero-mark">
+        <img src="assets/betar-logo.svg" alt="" width="96" height="96">
+      </div>
+      <span class="mesh-status"><span class="dot-wrap"><span class="dot"></span></span>Works with no network</span>
+      <h1>Betar. Connect with no network.</h1>
+      <p class="lede" style="margin-left:auto;margin-right:auto">Betar is communication and safety infrastructure for places the network does not reach: remote areas, and any time towers go down or power fails. Phones carry messages to each other directly, hop by hop, until one reaches the person it was meant for.</p>
+      <div class="actions" style="justify-content:center">
+        <a class="btn" href="https://github.com/betarcomms/betar/releases/latest">Download the APK</a>
+        <a class="btn secondary" href="https://github.com/betarcomms/betar">View the source</a>
+      </div>
+      <p style="font-size:14px;color:var(--slate)">Android 8.0 and up &middot; pre-alpha, signed release &middot; free, no account</p>
+    </section>
+
+    <section>
+      <h2>Why Betar exists</h2>
+      <p class="lede">Communication that depends on centralized infrastructure fails exactly when that infrastructure is absent, destroyed, or unavailable. Betar removes the dependency.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Coverage gaps</h3>
+          <p>Hill country, islands, forest and river regions, high valleys: weak, intermittent, or absent cellular and fibre coverage, every day, not just during a crisis.</p>
+        </div>
+        <div class="card">
+          <h3>Disasters</h3>
+          <p>Cyclones, floods and earthquakes routinely destroy communication infrastructure exactly when people need it most.</p>
+        </div>
+        <div class="card">
+          <h3>Any outage</h3>
+          <p>Towers go down for whatever reason, for as long as it lasts. Betar keeps working the whole time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Where it is meant to be used</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Remote areas</h3>
+          <p>Hill country, islands, forest and river regions, high valleys: anywhere coverage is weak, patchy or absent.</p>
+        </div>
+        <div class="card">
+          <h3>Cyclones, floods, earthquakes</h3>
+          <p>Exactly when towers go down and power fails, and exactly when people need to reach each other most.</p>
+        </div>
+        <div class="card">
+          <h3>Any dead zone</h3>
+          <p>Whenever the network is down or unavailable, for whatever reason, for as long as it lasts.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What it carries</h2>
+      <p>Alongside messaging, Betar carries emergency alerts, a community notice board, a help and supplies board, and offline maps. Calling it a chat app would shrink it to its smallest part, though messaging is the tab it opens to every time, since ordinary daily use is what keeps it already installed and already understood before a storm arrives.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="shape-accent"></div>
+          <h3>Messaging</h3>
+          <p>Direct one to one and private group conversations, delivered hop by hop between nearby phones.</p>
+        </div>
+        <div class="card">
+          <div class="shape-accent"></div>
+          <h3>Emergency alerts</h3>
+          <p>A five category picker, location sharing off by default, and a deliberate slide to send gesture.</p>
+        </div>
+        <div class="card">
+          <div class="shape-accent"></div>
+          <h3>Notice and help board</h3>
+          <p>Community notices and a have or need board for supplies, with an expiry on every entry.</p>
+        </div>
+        <div class="card">
+          <div class="shape-accent"></div>
+          <h3>Offline map</h3>
+          <p>A local map with community pins, no tile server required.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Honest about delivery</h2>
+      <p>Messages travel when phones happen to meet, which can take minutes or hours. Betar never shows a checkmark that implies delivery is guaranteed.</p>
+      <table>
+        <thead><tr><th>State</th><th>Means</th></tr></thead>
+        <tbody>
+          <tr><td>Waiting</td><td>Still on your phone, nobody nearby yet</td></tr>
+          <tr><td>Travelling</td><td>Handed to one phone</td></tr>
+          <tr><td>Spreading</td><td>Handed to several phones</td></tr>
+          <tr><td>Delivered</td><td>The recipient confirmed it</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Real screens, not mockups</h2>
+      <p>Captured from an actual on-device run. The app currently ships English only, Bengali is paused, not deleted (see the localization docs); the onboarding capture below predates that pause.</p>
+      <div class="grid">
+        <div class="card screenshot-card">
+          <div class="screenshot-frame"><img src="assets/screenshots/onboarding-language.png" alt="Language picker (pre-pause capture, shown for historical reference): English and Bengali tiles"></div>
+          <h3>Onboarding</h3>
+          <p>Language picker, no account, no login, install to first message in under a minute.</p>
+        </div>
+        <div class="card screenshot-card">
+          <div class="screenshot-frame"><img src="assets/screenshots/chats-empty.png" alt="Chats tab: mesh ribbon, teaching empty state, five-tab nav, persistent SOS button"></div>
+          <h3>Chats</h3>
+          <p>The mesh ribbon, an empty state that teaches instead of apologising, and the SOS button that never hides.</p>
+        </div>
+        <div class="card screenshot-card">
+          <div class="screenshot-frame"><img src="assets/screenshots/emergency-picker.png" alt="Emergency category picker: Medical, Trapped, Fire, Violence, Other, each its own shape"></div>
+          <h3>Emergency</h3>
+          <p>Five categories, each its own shape and pictogram, readable without literacy or colour.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to use it</h2>
+      <ol style="font-size:18px;line-height:1.9;padding-left:22px">
+        <li><strong>Install</strong> the APK above, Android 8.0 and up. Android will warn about installing from outside a store, that is expected for a pre-alpha build.</li>
+        <li><strong>Pick a language.</strong> English for now (Bengali paused). No account, no phone number, no login screen.</li>
+        <li><strong>Allow three permissions</strong> (nearby devices, location while using, microphone/notifications) and you land on Chats, empty at first.</li>
+        <li><strong>Add somebody</strong> from the new-conversation menu, then verify in person once you are next to them, a short code both phones show, no jargon.</li>
+        <li><strong>Send a message.</strong> Delivery shows honestly as Waiting &rarr; Travelling &rarr; Spreading &rarr; Delivered, never a checkmark that promises more than the mesh can guarantee.</li>
+        <li><strong>The red SOS button</strong> never moves and never hides. Tap it, pick a category, slide to send, a deliberate gesture so it cannot fire by accident.</li>
+      </ol>
+      <p style="font-size:15px;color:var(--slate)">Known rough edges for each build are listed honestly in that build's <a href="https://github.com/betarcomms/betar/releases">release notes</a>.</p>
+    </section>
+
+    <section>
+      <h2>Frequently asked</h2>
+      <details class="faq">
+        <summary>What is Betar?</summary>
+        <p>Betar is communication and safety infrastructure for places the network does not reach. It carries messaging, emergency alerts, a community notice board, a help and supplies board, and offline maps, all without a SIM card, internet connection, router or cell tower.</p>
+      </details>
+      <details class="faq">
+        <summary>Does Betar need an internet connection?</summary>
+        <p>No. Betar requests no internet permission at all. Phones pass messages directly to each other over Bluetooth and Wi-Fi Direct, hop by hop, until a message reaches the person it was meant for.</p>
+      </details>
+      <details class="faq">
+        <summary>Does Betar require an account, phone number or login?</summary>
+        <p>No. There is no signup, no account, no email, no phone number and no login. A device identity is generated quietly on first launch.</p>
+      </details>
+      <details class="faq">
+        <summary>Is Betar open source?</summary>
+        <p>Yes. Betar is built on Project Mesh, an open protocol and Rust core released under the AGPL-3.0 license. Anyone may read, build and check the source.</p>
+      </details>
+      <details class="faq">
+        <summary>How far can a message travel without internet?</summary>
+        <p>As far as phones happen to carry it. A message hops from phone to phone across Bluetooth and Wi-Fi Direct links, so its reach depends on how many devices are nearby and moving, not on any fixed network coverage.</p>
+      </details>
+    </section>
+
+    <section class="callout">
+      <p><strong>Betar has not had an independent security review yet</strong>, and is not a replacement for emergency services where they exist. Read <a href="safety.html">safety and limits</a> before relying on it.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="Footer">
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="safety.html">Safety and limits</a>
+      <a href="docs.html">Documents</a>
+      <a href="https://github.com/betarcomms/betar">Source code</a>
+    </nav>
+    <p>Betar is open source software released under the AGPL-3.0 license. No individual or company is named here: attribution goes to the project and its public source.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="216" height="216" role="img" aria-labelledby="betar-logo-title">
+  <title id="betar-logo-title">Betar</title>
+
+  <!--
+    THE WIRE THAT IS NOT THERE
+
+    Betar is Bengali for wireless: be- (without) + tar (wire). The mark is a
+    solid field with a wire cut out of it. The wire is present only as its own
+    absence, and the break in the middle is a hole you see straight through.
+
+    The void is a real transparent hole, not a shape painted in the background
+    colour, so this sits on any ground: a white page, a dark README, a photo.
+
+    ANDROID NOTE. An adaptive launcher icon cannot have a true hole, because
+    the foreground layer sits on the background layer rather than on the
+    wallpaper. Implement it as: background layer filled #4BA3E0 edge to edge,
+    foreground layer drawing the two bars in the off white ground colour
+    #EEF4F9. Visually identical, technically the inverse.
+
+    Below roughly 24dp use betar-logo-compact.svg. The gap in the wire closes
+    up at that scale and the gap is the whole idea.
+  -->
+
+  <defs>
+    <mask id="betar-void">
+      <!-- white keeps, black cuts -->
+      <rect x="0" y="0" width="108" height="108" rx="28" fill="#FFFFFF"/>
+      <g stroke="#000000" stroke-width="14" stroke-linecap="round">
+        <path d="M27,54 L39,54"/>
+        <path d="M69,54 L81,54"/>
+      </g>
+    </mask>
+  </defs>
+
+  <rect x="0" y="0" width="108" height="108" rx="28" fill="#4BA3E0" mask="url(#betar-void)"/>
+</svg>

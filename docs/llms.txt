@@ -1,0 +1,21 @@
+# Betar
+
+> Betar is communication and safety infrastructure for places the network does not reach: no SIM, no internet, no router, no cell tower. Phones pass messages directly to each other over Bluetooth and Wi-Fi Direct, hop by hop, until a message reaches the person it was meant for.
+
+Betar is Bengali for wireless (be-, without, plus tar, wire). It is built on Project Mesh, an open protocol and Rust core released under the AGPL-3.0-or-later license. There is no server, no account, no phone number, and no internet permission requested by the app.
+
+Betar carries: direct and group messaging, emergency alerts with a five-category picker, a community notice and help board, and an offline map. Delivery is best effort and is shown honestly as Waiting, Travelling, Spreading, or Delivered, never as a guaranteed checkmark.
+
+Betar is not a replacement for emergency services where they exist, and has not yet had an independent security review.
+
+## Pages
+
+- [Home](index.html): the promise, what it carries, delivery states, FAQ.
+- [About](about.html): the name, the Jagadish Chandra Bose tribute, how Betar relates to Project Mesh.
+- [Safety and limits](safety.html): what best-effort delivery means and what Betar cannot do.
+- [Privacy](privacy.html): what Betar collects (nothing) and why.
+- [Documents](docs.html): license and links to the technical documentation in the source repository.
+
+## Source
+
+https://github.com/betarcomms/betar

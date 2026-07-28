@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108" role="img" aria-labelledby="betar-compact-title">
+  <title id="betar-compact-title">Betar</title>
+
+  <!--
+    Small size variant of the mark, for roughly 24dp and below: favicons,
+    notification badges, in app chrome, anywhere the full logo turns to mush.
+
+    Two changes from betar-logo.svg, both about survival rather than taste.
+    The wire is fatter (18 against 14) so it does not thin out to nothing,
+    and the break is wider (18 against 16 units, on a shorter bar) so it stays
+    an obvious gap instead of closing into a single unbroken line. A closed
+    gap is not a smaller version of this logo, it is a different logo.
+  -->
+
+  <defs>
+    <mask id="betar-void-compact">
+      <rect x="0" y="0" width="108" height="108" rx="26" fill="#FFFFFF"/>
+      <g stroke="#000000" stroke-width="18" stroke-linecap="round">
+        <path d="M30,54 L36,54"/>
+        <path d="M72,54 L78,54"/>
+      </g>
+    </mask>
+  </defs>
+
+  <rect x="0" y="0" width="108" height="108" rx="26" fill="#4BA3E0" mask="url(#betar-void-compact)"/>
+</svg>
