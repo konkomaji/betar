@@ -1,0 +1,48 @@
+# F-Droid build metadata for Betar (see betarcomms/project-mesh docs/DISTRIBUTION.md §2/§3
+# for the fuller distribution plan -- that documentation still lives in the research repo).
+#
+# Reasoned from the publicly documented fdroiddata YAML schema -- NOT validated against
+# F-Droid's own linter or build server (that requires a real merge request against the separate
+# fdroiddata repository and F-Droid's own CI, neither possible from this dev session). Treat this
+# as a well-reasoned starting point for whoever does that submission, not a verified-working
+# recipe. Deferred to a later pass -- not this one.
+#
+# Moved here 2026-07-29 from the project-mesh mono-repo when the Android app split into this
+# repo. Paths updated: subdir is gone (this repo's root is what "android/" used to be), and
+# core/ is now a submodule at this repo's root instead of a sibling directory one level up.
+
+Categories:
+  - Internet
+  - Security
+License: AGPL-3.0-or-later
+SourceCode: https://github.com/betarcomms/betar
+IssueTracker: https://github.com/betarcomms/betar/issues
+
+AutoName: Betar
+
+RepoType: git
+Repo: https://github.com/betarcomms/betar
+
+Builds:
+  - versionName: 0.1.0-prealpha
+    versionCode: 1
+    # Pin to the actual commit the release is cut from before submitting -- left as a marker
+    # rather than a real commit SHA since no tagged release exists yet.
+    commit: REPLACE_WITH_RELEASE_COMMIT_SHA
+    submodules: yes
+    # Cross-compiling the Rust core is a prerequisite step F-Droid's build server needs to run
+    # before Gradle -- see app/src/main/jniLibs/README.md for why (the .so is gitignored,
+    # regenerated from core/ on every build, never committed as a binary blob).
+    init:
+      - rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
+      - cargo install cargo-ndk --version 4.1.2 --locked
+    prebuild:
+      - cd core && cargo ndk -o ../app/src/main/jniLibs -t arm64-v8a -t armeabi-v7a -t x86_64 build --release -p mesh-core
+    ndk: r27c
+    gradle:
+      - yes
+
+AutoUpdateMode: None
+UpdateCheckMode: Tags
+CurrentVersion: 0.1.0-prealpha
+CurrentVersionCode: 1
