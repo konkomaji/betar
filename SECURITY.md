@@ -7,7 +7,7 @@ risk.
 ## Reporting a vulnerability
 
 Please report security issues privately rather than opening a public issue. Open a
-[GitHub security advisory](https://github.com/betarcomms/betar/security/advisories/new)
+[GitHub security advisory](https://github.com/konkomaji/betar/security/advisories/new)
 for this repo, or contact work.konkomaji@gmail.com directly.
 
 Include what you found, how to reproduce it, and its impact if you can. We'll
@@ -17,5 +17,5 @@ acknowledge reports as quickly as we can given this is a small, pre-alpha projec
 
 This covers the Betar Android app itself. Protocol- or cryptography-level
 vulnerabilities in the underlying mesh engine belong to
-[Project Mesh](https://github.com/betarcomms/project-mesh) — report there if the issue
+[Project Mesh](https://github.com/konkomaji/project-mesh) — report there if the issue
 is in `core/`, not the app.

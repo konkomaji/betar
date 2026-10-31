@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://betarcomms.github.io/betar/sitemap.xml
+Sitemap: https://konkomaji.github.io/betar/sitemap.xml

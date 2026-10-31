@@ -1,4 +1,4 @@
-# F-Droid build metadata for Betar (see betarcomms/project-mesh docs/DISTRIBUTION.md §2/§3
+# F-Droid build metadata for Betar (see konkomaji/project-mesh docs/DISTRIBUTION.md §2/§3
 # for the fuller distribution plan -- that documentation still lives in the research repo).
 #
 # Reasoned from the publicly documented fdroiddata YAML schema -- NOT validated against
@@ -15,13 +15,13 @@ Categories:
   - Internet
   - Security
 License: AGPL-3.0-or-later
-SourceCode: https://github.com/betarcomms/betar
-IssueTracker: https://github.com/betarcomms/betar/issues
+SourceCode: https://github.com/konkomaji/betar
+IssueTracker: https://github.com/konkomaji/betar/issues
 
 AutoName: Betar
 
 RepoType: git
-Repo: https://github.com/betarcomms/betar
+Repo: https://github.com/konkomaji/betar
 
 Builds:
   - versionName: 0.1.0-prealpha

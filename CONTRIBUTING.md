@@ -6,7 +6,7 @@ first for anything beyond a small fix — it saves rework on both sides.
 ## Scope
 
 This repo is the Android app only. Protocol, cryptography, and mesh-engine changes
-belong in [Project Mesh](https://github.com/betarcomms/project-mesh) (`core/` here is a
+belong in [Project Mesh](https://github.com/konkomaji/project-mesh) (`core/` here is a
 submodule pointing at it).
 
 ## Building

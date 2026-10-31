@@ -18,4 +18,4 @@ Betar is not a replacement for emergency services where they exist, and has not 
 
 ## Source
 
-https://github.com/betarcomms/betar
+https://github.com/konkomaji/betar

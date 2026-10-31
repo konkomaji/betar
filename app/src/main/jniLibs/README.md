@@ -16,7 +16,7 @@ succeeds end to end (`docs/PROGRESS.md`) with these libraries packaged into the 
 `i686-linux-android` (32-bit x86 emulator) target is installed via rustup but not built into
 `jniLibs/` by default — add `-t x86` to the command below if a 32-bit emulator image is needed.
 
-`core/` is a git submodule pointing at [project-mesh](https://github.com/betarcomms/project-mesh)
+`core/` is a git submodule pointing at [project-mesh](https://github.com/konkomaji/project-mesh)
 — run `git submodule update --init` first if it's empty. To regenerate after changing it, from
 the repo root:
 
