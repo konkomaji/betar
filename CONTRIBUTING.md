@@ -6,8 +6,8 @@ first for anything beyond a small fix — it saves rework on both sides.
 ## Scope
 
 This repo is the Android app only. Protocol, cryptography, and mesh-engine changes
-belong in [Project Mesh](https://github.com/konkomaji/project-mesh) (`core/` here is a
-submodule pointing at it).
+belong in [Project Mesh](https://github.com/konkomaji/project-mesh). `core/` here is a
+submodule pointing at it.
 
 ## Building
 
@@ -23,3 +23,7 @@ only, not yet run on hardware").
 ## Security
 
 Do not open a public issue for a security vulnerability. See [`SECURITY.md`](SECURITY.md).
+
+---
+
+Developed by [Konko Maji](https://konkomaji.com/)

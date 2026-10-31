@@ -22,5 +22,5 @@
     </mask>
   </defs>
 
-  <rect x="0" y="0" width="108" height="108" rx="26" fill="#4BA3E0" mask="url(#betar-void-compact)"/>
+  <rect x="0" y="0" width="108" height="108" rx="26" fill="#5F7D64" mask="url(#betar-void-compact)"/>
 </svg>

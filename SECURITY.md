@@ -1,7 +1,7 @@
 # Security Policy
 
 Betar is pre-alpha and has **not** had an independent security audit. Treat it
-accordingly — don't rely on it for anything where a real vulnerability would put you at
+accordingly: don't rely on it for anything where a real vulnerability would put you at
 risk.
 
 ## Reporting a vulnerability
@@ -17,5 +17,9 @@ acknowledge reports as quickly as we can given this is a small, pre-alpha projec
 
 This covers the Betar Android app itself. Protocol- or cryptography-level
 vulnerabilities in the underlying mesh engine belong to
-[Project Mesh](https://github.com/konkomaji/project-mesh) — report there if the issue
+[Project Mesh](https://github.com/konkomaji/project-mesh). Report there if the issue
 is in `core/`, not the app.
+
+---
+
+Developed by [Konko Maji](https://konkomaji.com/)

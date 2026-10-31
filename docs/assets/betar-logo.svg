@@ -13,9 +13,13 @@
 
     ANDROID NOTE. An adaptive launcher icon cannot have a true hole, because
     the foreground layer sits on the background layer rather than on the
-    wallpaper. Implement it as: background layer filled #4BA3E0 edge to edge,
-    foreground layer drawing the two bars in the off white ground colour
-    #EEF4F9. Visually identical, technically the inverse.
+    wallpaper. Implement it as: background layer filled #5F7D64 edge to edge,
+    foreground layer drawing the two bars in the cream ground colour
+    #FAF6EF. Visually identical, technically the inverse.
+
+    RECOLOURED for the Civic Calm palette, 2026-10-31: was #4BA3E0 (the
+    pre-pivot brand blue), now #5F7D64 (sage dark), matching the locked app
+    design system. The mark itself (the cut wire, the meaning) is unchanged.
 
     Below roughly 24dp use betar-logo-compact.svg. The gap in the wire closes
     up at that scale and the gap is the whole idea.
@@ -32,5 +36,5 @@
     </mask>
   </defs>
 
-  <rect x="0" y="0" width="108" height="108" rx="28" fill="#4BA3E0" mask="url(#betar-void)"/>
+  <rect x="0" y="0" width="108" height="108" rx="28" fill="#5F7D64" mask="url(#betar-void)"/>
 </svg>
