@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betar: Civic Calm Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF6EF;
+    --surface:#FFFDF9;
+    --surface-2:#F3EDE2;
+    --border:#E4DBCB;
+    --ink:#2F2B26;
+    --ink-soft:#6B6459;
+    --sage:#7E9B82;
+    --sage-dark:#5F7D64;
+    --sage-tint:#E7EFE7;
+    --amber:#C98A4B;
+    --amber-tint:#F4E6D4;
+    --brick:#AE5B46;
+    --brick-tint:#F3E2DD;
+    --radius-s:8px;
+    --radius-m:14px;
+    --radius-l:22px;
+    --shadow-1:0 1px 2px rgba(47,43,38,0.06);
+    --shadow-2:0 6px 20px rgba(47,43,38,0.08);
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:16px;
+    --space-5:24px;
+    --space-6:32px;
+    --space-7:48px;
+    --ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Noto Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    padding:var(--space-6) var(--space-5) 100px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  header.page-head{margin-bottom:var(--space-7);}
+  .kicker{
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    font-size:11px;
+    font-weight:600;
+    color:var(--sage-dark);
+    margin:0 0 var(--space-2) 0;
+  }
+  h1.title{
+    font-size:36px;
+    font-weight:600;
+    line-height:1.15;
+    margin:0 0 var(--space-3) 0;
+  }
+  .philosophy{
+    font-size:17px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    max-width:640px;
+    margin:0;
+  }
+  section.block{margin-bottom:var(--space-7);}
+  h2.section-title{
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-soft);
+    border-bottom:1px solid var(--border);
+    padding-bottom:var(--space-3);
+    margin:0 0 var(--space-5) 0;
+  }
+
+  /* color swatches */
+  .swatch-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-4);}
+  .swatch{border-radius:var(--radius-m);overflow:hidden;border:1px solid var(--border);background:var(--surface);}
+  .swatch-color{height:72px;}
+  .swatch-meta{padding:var(--space-3);}
+  .swatch-meta .name{font-size:13px;font-weight:600;margin:0 0 2px 0;}
+  .swatch-meta .hex{font-size:11px;color:var(--ink-soft);font-family:ui-monospace,Consolas,monospace;margin:0 0 4px 0;font-variant-numeric:tabular-nums;}
+  .swatch-meta .use{font-size:11px;color:var(--ink-soft);line-height:1.4;margin:0;}
+
+  /* type scale */
+  .type-row{display:flex;align-items:baseline;gap:var(--space-5);padding:var(--space-4) 0;border-bottom:1px solid var(--border);}
+  .type-row:last-child{border-bottom:none;}
+  .type-label{width:170px;flex-shrink:0;font-size:11px;color:var(--ink-soft);font-family:ui-monospace,Consolas,monospace;}
+  .t-display{font-size:32px;font-weight:600;line-height:1.15;}
+  .t-h1{font-size:24px;font-weight:600;line-height:1.25;}
+  .t-h2{font-size:19px;font-weight:600;line-height:1.3;}
+  .t-body{font-size:15px;font-weight:400;line-height:1.6;}
+  .t-small{font-size:13px;font-weight:400;line-height:1.5;color:var(--ink-soft);}
+  .t-caption{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);}
+
+  /* spacing scale */
+  .space-row{display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-3);}
+  .space-box{background:var(--sage);border-radius:4px;}
+  .space-tag{font-size:12px;font-family:ui-monospace,Consolas,monospace;color:var(--ink-soft);width:90px;font-variant-numeric:tabular-nums;}
+
+  /* component gallery */
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-5);}
+  .gallery-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:var(--space-5);display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);min-height:120px;}
+  .gallery-card .cap{font-size:11px;color:var(--ink-soft);font-weight:600;}
+
+  .btn{
+    border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;
+    transition:background-color .15s var(--ease),transform .1s var(--ease);
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--sage-dark);color:#fff;box-shadow:var(--shadow-1);}
+  .btn-primary:hover{background:#4e6a53;}
+  .btn-secondary{background:transparent;color:var(--sage-dark);border:1.5px solid var(--sage-dark);}
+  .btn-danger{background:var(--brick-tint);color:var(--brick);border:1.5px solid var(--brick);}
+
+  .input-demo{
+    width:100%;border:1.5px solid var(--border);border-radius:var(--radius-s);
+    padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);
+  }
+  .input-demo::placeholder{color:#AFA796;}
+
+  .chip{
+    display:inline-flex;align-items:center;gap:5px;background:var(--sage-tint);color:var(--sage-dark);
+    font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;
+  }
+
+  .bubble-pair{display:flex;flex-direction:column;gap:var(--space-2);width:100%;}
+  .bubble{max-width:80%;padding:9px 13px;border-radius:16px;font-size:13.5px;line-height:1.45;display:flex;align-items:center;gap:6px;}
+  .bubble.sent{align-self:flex-end;background:var(--sage-dark);color:#fff;border-bottom-right-radius:4px;}
+  .bubble.received{align-self:flex-start;background:var(--surface-2);color:var(--ink);border:1px solid var(--border);border-bottom-left-radius:4px;}
+  .bubble svg{width:12px;height:12px;flex-shrink:0;opacity:0.75;}
+  .bubble.location-bubble{flex-direction:column;align-items:stretch;gap:6px;padding:8px;max-width:72%;}
+  .loc-ph{width:100%;height:84px;border-radius:8px;background:var(--sage-tint);display:flex;align-items:center;justify-content:center;color:var(--sage-dark);}
+  .loc-ph svg{width:22px;height:22px;}
+  .loc-title{font-size:12px;font-weight:600;margin:0;padding:0 2px;}
+  .loc-sub{font-size:10px;color:var(--ink-soft);margin:0;padding:0 2px;}
+
+  .post-card-demo{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:var(--space-4);}
+  .post-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--sage-tint);flex-shrink:0;}
+  .post-head .who{font-size:13px;font-weight:600;}
+  .post-head .when{font-size:11px;color:var(--ink-soft);}
+  .post-body{font-size:13px;line-height:1.5;color:var(--ink);margin-bottom:8px;}
+
+  .tabbar-demo{display:flex;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);padding:10px 20px;}
+  .tabbar-demo .ticon{width:20px;height:20px;color:var(--ink-soft);}
+  .tabbar-demo .ticon.active{color:var(--sage-dark);}
+
+  /* ===== phone mockup ===== */
+  .phone-section{display:flex;gap:var(--space-7);align-items:flex-start;flex-wrap:wrap;}
+  .phone-notes{max-width:280px;font-size:13px;line-height:1.6;color:var(--ink-soft);padding-top:var(--space-5);}
+  .phone-notes h3{font-size:14px;color:var(--ink);margin:0 0 8px 0;font-weight:600;}
+  .phone-notes ul{padding-left:18px;margin:0;}
+  .phone-notes li{margin-bottom:8px;}
+
+  .phone{
+    width:375px;height:812px;background:var(--cream);border-radius:46px;
+    border:10px solid #1F1C18;position:relative;overflow:hidden;box-shadow:var(--shadow-2);flex-shrink:0;
+  }
+  .phone .notch{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:26px;
+    background:#1F1C18;border-radius:0 0 16px 16px;z-index:50;
+  }
+  .screen{display:none;flex-direction:column;height:100%;opacity:0;transition:opacity .25s var(--ease);}
+  .screen.active{display:flex;opacity:1;}
+  .screen-top{padding:40px var(--space-4) var(--space-3);background:var(--cream);flex-shrink:0;}
+  .screen-top .app-row{display:flex;justify-content:space-between;align-items:center;}
+  .screen-top .app-row h2{font-family:"Poppins",sans-serif;}
+  .screen-top h2{font-size:20px;font-weight:600;margin:0;}
+  .screen-top .sub{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .screen-body{flex:1;overflow-y:auto;padding:0 var(--space-4) var(--space-4);position:relative;}
+  .screen-body::-webkit-scrollbar{display:none;}
+
+  .tabbar{
+    display:flex;justify-content:space-around;align-items:center;padding:12px 10px 22px;
+    background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;
+  }
+  .tab-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-soft);cursor:pointer;font-family:inherit;transition:color .15s var(--ease);}
+  .tab-btn svg{width:22px;height:22px;}
+  .tab-btn span{font-size:10px;font-weight:600;}
+  .tab-btn.active{color:var(--sage-dark);}
+
+  .pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:var(--space-4);margin-bottom:var(--space-3);}
+  .pcard .post-head{margin-bottom:8px;}
+  .pcard .post-body{font-size:13px;line-height:1.5;margin-bottom:10px;}
+  .post-image{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+  .img-ph{width:100%;height:120px;border-radius:var(--radius-s);background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:#AFA796;}
+  .img-ph svg{width:28px;height:28px;}
+  .img-tag{font-size:10.5px;color:var(--ink-soft);}
+  .note-badge{
+    display:inline-flex;align-items:center;gap:5px;background:var(--amber-tint);color:#8A5B27;
+    font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;margin-bottom:10px;cursor:pointer;
+  }
+  .post-actions{display:flex;gap:16px;color:var(--ink-soft);}
+  .post-actions .act{display:flex;align-items:center;gap:4px;font-size:11px;font-variant-numeric:tabular-nums;}
+  .post-actions svg{width:16px;height:16px;}
+  .route-pill{font-size:10px;background:var(--sage-tint);color:var(--sage-dark);padding:3px 8px;border-radius:999px;font-weight:600;margin-left:auto;}
+
+  .mesh-graph{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);padding:var(--space-4);margin-bottom:var(--space-4);}
+  .mesh-graph svg{width:100%;height:170px;}
+  .status-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:var(--space-4);margin-bottom:var(--space-3);display:flex;justify-content:space-between;align-items:center;}
+  .status-card .label{font-size:13px;font-weight:600;}
+  .status-card .detail{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;margin-right:6px;}
+  .dot.searching{background:var(--amber);}
+  .pill{font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px;}
+  .pill.connected{background:var(--sage-tint);color:var(--sage-dark);}
+  .pill.searching{background:var(--amber-tint);color:#8A5B27;}
+
+  .chat-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .chat-row .avatar{width:42px;height:42px;}
+  .chat-row .meta{flex:1;min-width:0;}
+  .chat-row .name-line{display:flex;justify-content:space-between;align-items:baseline;}
+  .chat-row .name{font-size:14px;font-weight:600;}
+  .chat-row .time{font-size:10px;color:var(--ink-soft);}
+  .chat-row .preview{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;}
+  .chat-row .preview svg{width:11px;height:11px;flex-shrink:0;}
+  .unread{width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+
+  .thread-header{display:flex;align-items:center;gap:10px;padding:40px var(--space-4) var(--space-3);background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+  .back-btn{background:none;border:none;cursor:pointer;color:var(--ink);display:flex;}
+  .back-btn svg{width:22px;height:22px;}
+  .thread-header .tmeta .tname{font-size:14px;font-weight:600;}
+  .thread-header .tmeta .tsub{font-size:10px;color:var(--sage-dark);display:flex;align-items:center;gap:3px;}
+  .thread-header .tmeta .tsub svg{width:10px;height:10px;}
+  .thread-body{flex:1;overflow-y:auto;padding:var(--space-4);display:flex;flex-direction:column;gap:8px;}
+  .msg-time{font-size:9px;color:var(--ink-soft);text-align:center;margin:4px 0;}
+  .compose-bar{display:flex;gap:8px;padding:10px var(--space-4) 20px;background:var(--surface);border-top:1px solid var(--border);align-items:center;flex-shrink:0;}
+  .compose-bar input{flex:1;border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:13px;background:var(--cream);}
+  .loc-btn{width:36px;height:36px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background-color .15s var(--ease);}
+  .loc-btn:hover{background:var(--sage-tint);color:var(--sage-dark);}
+  .loc-btn svg{width:16px;height:16px;}
+  .send-btn{width:36px;height:36px;border-radius:50%;background:var(--sage-dark);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .1s var(--ease);}
+  .send-btn:active{transform:scale(0.95);}
+  .send-btn svg{width:16px;height:16px;}
+
+  .detail-header{display:flex;align-items:center;gap:10px;padding:40px var(--space-4) var(--space-3);background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+  .note-card{background:var(--amber-tint);border:1px solid #E3C8A2;border-radius:var(--radius-m);padding:var(--space-4);margin-top:var(--space-3);}
+  .note-card .note-title{font-size:12px;font-weight:600;color:#8A5B27;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+  .note-card .note-title svg{width:14px;height:14px;}
+  .note-card .note-text{font-size:12.5px;line-height:1.5;color:var(--ink);margin-bottom:10px;}
+  .note-links{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+  .note-link{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sage-dark);text-decoration:none;}
+  .note-link svg{flex-shrink:0;}
+  .note-prov{font-size:10.5px;color:var(--ink-soft);margin-bottom:10px;line-height:1.5;font-variant-numeric:tabular-nums;}
+  .note-rate{display:flex;gap:8px;}
+  .rate-btn{flex:1;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:7px;font-size:11px;font-weight:600;color:var(--ink-soft);cursor:pointer;text-align:center;transition:background-color .15s var(--ease);}
+  .rate-btn:hover{background:var(--surface-2);}
+  .explainer{font-size:10.5px;color:var(--ink-soft);line-height:1.5;margin-top:10px;font-style:italic;}
+
+  .safety-card{background:var(--brick-tint);border:1px solid #D9B4A9;border-radius:var(--radius-m);padding:var(--space-4);margin-top:var(--space-5);}
+  .safety-card .stitle{font-size:13px;font-weight:600;color:var(--brick);margin-bottom:4px;}
+  .safety-card .sdesc{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;}
+  .profile-head{text-align:center;padding:var(--space-4) 0;}
+  .profile-head .avatar{width:64px;height:64px;margin:0 auto 10px;}
+  .profile-head .handle{font-size:16px;font-weight:600;}
+  .profile-head .tag2{font-size:11px;color:var(--ink-soft);}
+
+  .fab{
+    position:absolute;right:16px;bottom:16px;width:48px;height:48px;border-radius:50%;
+    background:var(--sage-dark);color:#fff;border:none;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;box-shadow:var(--shadow-2);transition:transform .1s var(--ease);
+  }
+  .fab:active{transform:scale(0.94);}
+  .fab svg{width:22px;height:22px;}
+
+  /* onboarding */
+  .onboard{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 var(--space-6);text-align:center;}
+  .onboard-mark{width:72px;height:72px;margin-bottom:var(--space-5);}
+  .onboard-word{font-family:"Poppins",sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.01em;margin:0 0 var(--space-3) 0;}
+  .onboard-line{font-size:15px;line-height:1.55;color:var(--ink-soft);max-width:280px;margin:0 0 var(--space-6) 0;}
+  .onboard-note{display:flex;gap:10px;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:var(--space-4);margin-bottom:var(--space-3);width:100%;max-width:300px;}
+  .onboard-note svg{width:18px;height:18px;color:var(--sage-dark);flex-shrink:0;margin-top:1px;}
+  .onboard-note p{font-size:12.5px;line-height:1.5;color:var(--ink-soft);margin:0;}
+  .onboard-cta{width:100%;max-width:300px;margin-top:var(--space-4);}
+  .onboard-cta .btn{width:100%;justify-content:center;}
+
+  /* legal */
+  .legal-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;font-family:inherit;}
+  .legal-row span{font-size:14px;font-weight:600;color:var(--ink);}
+  .legal-row svg{width:16px;height:16px;color:var(--ink-soft);flex-shrink:0;}
+  .legal-section{margin-bottom:var(--space-6);}
+  .legal-section h3{font-size:15px;font-weight:600;margin:0 0 var(--space-2) 0;}
+  .legal-section p{font-size:13px;line-height:1.6;color:var(--ink-soft);margin:0 0 var(--space-2) 0;}
+  .legal-section p:last-child{margin-bottom:0;}
+
+  .site-footer{margin-top:var(--space-7);padding-top:var(--space-5);border-top:1px solid var(--border);font-size:12px;color:var(--ink-soft);}
+  .site-footer a{color:var(--sage-dark);text-decoration:none;font-weight:600;}
+  .site-footer a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <p class="kicker">Betar · Concept D</p>
+    <h1 class="title">Civic Calm</h1>
+    <p class="philosophy">A quiet, credible room, not a protest. Betar should feel like a trustworthy civic
+      service you'd hand to your parents, not a hacker tool: warm neutrals, soft edges, generous air, and
+      transparency placed in the open rather than hidden behind a verdict.</p>
+  </header>
+
+  <section class="block">
+    <h2 class="section-title">Color</h2>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:var(--cream)"></div>
+        <div class="swatch-meta"><p class="name">Cream</p><p class="hex">#FAF6EF</p><p class="use">App background, the resting surface.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--surface);border-bottom:1px solid var(--border)"></div>
+        <div class="swatch-meta"><p class="name">Surface</p><p class="hex">#FFFDF9</p><p class="use">Cards, sheets, elevated content.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--sage-dark)"></div>
+        <div class="swatch-meta"><p class="name">Sage dark</p><p class="hex">#5F7D64</p><p class="use">Primary action, encrypted state, trust.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--sage-tint)"></div>
+        <div class="swatch-meta"><p class="name">Sage tint</p><p class="hex">#E7EFE7</p><p class="use">Chips, connected status, soft fills.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--amber)"></div>
+        <div class="swatch-meta"><p class="name">Amber</p><p class="hex">#C98A4B</p><p class="use">Attention, community notes, unread.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--brick)"></div>
+        <div class="swatch-meta"><p class="name">Brick</p><p class="hex">#AE5B46</p><p class="use">Destructive, panic wipe, never anything else.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--ink)"></div>
+        <div class="swatch-meta"><p class="name">Ink</p><p class="hex">#2F2B26</p><p class="use">Primary text.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--ink-soft)"></div>
+        <div class="swatch-meta"><p class="name">Ink soft</p><p class="hex">#6B6459</p><p class="use">Secondary text, captions, timestamps.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--border)"></div>
+        <div class="swatch-meta"><p class="name">Border</p><p class="hex">#E4DBCB</p><p class="use">Hairlines, dividers, outlines.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--amber-tint)"></div>
+        <div class="swatch-meta"><p class="name">Amber tint</p><p class="hex">#F4E6D4</p><p class="use">Community note cards, soft warnings.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--surface-2)"></div>
+        <div class="swatch-meta"><p class="name">Surface 2</p><p class="hex">#F3EDE2</p><p class="use">Received bubbles, inset panels.</p></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--brick-tint)"></div>
+        <div class="swatch-meta"><p class="name">Brick tint</p><p class="hex">#F3E2DD</p><p class="use">Safety and danger card backgrounds.</p></div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-title">Type scale</h2>
+    <div class="type-row"><span class="type-label">Display / 32·600·1.15</span><span class="t-display">Speak freely</span></div>
+    <div class="type-row"><span class="type-label">H1 / 24·600·1.25</span><span class="t-h1">Your feed, no servers</span></div>
+    <div class="type-row"><span class="type-label">H2 / 19·600·1.3</span><span class="t-h2">Local mesh, 4 peers nearby</span></div>
+    <div class="type-row"><span class="type-label">Body / 15·400·1.6</span><span class="t-body">Betar carries messages and posts across Bluetooth mesh and relay bridges, with no central server to switch off.</span></div>
+    <div class="type-row"><span class="type-label">Small / 13·400·1.5</span><span class="t-small">Delivered via 2 mesh hops, 14 minutes ago.</span></div>
+    <div class="type-row"><span class="type-label">Caption / 11·600·upper</span><span class="t-caption">Encrypted end to end</span></div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-title">Spacing scale</h2>
+    <div class="space-row"><span class="space-tag">4 · space-1</span><div class="space-box" style="width:4px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">8 · space-2</span><div class="space-box" style="width:8px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">12 · space-3</span><div class="space-box" style="width:12px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">16 · space-4</span><div class="space-box" style="width:16px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">24 · space-5</span><div class="space-box" style="width:24px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">32 · space-6</span><div class="space-box" style="width:32px;height:16px;"></div></div>
+    <div class="space-row"><span class="space-tag">48 · space-7</span><div class="space-box" style="width:48px;height:16px;"></div></div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-title">Components</h2>
+    <div class="gallery">
+      <div class="gallery-card">
+        <span class="cap">Buttons</span>
+        <button class="btn btn-primary">Send securely</button>
+        <button class="btn btn-secondary">Not now</button>
+        <button class="btn btn-danger">Panic wipe</button>
+      </div>
+      <div class="gallery-card">
+        <span class="cap">Input and chip</span>
+        <input class="input-demo" placeholder="Write a message">
+        <span class="chip">#oldtown · city</span>
+      </div>
+      <div class="gallery-card">
+        <span class="cap">Chat bubbles</span>
+        <div class="bubble-pair">
+          <div class="bubble received"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Did you get my note?</div>
+          <div class="bubble sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Yes, mesh only, no relay needed</div>
+        </div>
+      </div>
+      <div class="gallery-card">
+        <span class="cap">Post card</span>
+        <div class="post-card-demo">
+          <div class="post-head"><div class="avatar"></div><div><p class="who" style="margin:0;font-size:13px;font-weight:600;">rupa.k</p><p class="when" style="margin:0;font-size:11px;color:var(--ink-soft);">3h · local mesh</p></div></div>
+          <p class="post-body">The book swap table outside the old print shop is open again this week.</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:var(--space-5);">
+      <span class="cap">Tab bar</span>
+      <div class="tabbar-demo" style="margin-top:10px;width:fit-content;">
+        <svg class="ticon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg>
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg class="ticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-title">Mobile structure</h2>
+    <div class="phone-section">
+
+      <div class="phone">
+        <div class="notch"></div>
+
+        <!-- ONBOARDING -->
+        <div class="screen active" id="screen-onboarding">
+          <div class="onboard">
+            <svg class="onboard-mark" viewBox="0 0 72 72" fill="none">
+              <circle cx="36" cy="36" r="34" stroke="var(--border)" stroke-width="2"/>
+              <circle cx="36" cy="36" r="22" stroke="var(--sage)" stroke-width="2"/>
+              <circle cx="36" cy="36" r="9" fill="var(--sage-dark)"/>
+            </svg>
+            <p class="onboard-word">Betar</p>
+            <p class="onboard-line">Social and chat that keeps working, no matter who tries to shut it off.</p>
+            <div class="onboard-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/><path d="M12 2v4M12 18v4"/></svg>
+              <p>Betar asks for Bluetooth and Wi-Fi so your phone can find others nearby. It never tracks your location in the background, and nothing is shared until you choose to share it.</p>
+            </div>
+            <div class="onboard-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <p>Your identity is a private key stored only on this device. No phone number, no email, nothing to hand over.</p>
+            </div>
+            <div class="status-card" style="width:100%;max-width:300px;box-sizing:border-box;">
+              <div><p class="label">Your ID</p><p class="detail">Generated just now, permanent on this device</p></div>
+              <span class="pill connected" style="font-family:ui-monospace,Consolas,monospace;letter-spacing:0.5px;">A3F9K2</span>
+            </div>
+            <div class="onboard-cta">
+              <button class="btn btn-primary" onclick="openScreen('feed')">Get started</button>
+              <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:var(--space-3);" onclick="openGuide('onboarding')">How it works</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="screen" id="screen-feed">
+          <div class="screen-top">
+            <div class="app-row"><h2>Betar</h2><span class="chip">#oldtown · city</span></div>
+            <p class="sub">Local mesh connected, 4 peers nearby</p>
+          </div>
+          <div class="screen-body">
+            <div class="pcard">
+              <div class="post-head"><div class="avatar"></div><div><p class="who" style="margin:0;font-size:13px;font-weight:600;">arvind.m</p><p class="when" style="margin:0;font-size:11px;color:var(--ink-soft);">11m ago</p></div><span class="route-pill">mesh</span></div>
+              <p class="post-body">Extra flyers for Thursday's meeting are at the corner shop, grab a stack if you're passing.</p>
+              <div class="post-actions"><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>32</span><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>6</span></div>
+            </div>
+            <div class="pcard" onclick="openScreen('detail')" style="cursor:pointer;">
+              <div class="post-head"><div class="avatar"></div><div><p class="who" style="margin:0;font-size:13px;font-weight:600;">news.relay</p><p class="when" style="margin:0;font-size:11px;color:var(--ink-soft);">1h ago</p></div><span class="route-pill">relayed · 2 hops</span></div>
+              <p class="post-body">Reports say the downtown transit line has been suspended since this morning.</p>
+              <div class="note-badge"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Community note added</div>
+              <div class="post-actions"><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>210</span><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>44</span></div>
+            </div>
+            <div class="pcard">
+              <div class="post-head"><div class="avatar"></div><div><p class="who" style="margin:0;font-size:13px;font-weight:600;">priya.s</p><p class="when" style="margin:0;font-size:11px;color:var(--ink-soft);">4h ago</p></div><span class="route-pill">mesh</span></div>
+              <p class="post-body">Mural finished on the old mill wall, come see it before the paint fully cures.</p>
+              <div class="post-image">
+                <div class="img-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg></div>
+                <span class="img-tag">Mesh preview · full image loads once a relay is reached</span>
+              </div>
+              <div class="post-actions"><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>18</span><span class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</span></div>
+            </div>
+            <button class="fab" title="New post, attach an image" onclick="openScreen('newpost')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          </div>
+          <div class="tabbar">
+            <button class="tab-btn active" onclick="setTab(this,'feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>Feed</span></button>
+            <button class="tab-btn" onclick="setTab(this,'nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg><span>Nearby</span></button>
+            <button class="tab-btn" onclick="setTab(this,'chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chats</span></button>
+            <button class="tab-btn" onclick="setTab(this,'profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Profile</span></button>
+          </div>
+        </div>
+
+        <!-- NEARBY -->
+        <div class="screen" id="screen-nearby">
+          <div class="screen-top"><h2>Nearby</h2><p class="sub">What's carrying your messages right now</p></div>
+          <div class="screen-body">
+            <div class="mesh-graph">
+              <svg viewBox="0 0 300 170">
+                <line x1="150" y1="85" x2="80" y2="40" stroke="#C9BFA8" stroke-width="2"/>
+                <line x1="150" y1="85" x2="230" y2="35" stroke="#C9BFA8" stroke-width="2"/>
+                <line x1="150" y1="85" x2="70" y2="130" stroke="#C9BFA8" stroke-width="2"/>
+                <line x1="150" y1="85" x2="235" y2="135" stroke="#C9BFA8" stroke-width="2"/>
+                <circle cx="150" cy="85" r="20" fill="#5F7D64"/>
+                <text x="150" y="89" font-size="10" fill="white" text-anchor="middle" font-weight="600">You</text>
+                <circle cx="80" cy="40" r="13" fill="#E7EFE7" stroke="#5F7D64" stroke-width="1.5"/>
+                <circle cx="230" cy="35" r="13" fill="#E7EFE7" stroke="#5F7D64" stroke-width="1.5"/>
+                <circle cx="70" cy="130" r="13" fill="#E7EFE7" stroke="#5F7D64" stroke-width="1.5"/>
+                <circle cx="235" cy="135" r="13" fill="#E7EFE7" stroke="#5F7D64" stroke-width="1.5"/>
+                <text x="80" y="20" font-size="9" fill="#6B6459" text-anchor="middle">1 hop</text>
+                <text x="230" y="18" font-size="9" fill="#6B6459" text-anchor="middle">1 hop</text>
+                <text x="70" y="152" font-size="9" fill="#6B6459" text-anchor="middle">2 hop</text>
+                <text x="235" y="155" font-size="9" fill="#6B6459" text-anchor="middle">1 hop</text>
+              </svg>
+            </div>
+            <div class="status-card"><div><p class="label"><span class="dot"></span>Local mesh</p><p class="detail">4 peers in range, Bluetooth and Wi-Fi Direct</p></div><span class="pill connected">Connected</span></div>
+            <div class="status-card"><div><p class="label"><span class="dot"></span>Relay bridge</p><p class="detail">Reaching peers beyond mesh range via 1 relay</p></div><span class="pill connected">Online</span></div>
+            <div class="status-card"><div><p class="label"><span class="dot searching"></span>Searching</p><p class="detail">Looking for peers near the east gate</p></div><span class="pill searching">Scanning</span></div>
+          </div>
+          <div class="tabbar">
+            <button class="tab-btn" onclick="setTab(this,'feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>Feed</span></button>
+            <button class="tab-btn active" onclick="setTab(this,'nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg><span>Nearby</span></button>
+            <button class="tab-btn" onclick="setTab(this,'chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chats</span></button>
+            <button class="tab-btn" onclick="setTab(this,'profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Profile</span></button>
+          </div>
+        </div>
+
+        <!-- CHATS -->
+        <div class="screen" id="screen-chats">
+          <div class="screen-top"><h2>Chats</h2><p class="sub">All encrypted end to end</p></div>
+          <div class="screen-body">
+            <div class="chat-row" onclick="openScreen('thread')">
+              <div class="avatar"></div>
+              <div class="meta"><div class="name-line"><span class="name">arvind.m</span><span class="time">2m</span></div><p class="preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Bring the spare battery pack, mine's nearly out</p></div>
+              <div class="unread"></div>
+            </div>
+            <div class="chat-row" onclick="openScreen('thread')">
+              <div class="avatar"></div>
+              <div class="meta"><div class="name-line"><span class="name">study circle</span><span class="time">41m</span></div><p class="preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>priya.s: see you at 6</p></div>
+            </div>
+            <div class="chat-row" onclick="openScreen('thread')">
+              <div class="avatar"></div>
+              <div class="meta"><div class="name-line"><span class="name">rupa.k</span><span class="time">3h</span></div><p class="preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Got it, thank you</p></div>
+            </div>
+            <button class="fab" title="New chat, group or channel" onclick="openScreen('newchat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+          </div>
+          <div class="tabbar">
+            <button class="tab-btn" onclick="setTab(this,'feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>Feed</span></button>
+            <button class="tab-btn" onclick="setTab(this,'nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg><span>Nearby</span></button>
+            <button class="tab-btn active" onclick="setTab(this,'chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chats</span></button>
+            <button class="tab-btn" onclick="setTab(this,'profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Profile</span></button>
+          </div>
+        </div>
+
+        <!-- CHAT THREAD (overlay) -->
+        <div class="screen" id="screen-thread">
+          <div class="thread-header">
+            <button class="back-btn" onclick="openScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <div class="avatar" style="width:34px;height:34px;"></div>
+            <div class="tmeta"><p class="tname" style="margin:0;">arvind.m</p><p class="tsub" style="margin:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Encrypted · mesh + relay</p></div>
+          </div>
+          <div class="thread-body">
+            <p class="msg-time">Today, 7:40 PM</p>
+            <div class="bubble-pair"><div class="bubble received">Bring the spare battery pack, mine's nearly out.</div></div>
+            <div class="bubble-pair"><div class="bubble sent">Got it, grabbing one now.</div></div>
+            <div class="bubble-pair">
+              <div class="bubble received location-bubble">
+                <div class="loc-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+                <p class="loc-title">Shared location</p>
+                <p class="loc-sub">One time, not live · 2 minutes ago</p>
+              </div>
+            </div>
+            <div class="bubble-pair"><div class="bubble sent">See you at six then.</div></div>
+          </div>
+          <div class="compose-bar">
+            <button class="loc-btn" title="Share location once, not live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+            <input placeholder="Message">
+            <button class="send-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+          </div>
+        </div>
+
+        <!-- POST DETAIL (overlay) -->
+        <div class="screen" id="screen-detail">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">Post</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <div class="post-head"><div class="avatar"></div><div><p class="who" style="margin:0;font-size:13px;font-weight:600;">news.relay</p><p class="when" style="margin:0;font-size:11px;color:var(--ink-soft);">1h ago · relayed, 2 hops</p></div></div>
+            <p class="post-body" style="font-size:14px;">Reports say the downtown transit line has been suspended since this morning.</p>
+            <div class="note-card">
+              <p class="note-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Community note</p>
+              <p class="note-text">Transit authority confirms only one line paused for maintenance, not the full network. Full service resumes by evening per the operator's own statement.</p>
+              <div class="note-links">
+                <a href="#" class="note-link"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/></svg>citytransit.gov/alerts</a>
+                <a href="#" class="note-link"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/></svg>localnews.example/transit-update</a>
+              </div>
+              <p class="note-prov">Added by 3 contributors · rated helpful by 214 readers, not helpful by 12</p>
+              <div class="note-rate"><button class="rate-btn">Helpful</button><button class="rate-btn">Not helpful</button></div>
+              <p class="explainer">No single moderator wrote this verdict. Visibility runs on a public scoring rule anyone can read and recompute. Every note needs at least 2 source links and a 150 character explanation before it can be submitted.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="screen" id="screen-profile">
+          <div class="screen-top"><h2>Profile</h2><p class="sub">Your device, your keys, your mesh</p></div>
+          <div class="screen-body">
+            <div class="profile-head">
+              <div class="avatar"></div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <p class="handle">rupa.k</p>
+                <button aria-label="Edit username" style="background:none;border:none;padding:2px;cursor:pointer;color:var(--ink-soft);"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+              </div>
+              <p class="tag2" style="font-family:ui-monospace,Consolas,monospace;">ID A3F9K2 &middot; permanent on this device</p>
+              <p class="tag2">No phone number, no email, key-based identity</p>
+            </div>
+            <div class="status-card"><div><p class="label"><span class="dot"></span>Local mesh</p><p class="detail">4 peers in range</p></div><span class="pill connected">Active</span></div>
+            <div class="status-card"><div><p class="label"><span class="dot"></span>Relay bridge</p><p class="detail">Connected via 1 relay</p></div><span class="pill connected">Online</span></div>
+            <div class="safety-card">
+              <p class="stitle">Panic wipe</p>
+              <p class="sdesc">Instantly erases every message, post and key on this device and permanently retires ID A3F9K2. Reopening Betar afterward creates a brand new ID from nothing. Cannot be undone, and nothing is sent anywhere first.</p>
+              <button class="btn btn-danger" style="width:100%;justify-content:center;">Wipe this device now</button>
+            </div>
+            <button class="legal-row" onclick="openGuide('profile')" style="margin-top:var(--space-5);">
+              <span>How Betar works</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button class="legal-row" onclick="openScreen('legal')">
+              <span>Legal and policies</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button class="legal-row" onclick="openScreen('about')">
+              <span>About Betar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="tabbar">
+            <button class="tab-btn" onclick="setTab(this,'feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>Feed</span></button>
+            <button class="tab-btn" onclick="setTab(this,'nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="10"/></svg><span>Nearby</span></button>
+            <button class="tab-btn" onclick="setTab(this,'chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chats</span></button>
+            <button class="tab-btn active" onclick="setTab(this,'profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Profile</span></button>
+          </div>
+        </div>
+
+        <!-- LEGAL (overlay) -->
+        <div class="screen" id="screen-legal">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">Legal and policies</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <div class="legal-section">
+              <h3>Privacy</h3>
+              <p>Betar never asks for a phone number or an email address. There is no server, so there are no server logs of who you talked to or what you posted.</p>
+              <p>Location is only ever shared when you tap the share button in a chat, once, for that message alone.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Terms</h3>
+              <p>Betar is free and open source, licensed under AGPL-3.0. Anyone can read the code, change it, or run their own version.</p>
+              <p>There is no company behind this app and no account to agree to a contract with. Using Betar means agreeing to carry and relay other people's encrypted messages as part of the mesh.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Content policy</h3>
+              <p>No one, including the people who built Betar, can delete a post or message once it has spread across the mesh or the relay network. There is no server to remove it from.</p>
+              <p>Each person's own app can locally hide or warn on content flagged through Community Notes. This runs on your device only and never removes anything for anyone else.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GUIDE (overlay) -->
+        <div class="screen" id="screen-guide">
+          <div class="detail-header">
+            <button class="back-btn" onclick="closeGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">How Betar works</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <div class="legal-section">
+              <h3>Local mesh</h3>
+              <p>Your phone talks directly to nearby phones over Bluetooth and Wi-Fi. No internet needed. Messages hop from phone to phone to reach further than your own radio range.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Relay bridge</h3>
+              <p>The moment any one phone nearby reaches the internet, even briefly, it bridges everything to the open relay network and back. You never need your own internet, only someone near you, eventually, does.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Feed rooms</h3>
+              <p>Posts live in location-scoped rooms, for example #oldtown or #citycenter, not one giant global feed. Chronological only. Nothing is ranked or boosted by an algorithm.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Community notes</h3>
+              <p>Anyone can attach a note to a post. A public, shared scoring method decides which notes rise, not a moderator team, so no single person decides what counts as true.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Your ID</h3>
+              <p>A short code like A3F9K2, generated from your device's private key the first time you open Betar. It cannot be changed, and it is not tied to your name, phone number or email.</p>
+              <p>You can also set a display name in Profile, 3 to 8 characters, letters and digits plus . and _ only. It is a nickname only, shown next to your ID, and is not guaranteed to be unique to you.</p>
+            </div>
+            <div class="legal-section">
+              <h3>Panic wipe</h3>
+              <p>Erases everything on this device and retires your ID for good. Opening Betar again after that starts over completely, with a brand new ID. The same thing happens if you uninstall and reinstall the app.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABOUT (overlay) -->
+        <div class="screen" id="screen-about">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">About Betar</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <div class="legal-section" style="text-align:center;">
+              <svg width="48" height="48" viewBox="0 0 72 72" fill="none" style="margin-bottom:var(--space-3);">
+                <circle cx="36" cy="36" r="34" stroke="var(--border)" stroke-width="2"/>
+                <circle cx="36" cy="36" r="22" stroke="var(--sage)" stroke-width="2"/>
+                <circle cx="36" cy="36" r="9" fill="var(--sage-dark)"/>
+              </svg>
+              <p style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:600;margin:0 0 2px 0;">Betar</p>
+              <p class="note-prov" style="margin:0;">Version 0.2.0 &middot; build 2026-10-31</p>
+            </div>
+            <div class="legal-section">
+              <h3>Free and open source</h3>
+              <p>Licensed AGPL-3.0-or-later. The full source, every commit, and the build instructions are public.</p>
+            </div>
+            <button class="legal-row"><span>Changelog</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button class="legal-row"><span>Source code</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button class="legal-row"><span>Open-source licenses</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button class="legal-row"><span>Report a security issue</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <div class="legal-section" style="margin-top:var(--space-5);">
+              <p class="note-prov" style="margin:0;">Developed by Konko Maji</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW POST (overlay) -->
+        <div class="screen" id="screen-newpost">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">New post</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Posting to</p>
+            <div class="tags" style="display:flex;gap:6px;margin-bottom:var(--space-4);">
+              <span class="chip" style="background:var(--sage-dark);color:#fff;">#oldtown &middot; block</span>
+              <span class="chip">#citycenter &middot; city</span>
+              <span class="chip">#region</span>
+            </div>
+            <textarea placeholder="What's happening" style="width:100%;min-height:96px;padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:var(--radius-s);resize:none;">Extra flyers for Thursday's meeting are at the corner shop, grab a stack if you're passing.</textarea>
+            <p class="note-prov" style="text-align:right;margin-top:4px;">92 / 280</p>
+            <button class="legal-row" style="margin-top:var(--space-3);">
+              <span>Attach an image</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <p class="explainer" style="margin:var(--space-2) 0 var(--space-5);">An attached image sends as a small preview over the mesh. Full resolution reaches people once a relay bridge is reached, yours or theirs.</p>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">Post</button>
+          </div>
+        </div>
+
+        <!-- NEW CHAT (overlay) -->
+        <div class="screen" id="screen-newchat">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">New chat</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <button class="legal-row" onclick="openScreen('qr')">
+              <span>Add a contact with a QR code</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button class="legal-row" onclick="openScreen('newgroup')">
+              <span>Create a group</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button class="legal-row" onclick="openScreen('newchannel')">
+              <span>Create or join a channel</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- QR ADD CONTACT (overlay) -->
+        <div class="screen" id="screen-qr">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('newchat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">Add a contact</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);text-align:center;">
+            <p class="note-prov" style="margin-bottom:var(--space-3);">Your code, for them to scan</p>
+            <div style="width:160px;height:160px;margin:0 auto var(--space-4);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);display:flex;align-items:center;justify-content:center;">
+              <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+                <rect x="4" y="4" width="34" height="34" rx="3" stroke="var(--ink)" stroke-width="5"/>
+                <rect x="82" y="4" width="34" height="34" rx="3" stroke="var(--ink)" stroke-width="5"/>
+                <rect x="4" y="82" width="34" height="34" rx="3" stroke="var(--ink)" stroke-width="5"/>
+                <rect x="50" y="4" width="10" height="10" fill="var(--ink)"/>
+                <rect x="66" y="20" width="10" height="10" fill="var(--ink)"/>
+                <rect x="50" y="36" width="10" height="10" fill="var(--ink)"/>
+                <rect x="50" y="66" width="10" height="10" fill="var(--ink)"/>
+                <rect x="66" y="82" width="10" height="10" fill="var(--ink)"/>
+                <rect x="82" y="66" width="10" height="10" fill="var(--ink)"/>
+                <rect x="98" y="98" width="18" height="18" fill="var(--ink)"/>
+              </svg>
+            </div>
+            <p class="note-prov" style="font-family:ui-monospace,Consolas,monospace;margin-bottom:var(--space-5);">ID A3F9K2</p>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:var(--space-3);">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+              Scan their code
+            </button>
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Or enter their ID by hand</p>
+            <input placeholder="6 character ID" style="width:100%;padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:var(--radius-s);margin-bottom:var(--space-3);">
+            <button class="btn btn-secondary" style="width:100%;justify-content:center;">Add contact</button>
+            <p class="explainer" style="margin-top:var(--space-4);">Scanning in person confirms you are talking to the right key, not an impersonator. This is the same safety-number check other encrypted apps use, just read by camera instead of typed out.</p>
+          </div>
+        </div>
+
+        <!-- NEW GROUP (overlay) -->
+        <div class="screen" id="screen-newgroup">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('newchat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">Create a group</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Group name</p>
+            <input placeholder="For example, study circle" style="width:100%;padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:var(--radius-s);margin-bottom:var(--space-4);">
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Members</p>
+            <div class="chat-row"><div class="avatar"></div><div class="meta"><p class="name" style="margin:0;">rupa.k</p></div></div>
+            <div class="chat-row"><div class="avatar"></div><div class="meta"><p class="name" style="margin:0;">arvind.m</p></div></div>
+            <button class="legal-row" onclick="openScreen('qr')">
+              <span>Add a member with a QR code</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:var(--space-5);">Create group</button>
+            <p class="explainer" style="margin-top:var(--space-3);">Every member's device holds the group key. There is no group owner's server to lose or hand over.</p>
+          </div>
+        </div>
+
+        <!-- NEW CHANNEL (overlay) -->
+        <div class="screen" id="screen-newchannel">
+          <div class="detail-header">
+            <button class="back-btn" onclick="openScreen('newchat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <p style="font-size:14px;font-weight:600;margin:0;">Create or join a channel</p>
+          </div>
+          <div class="screen-body" style="padding-top:var(--space-4);">
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Channel name</p>
+            <input placeholder="For example, northside-watch" style="width:100%;padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:var(--radius-s);margin-bottom:var(--space-4);">
+            <p class="note-prov" style="margin-bottom:var(--space-2);">Passphrase</p>
+            <input type="password" placeholder="Shared with whoever should join" style="width:100%;padding:11px 14px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:var(--radius-s);margin-bottom:var(--space-4);">
+            <div style="display:flex;gap:var(--space-3);">
+              <button class="btn btn-primary" style="flex:1;justify-content:center;">Create</button>
+              <button class="btn btn-secondary" style="flex:1;justify-content:center;">Join existing</button>
+            </div>
+            <p class="explainer" style="margin-top:var(--space-4);">A channel has no invite list and no owner. Anyone who knows the name and the passphrase can join. Share the passphrase the same way you would share a Wi-Fi password.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="phone-notes">
+        <h3>How to read this mockup</h3>
+        <ul>
+          <li>Tap the bottom tab bar to switch between Feed, Nearby, Chats and Profile.</li>
+          <li>Tap a post with a Community note badge, or any chat row, to open its detail screen.</li>
+          <li>Feed posts carry a geohash room tag (for example #oldtown, city precision) instead of one undifferentiated global feed.</li>
+          <li>The round button on Feed starts a new post, including an optional image. A mesh-only image stays a small preview until a relay bridge is reached.</li>
+          <li>The pin button in a chat thread sends a one time location, not a continuous live share.</li>
+          <li>Nearby shows local mesh peers as a small network graph plus relay bridge status in plain language.</li>
+          <li>Profile carries the panic wipe control, kept visually distinct and separate from ordinary settings.</li>
+          <li>Onboarding shows the auto-generated ID (for example A3F9K2) the moment it exists. It is permanent on this device, derived from the real private key, not a separately issued number.</li>
+          <li>The display name next to the ID (for example rupa.k) is an editable nickname only, 3 to 8 characters, letters and digits plus . and _. It is not guaranteed unique, since no server exists to check that.</li>
+          <li>"How it works" opens from onboarding or from Profile and explains the mesh, the relay bridge, feed rooms, Community Notes and the ID system in plain language.</li>
+          <li>Panic wipe and an uninstall-reinstall both end the same way: everything on the device is gone, and the next launch creates a brand new ID from nothing.</li>
+          <li>Posts and comments are capped at 280 characters.</li>
+          <li>A Community Note needs at least 2 source links plus a 150 character explanation before it can be submitted, shown on the post detail screen.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">Developed by <a href="https://konkomaji.com/" target="_blank" rel="noopener">Konko Maji</a></footer>
+
+</div>
+
+<script>
+  function setTab(btn, name){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('screen-' + name).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tabbar button').forEach(function(b){
+      if(b.getAttribute('onclick') && b.getAttribute('onclick').indexOf("'" + name + "'") > -1){ b.classList.add('active'); }
+    });
+  }
+  var guideReturnTo = 'onboarding';
+  function openScreen(name){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('screen-' + name).classList.add('active');
+  }
+  function openGuide(returnTo){
+    guideReturnTo = returnTo;
+    openScreen('guide');
+  }
+  function closeGuide(){
+    openScreen(guideReturnTo);
+  }
+</script>
+</body>
+</html>

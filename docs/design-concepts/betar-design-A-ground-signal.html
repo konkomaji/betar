@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betar : Ground Signal design concept</title>
+<style>
+  :root{
+    --bg-base:#0a0f0c;
+    --bg-surface:#101612;
+    --bg-elevated:#151d17;
+    --bg-input:#0d1310;
+    --border:#213229;
+    --border-strong:#2f4a3a;
+    --text-primary:#e8f4ec;
+    --text-secondary:#93aa9d;
+    --text-muted:#5c7266;
+    --accent:#39e27a;
+    --accent-bright:#6cffb0;
+    --accent-dim:#1f7a49;
+    --danger:#ff5c5c;
+    --danger-dim:#3a1414;
+    --danger-border:#7a2e2e;
+    --warning:#ffb300;
+    --warning-dim:#2a2210;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --font-sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --r-sm:4px; --r-md:8px; --r-lg:14px; --r-xl:22px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg-base);color:var(--text-primary);font-family:var(--font-sans);}
+  body{padding:40px 24px 80px;max-width:1120px;margin:0 auto;}
+  h1,h2,h3{font-weight:600;margin:0 0 8px;}
+  section{margin-bottom:64px;}
+  .philosophy{color:var(--text-secondary);font-size:15px;line-height:1.6;max-width:640px;}
+  .masthead{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+  .masthead .mark{width:40px;height:40px;flex:none;}
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;}
+  .section-title{font-size:13px;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:24px;}
+  .direction-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:12px;}
+  .direction-grid .d-item .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+  .direction-grid .d-item .v{font-size:14px;color:var(--text-primary);line-height:1.4;}
+
+  /* swatches */
+  .swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;}
+  .swatch{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;background:var(--bg-surface);}
+  .swatch-color{height:64px;}
+  .swatch-meta{padding:8px 12px;}
+  .swatch-meta .name{font-size:13px;font-weight:600;}
+  .swatch-meta .hex{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);}
+  .swatch-meta .use{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4;}
+
+  /* type scale */
+  .type-row{display:flex;align-items:baseline;gap:24px;padding:14px 0;border-bottom:1px solid var(--border);}
+  .type-row:last-child{border-bottom:none;}
+  .type-label{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);width:110px;flex:none;}
+  .type-sample{flex:1;}
+
+  /* spacing scale */
+  .space-row{display:flex;align-items:center;gap:16px;padding:8px 0;}
+  .space-bar{background:var(--accent-dim);border-radius:2px;height:10px;}
+  .space-label{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);width:90px;}
+
+  /* components */
+  .component-gallery{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;}
+  .component-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;flex:1;min-width:220px;}
+  .component-card .label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;}
+
+  .btn{font-family:var(--font-sans);font-size:14px;font-weight:600;border-radius:var(--r-md);padding:10px 16px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background-color 160ms var(--ease),border-color 160ms var(--ease);}
+  .btn-primary{background:var(--accent);color:#06130b;}
+  .btn-primary:hover{background:var(--accent-bright);}
+  .btn-secondary{background:transparent;color:var(--accent);border-color:var(--border-strong);}
+  .btn-danger{background:transparent;color:var(--danger);border-color:var(--danger-border);}
+
+  .input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-primary);padding:10px 12px;font-size:14px;font-family:var(--font-sans);}
+  .input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(57,226,122,.18);}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;padding:4px 10px;border-radius:999px;border:1px solid var(--border-strong);color:var(--text-secondary);}
+  .chip.local{color:var(--accent);border-color:var(--accent-dim);}
+  .chip.relay{color:var(--warning);border-color:#5a4a16;}
+
+  .bubble-pair{display:flex;flex-direction:column;gap:8px;}
+  .bubble{max-width:78%;padding:9px 12px;border-radius:14px;font-size:13.5px;line-height:1.4;display:flex;flex-direction:column;gap:4px;}
+  .bubble.received{background:var(--bg-elevated);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+  .bubble.sent{background:var(--accent-dim);color:#d8ffe9;align-self:flex-end;border-bottom-right-radius:4px;}
+  .bubble .meta{display:flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);}
+  .bubble.location{display:flex;flex-direction:row;align-items:center;gap:8px;}
+
+  .post-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;}
+  .post-card .head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border-strong);flex:none;}
+  .handle{font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary);}
+  .post-body{font-size:13.5px;line-height:1.5;color:var(--text-primary);margin-bottom:10px;}
+
+  .tabbar-icons{display:flex;gap:18px;align-items:center;}
+  .tabbar-icons .icon-slot{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-muted);}
+  .tabbar-icons .icon-slot.active{color:var(--accent);}
+  .tabbar-icons svg{width:20px;height:20px;}
+  .tabbar-icons span{font-family:var(--font-mono);font-size:10px;}
+
+  /* phone mockup */
+  .phone-wrap{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;}
+  .phone{width:375px;height:812px;background:#000;border-radius:44px;border:2px solid #1c2a21;padding:10px;position:relative;flex:none;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);}
+  .phone-screen{width:100%;height:100%;background:var(--bg-base);border-radius:34px;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+  .status-strip{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);}
+  .screen-body{flex:1;overflow-y:auto;padding:0 16px 16px;}
+  .screen-body::-webkit-scrollbar{width:0;}
+  .app-screen{display:none;flex-direction:column;height:100%;opacity:0;transition:opacity 180ms var(--ease);}
+  .app-screen.visible{display:flex;opacity:1;}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 0 12px;}
+  .top-bar h3{margin:0;font-size:17px;}
+  .conn-pill{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--accent);border:1px solid var(--accent-dim);border-radius:999px;padding:4px 10px;}
+  .conn-pill.relay{color:var(--warning);border-color:#5a4a16;}
+  .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;}
+
+  .room-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;}
+  .room-row button{font-family:var(--font-mono);font-size:11px;padding:6px 12px;border-radius:999px;border:1px solid var(--border-strong);background:transparent;color:var(--text-secondary);white-space:nowrap;cursor:pointer;}
+  .room-row button.active{border-color:var(--accent);color:var(--accent);background:var(--bg-surface);}
+
+  .composer{display:flex;gap:8px;align-items:center;margin-bottom:14px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;}
+  .composer input{flex:1;background:none;border:none;color:var(--text-primary);font-size:13.5px;font-family:var(--font-sans);outline:none;}
+  .composer input::placeholder{color:var(--text-muted);}
+  .icon-btn{background:none;border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;padding:2px;flex:none;}
+  .icon-btn svg{width:18px;height:18px;}
+  .attach-preview{display:flex;align-items:center;gap:8px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-md);padding:8px 10px;margin-bottom:12px;font-size:11.5px;color:var(--text-secondary);}
+  .attach-preview .thumb{width:32px;height:32px;border-radius:6px;background:linear-gradient(135deg,#1a2a20,#223a2a);flex:none;}
+
+  .bottom-tabbar{display:flex;justify-content:space-around;align-items:center;padding:12px 8px;border-top:1px solid var(--border);background:var(--bg-surface);}
+  .bottom-tabbar button{background:none;border:none;cursor:pointer;color:var(--text-muted);display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;}
+  .bottom-tabbar button.active{color:var(--accent);}
+  .bottom-tabbar svg{width:20px;height:20px;}
+
+  .peer-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .peer-row:last-child{border-bottom:none;}
+  .sig-bars{display:flex;align-items:flex-end;gap:2px;height:14px;}
+  .sig-bars i{width:3px;background:var(--border-strong);border-radius:1px;}
+  .sig-bars i.on{background:var(--accent);}
+  .peer-id{font-family:var(--font-mono);font-size:12px;}
+  .peer-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);}
+
+  .radar{display:flex;justify-content:center;padding:12px 0 20px;}
+
+  .chat-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+  .chat-row .meta2{flex:1;}
+  .chat-row .name{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px;}
+  .chat-row .preview{font-size:12px;color:var(--text-secondary);}
+  .chat-row .time{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);}
+
+  .note-box{background:var(--warning-dim);border:1px solid #5a4a16;border-radius:var(--r-md);padding:12px;margin-top:4px;}
+  .note-box .label{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--warning);text-transform:uppercase;margin-bottom:4px;}
+  .note-box p{font-size:12.5px;line-height:1.5;margin:0 0 8px;color:#f0e2bd;}
+  .note-rate{display:flex;gap:8px;}
+  .note-rate button{flex:1;font-family:var(--font-mono);font-size:11px;padding:6px;border-radius:var(--r-sm);border:1px solid var(--border-strong);background:var(--bg-base);color:var(--text-secondary);cursor:pointer;}
+  .provenance{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-top:6px;}
+
+  .danger-card{border:1px solid var(--danger-border);background:var(--danger-dim);border-radius:var(--r-lg);padding:16px;}
+  .danger-card h4{margin:0 0 6px;color:var(--danger);font-size:13px;}
+  .danger-card p{font-size:12px;color:#f3c7c7;line-height:1.5;margin:0 0 12px;}
+
+  .back-btn{background:none;border:none;color:var(--text-secondary);display:flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;cursor:pointer;padding:0;}
+
+  .selector-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .selector-row button{font-family:var(--font-mono);font-size:11px;padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg-surface);color:var(--text-secondary);cursor:pointer;}
+  .selector-row button.active{border-color:var(--accent);color:var(--accent);}
+
+  footer{color:var(--text-muted);font-size:11px;font-family:var(--font-mono);border-top:1px solid var(--border);padding-top:20px;}
+  footer a{color:var(--text-secondary);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="masthead">
+    <svg class="mark" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#39e27a" stroke-width="1.5" opacity=".4"/>
+      <circle cx="20" cy="20" r="11" stroke="#39e27a" stroke-width="1.5" opacity=".7"/>
+      <circle cx="20" cy="20" r="3" fill="#39e27a"/>
+    </svg>
+    <div>
+      <div class="eyebrow">Design concept A</div>
+      <h1>Ground Signal</h1>
+    </div>
+  </div>
+  <p class="philosophy">Betar should look like infrastructure you can trust precisely because it hides nothing. Every screen shows what is encrypted, how a message is travelling, and how many hops stand between you and the person you are talking to. Near-black surfaces and a single signal-green accent keep the interface calm in low light and readable in the field, closer to field radio and terminal tooling than to mainstream social apps.</p>
+</header>
+
+<section>
+  <div class="section-title">Direction</div>
+  <div class="direction-grid">
+    <div class="d-item"><div class="k">Product</div><div class="v">A censorship-resistant mesh social and chat app for journalists, activists, and anyone who needs it. Encrypted by default, no server to shut down.</div></div>
+    <div class="d-item"><div class="k">Character</div><div class="v">Exact, quiet, field-trusted</div></div>
+    <div class="d-item"><div class="k">World</div><div class="v">Field radio and terminal tooling, night operations, signal telemetry</div></div>
+    <div class="d-item"><div class="k">Moments</div><div class="v">The nearby mesh radar, the community note's bridging score</div></div>
+    <div class="d-item"><div class="k">Signature</div><div class="v">Uppercase mono readouts for live connection and telemetry state only, never for plain navigation</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Color system</div>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#0a0f0c"></div><div class="swatch-meta"><div class="name">Base</div><div class="hex">#0A0F0C</div><div class="use">App background. Near black, slight green undertone.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#101612"></div><div class="swatch-meta"><div class="name">Surface</div><div class="hex">#101612</div><div class="use">Cards, rows, input fields.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#151d17"></div><div class="swatch-meta"><div class="name">Elevated</div><div class="hex">#151D17</div><div class="use">Received chat bubbles, raised panels.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#39e27a"></div><div class="swatch-meta"><div class="name">Signal accent</div><div class="hex">#39E27A</div><div class="use">Primary actions, local mesh state. Chosen for low eye strain and because green phosphor does not ruin night vision in the field.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1f7a49"></div><div class="swatch-meta"><div class="name">Accent dim</div><div class="hex">#1F7A49</div><div class="use">Sent bubbles, filled chips.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ffb300"></div><div class="swatch-meta"><div class="name">Warning / relay</div><div class="hex">#FFB300</div><div class="use">Internet relay state, community note boxes. Never used for errors.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ff5c5c"></div><div class="swatch-meta"><div class="name">Danger</div><div class="hex">#FF5C5C</div><div class="use">Panic wipe, destructive actions only.</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#93aa9d"></div><div class="swatch-meta"><div class="name">Text secondary</div><div class="hex">#93AA9D</div><div class="use">Captions, metadata labels.</div></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Type scale</div>
+  <div class="type-row"><div class="type-label">2XL / 34·40</div><div class="type-sample" style="font-size:34px;line-height:40px;font-weight:600;">Betar</div></div>
+  <div class="type-row"><div class="type-label">XL / 26·32</div><div class="type-sample" style="font-size:26px;line-height:32px;font-weight:600;">Nearby mesh</div></div>
+  <div class="type-row"><div class="type-label">LG / 20·26</div><div class="type-sample" style="font-size:20px;line-height:26px;font-weight:600;">Chat thread title</div></div>
+  <div class="type-row"><div class="type-label">MD / 17·24</div><div class="type-sample" style="font-size:17px;line-height:24px;">Screen headers, button labels</div></div>
+  <div class="type-row"><div class="type-label">Base / 15·22</div><div class="type-sample" style="font-size:15px;line-height:22px;">Post and message body text, humanist sans for readability</div></div>
+  <div class="type-row"><div class="type-label">SM / 13·18</div><div class="type-sample" style="font-size:13px;line-height:18px;color:var(--text-secondary);">Secondary rows, previews</div></div>
+  <div class="type-row"><div class="type-label">XS mono / 11·16</div><div class="type-sample" style="font-family:var(--font-mono);font-size:11px;line-height:16px;color:var(--text-muted);">peer_id 7f3a, hop 2, 14:02:51. All metadata is monospace.</div></div>
+</section>
+
+<section>
+  <div class="section-title">Spacing scale</div>
+  <div class="space-row"><div class="space-label">4 / xs</div><div class="space-bar" style="width:4px"></div></div>
+  <div class="space-row"><div class="space-label">8 / sm</div><div class="space-bar" style="width:8px"></div></div>
+  <div class="space-row"><div class="space-label">12 / md</div><div class="space-bar" style="width:12px"></div></div>
+  <div class="space-row"><div class="space-label">16 / base</div><div class="space-bar" style="width:16px"></div></div>
+  <div class="space-row"><div class="space-label">24 / lg</div><div class="space-bar" style="width:24px"></div></div>
+  <div class="space-row"><div class="space-label">32 / xl</div><div class="space-bar" style="width:32px"></div></div>
+  <div class="space-row"><div class="space-label">48 / 2xl</div><div class="space-bar" style="width:48px"></div></div>
+</section>
+
+<section>
+  <div class="section-title">Component gallery</div>
+  <div class="component-gallery">
+    <div class="component-card">
+      <div class="label">Buttons</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-primary">Send message</button>
+        <button class="btn btn-secondary">View note</button>
+        <button class="btn btn-danger">Wipe this device</button>
+      </div>
+    </div>
+    <div class="component-card">
+      <div class="label">Input &amp; chips</div>
+      <input class="input" placeholder="Message a peer or group" style="margin-bottom:10px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="chip local"><span class="dot"></span>LOCAL · 0 HOPS</span>
+        <span class="chip relay"><span class="dot"></span>RELAY BRIDGED</span>
+        <span class="chip">3 PEERS</span>
+      </div>
+    </div>
+    <div class="component-card">
+      <div class="label">Chat bubbles</div>
+      <div class="bubble-pair">
+        <div class="bubble received"><span>Signal is good near the market, 4 peers visible.</span><span class="meta">7f3a2c · noise xx</span></div>
+        <div class="bubble sent"><span>Copy. Heading your way, 2 hops out.</span><span class="meta">you · encrypted</span></div>
+      </div>
+    </div>
+    <div class="component-card">
+      <div class="label">Post card</div>
+      <div class="post-card">
+        <div class="head"><div class="avatar"></div><div><div class="handle">@night_market_02</div></div></div>
+        <div class="post-body">Turnout stronger than expected downtown tonight. Mesh holding steady through the crowd.</div>
+        <div style="display:flex;gap:8px;"><span class="chip">#city</span><span class="chip">12 reshares</span></div>
+      </div>
+    </div>
+    <div class="component-card">
+      <div class="label">Tab bar icons</div>
+      <div class="tabbar-icons">
+        <div class="icon-slot active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg><span>Feed</span></div>
+        <div class="icon-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg><span>Nearby</span></div>
+        <div class="icon-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z"/></svg><span>Chats</span></div>
+        <div class="icon-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg><span>You</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">Mobile app structure</div>
+  <div class="selector-row" id="jumpRow"></div>
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="status-strip"><span>9:41</span><span>BETAR</span><span>86%</span></div>
+
+        <!-- ONBOARDING -->
+        <div class="app-screen visible" data-screen="onboarding">
+          <div class="screen-body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;padding-top:0;padding-bottom:0;">
+            <svg width="64" height="64" viewBox="0 0 40 40" fill="none" style="margin-bottom:20px;">
+              <circle cx="20" cy="20" r="18" stroke="#39e27a" stroke-width="1.5" opacity=".4"/>
+              <circle cx="20" cy="20" r="11" stroke="#39e27a" stroke-width="1.5" opacity=".7"/>
+              <circle cx="20" cy="20" r="3" fill="#39e27a"/>
+            </svg>
+            <div style="font-size:26px;font-weight:600;letter-spacing:.02em;margin-bottom:8px;">BETAR</div>
+            <div style="font-size:14px;color:var(--text-secondary);line-height:1.5;max-width:270px;margin-bottom:28px;">A mesh no one can shut off. No server, no account, no number to block.</div>
+            <div style="width:100%;text-align:left;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:12px;">
+              <div class="section-title" style="margin-bottom:8px;font-size:11px;">Why these permissions</div>
+              <p style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);margin:0;">Bluetooth and location find peers near you over the mesh. Nothing leaves this device unless you send it, and nothing is tracked in the background.</p>
+            </div>
+            <div style="width:100%;text-align:left;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:24px;">
+              <div class="section-title" style="margin-bottom:8px;font-size:11px;">Your identity</div>
+              <p style="font-size:12.5px;line-height:1.5;color:var(--text-secondary);margin:0;">No phone number. No email. This device generates a key pair, and that key pair is you.</p>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="selectScreen('feed')">Continue</button>
+          </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="app-screen" data-screen="feed">
+          <div class="screen-body">
+            <div class="top-bar"><h3>Feed</h3><span class="conn-pill"><span class="dot"></span>LOCAL · 4 PEERS</span></div>
+            <div class="room-row">
+              <button class="active">#block</button>
+              <button>#city</button>
+              <button>#region</button>
+              <button>#country</button>
+            </div>
+            <div class="composer">
+              <input placeholder="Share what's happening near you">
+              <button class="icon-btn" aria-label="Attach image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-5 3 3 4-4 4 4"/></svg></button>
+              <button class="icon-btn" aria-label="Post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11l16-7-5 16-4-6-4 2-3-5z"/></svg></button>
+            </div>
+            <div class="post-card" style="margin-bottom:12px;">
+              <div class="head"><div class="avatar"></div><div><div class="handle">@night_market_02</div><div class="peer-sub">2 hops · 09:14</div></div></div>
+              <div class="attach-preview"><div class="thumb"></div><span>Mesh preview now, full image once relay bridged</span></div>
+              <div class="post-body">Turnout stronger than expected downtown tonight. Mesh holding steady through the crowd.</div>
+              <div style="display:flex;gap:8px;"><span class="chip">#city</span><span class="chip">12 reshares</span></div>
+            </div>
+            <div class="post-card" style="margin-bottom:12px;cursor:pointer;" onclick="selectScreen('postDetail')">
+              <div class="head"><div class="avatar"></div><div><div class="handle">@desk_journalist</div><div class="peer-sub">relay · 08:51</div></div></div>
+              <div class="post-body">Statement claims the shutdown only affects one province. Numbers don't add up, thread below.</div>
+              <div class="note-box">
+                <div class="label">Community note</div>
+                <p>Reported outages traced to three provinces, not one, per locally gathered signal logs.</p>
+                <div class="provenance">Rated by 41 peers, no single reviewer</div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-tabbar">
+            <button class="active" onclick="selectScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Feed</button>
+            <button onclick="selectScreen('nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Nearby</button>
+            <button onclick="selectScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z"/></svg>Chats</button>
+            <button onclick="selectScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>You</button>
+          </div>
+        </div>
+
+        <!-- NEARBY -->
+        <div class="app-screen" data-screen="nearby">
+          <div class="screen-body">
+            <div class="top-bar"><h3>Nearby</h3><span class="conn-pill relay"><span class="dot"></span>RELAY BRIDGED</span></div>
+            <div class="radar">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" stroke="#213229" fill="none"/>
+                <circle cx="80" cy="80" r="45" stroke="#213229" fill="none"/>
+                <circle cx="80" cy="80" r="20" stroke="#223029" fill="none"/>
+                <circle cx="80" cy="80" r="4" fill="#39e27a"/>
+                <circle cx="105" cy="60" r="4" fill="#6cffb0"/>
+                <circle cx="52" cy="100" r="3.5" fill="#39e27a"/>
+                <circle cx="120" cy="110" r="3" fill="#93aa9d"/>
+                <circle cx="35" cy="55" r="3" fill="#93aa9d"/>
+              </svg>
+            </div>
+            <div class="peer-row">
+              <div class="sig-bars"><i class="on" style="height:5px"></i><i class="on" style="height:8px"></i><i class="on" style="height:11px"></i><i style="height:14px"></i></div>
+              <div style="flex:1;"><div class="peer-id">peer · 9c2f7a1b</div><div class="peer-sub">0 hops, direct</div></div>
+              <span class="chip local">LOCAL</span>
+            </div>
+            <div class="peer-row">
+              <div class="sig-bars"><i class="on" style="height:5px"></i><i class="on" style="height:8px"></i><i style="height:11px"></i><i style="height:14px"></i></div>
+              <div style="flex:1;"><div class="peer-id">peer · 44bd0e3c</div><div class="peer-sub">1 hop via 9c2f7a1b</div></div>
+              <span class="chip local">LOCAL</span>
+            </div>
+            <div class="peer-row">
+              <div class="sig-bars"><i class="on" style="height:5px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:14px"></i></div>
+              <div style="flex:1;"><div class="peer-id">peer · 71aa90f2</div><div class="peer-sub">2 hops, bridged</div></div>
+              <span class="chip relay">RELAY</span>
+            </div>
+          </div>
+          <div class="bottom-tabbar">
+            <button onclick="selectScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Feed</button>
+            <button class="active" onclick="selectScreen('nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Nearby</button>
+            <button onclick="selectScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z"/></svg>Chats</button>
+            <button onclick="selectScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>You</button>
+          </div>
+        </div>
+
+        <!-- CHATS -->
+        <div class="app-screen" data-screen="chats">
+          <div class="screen-body">
+            <div class="top-bar"><h3>Chats</h3><span class="conn-pill"><span class="dot"></span>LOCAL</span></div>
+            <div class="chat-row" onclick="selectScreen('chatThread')">
+              <div class="avatar"></div>
+              <div class="meta2"><div class="name">peer · 7f3a2c1d <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6cffb0" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><div class="preview">Copy. Heading your way, 2 hops out.</div></div>
+              <div class="time">14:02</div>
+            </div>
+            <div class="chat-row">
+              <div class="avatar"></div>
+              <div class="meta2"><div class="name">campus_group_4 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6cffb0" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><div class="preview">Meeting moved to the usual spot, see you at 7.</div></div>
+              <div class="time">13:40</div>
+            </div>
+          </div>
+          <div class="bottom-tabbar">
+            <button onclick="selectScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Feed</button>
+            <button onclick="selectScreen('nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Nearby</button>
+            <button class="active" onclick="selectScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z"/></svg>Chats</button>
+            <button onclick="selectScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>You</button>
+          </div>
+        </div>
+
+        <!-- CHAT THREAD -->
+        <div class="app-screen" data-screen="chatThread">
+          <div class="screen-body">
+            <button class="back-btn" onclick="selectScreen('chats')">&larr; CHATS</button>
+            <div class="top-bar" style="margin-top:8px;"><h3>peer · 7f3a2c1d</h3></div>
+            <div class="conn-pill" style="margin-bottom:14px;"><span class="dot"></span>END-TO-END · NOISE XX · 2 HOPS</div>
+            <div class="bubble-pair" style="margin-bottom:16px;">
+              <div class="bubble received"><span>Signal is good near the market, 4 peers visible.</span><span class="meta">7f3a2c · 13:58</span></div>
+              <div class="bubble sent"><span>Copy. Heading your way, 2 hops out.</span><span class="meta">you · 14:02</span></div>
+              <div class="bubble sent location"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d8ffe9" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg><span>Location shared once, market entrance</span></div>
+            </div>
+          </div>
+          <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;">
+            <button class="icon-btn" aria-label="Share location once"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg></button>
+            <input class="input" placeholder="Message">
+            <button class="btn btn-primary" style="padding:10px;">&rarr;</button>
+          </div>
+        </div>
+
+        <!-- POST DETAIL / FACT CHECK -->
+        <div class="app-screen" data-screen="postDetail">
+          <div class="screen-body">
+            <button class="back-btn" onclick="selectScreen('feed')">&larr; FEED</button>
+            <div class="post-card" style="margin-top:12px;margin-bottom:12px;">
+              <div class="head"><div class="avatar"></div><div><div class="handle">@desk_journalist</div><div class="peer-sub">relay · 08:51</div></div></div>
+              <div class="post-body">Statement claims the shutdown only affects one province. Numbers don't add up, thread below.</div>
+            </div>
+            <div class="note-box">
+              <div class="label">Community note</div>
+              <p>Reported outages traced to three provinces, not one, per locally gathered signal logs from four independent peers.</p>
+              <div class="note-rate"><button>Helpful (112)</button><button>Not helpful (9)</button></div>
+              <div class="provenance">Surfaced by a bridging score across 41 raters. No single reviewer, no editor desk.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE / SAFETY -->
+        <div class="app-screen" data-screen="profile">
+          <div class="screen-body">
+            <div class="top-bar"><h3>You</h3><span class="conn-pill"><span class="dot"></span>LOCAL · 4 PEERS</span></div>
+            <div class="peer-row"><div style="flex:1;"><div class="peer-id">peer_id · 2d19af77</div><div class="peer-sub">No phone number, no email required</div></div></div>
+            <div class="peer-row"><div style="flex:1;"><div class="peer-id">display name</div><div class="peer-sub">night_market_02</div></div></div>
+            <div class="peer-row" style="cursor:pointer;" onclick="selectScreen('legal')">
+              <div style="flex:1;"><div class="peer-id">Legal &amp; policies</div><div class="peer-sub">Privacy, terms, content policy</div></div>
+              <span style="color:var(--text-muted);">&rarr;</span>
+            </div>
+            <div style="margin:18px 0;">
+              <div class="danger-card">
+                <h4>Emergency wipe</h4>
+                <p>Clears local keys and message history from this device immediately. Cannot be undone, does not affect the mesh.</p>
+                <button class="btn btn-danger">Hold to wipe device</button>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-tabbar">
+            <button onclick="selectScreen('feed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Feed</button>
+            <button onclick="selectScreen('nearby')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Nearby</button>
+            <button onclick="selectScreen('chats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4V5z"/></svg>Chats</button>
+            <button class="active" onclick="selectScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>You</button>
+          </div>
+        </div>
+
+        <!-- LEGAL & POLICIES -->
+        <div class="app-screen" data-screen="legal">
+          <div class="screen-body">
+            <button class="back-btn" onclick="selectScreen('profile')">&larr; YOU</button>
+            <div class="top-bar" style="margin-top:8px;"><h3>Legal &amp; policies</h3></div>
+
+            <div class="section-title" style="font-size:11px;margin-bottom:12px;">Privacy</div>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 20px;">Betar never collects a phone number or email, because there is no account to attach one to. There is no server, so there is no server-side log of who you talked to or what you posted. Your peer ID is a public key generated on this device.</p>
+
+            <div class="section-title" style="font-size:11px;margin-bottom:12px;">Terms</div>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 20px;">Betar is free, open source software under AGPL-3.0. No company runs it and no company can shut it down. You run the mesh by running the app. Use of relay bridges you do not control is at your own judgment, same as any public network.</p>
+
+            <div class="section-title" style="font-size:11px;margin-bottom:12px;">Content policy</div>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 8px;">No server and no relay operator can delete a post once it has spread through the mesh. There is no central takedown.</p>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0 0 8px;">What exists instead: Community Notes, rated by many peers with no single reviewer, and a local filter on your own device. Flagged content can be hidden or warned on in your own app, by your own choice, without anyone deleting it for everyone.</p>
+            <p style="font-size:13px;line-height:1.6;color:var(--text-secondary);margin:0;">This is a real limit, not a loophole. Read it plainly before you rely on this app for anything sensitive.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Open source. <a href="https://konkomaji.com/" target="_blank" rel="noopener">Developed by Konko Maji</a>.</footer>
+
+<script>
+  var screens = ['onboarding','feed','nearby','chats','chatThread','postDetail','profile','legal'];
+  var jumpRow = document.getElementById('jumpRow');
+  screens.forEach(function(s){
+    var b = document.createElement('button');
+    b.textContent = s;
+    b.onclick = function(){ selectScreen(s); };
+    b.dataset.jump = s;
+    jumpRow.appendChild(b);
+  });
+
+  function selectScreen(name){
+    document.querySelectorAll('.app-screen').forEach(function(el){
+      el.classList.toggle('visible', el.dataset.screen === name);
+    });
+    document.querySelectorAll('.bottom-tabbar button').forEach(function(btn){
+      btn.classList.remove('active');
+    });
+    document.querySelectorAll('.bottom-tabbar button').forEach(function(btn){
+      if(btn.getAttribute('onclick') === "selectScreen('"+name+"')"){ btn.classList.add('active'); }
+    });
+    document.querySelectorAll('#jumpRow button').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.jump === name);
+    });
+  }
+  selectScreen('onboarding');
+</script>
+
+</body>
+</html>
