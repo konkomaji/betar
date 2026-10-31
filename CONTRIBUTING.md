@@ -1,7 +1,7 @@
 # Contributing to Betar
 
 Betar is pre-alpha and moving fast. Before sending a pull request, please open an issue
-first for anything beyond a small fix — it saves rework on both sides.
+first for anything beyond a small fix. It saves rework on both sides.
 
 ## Scope
 
@@ -16,7 +16,7 @@ See [`README.md`](README.md).
 ## Code style
 
 Match the existing Kotlin/Compose style in the codebase. Keep commit messages honest
-about what's verified and what isn't — this project doesn't claim something works
+about what's verified and what isn't. This project doesn't claim something works
 without saying how it was checked (a passing build, a real device run, or "compiles
 only, not yet run on hardware").
 

@@ -53,7 +53,7 @@ Full feature list and the reasoning behind each decision: [Project Mesh's
 
 Betar is the reference application. The protocol, the cryptography, and the Rust core
 (`core/` here, a git submodule) live in
-**[Project Mesh](https://github.com/konkomaji/project-mesh)** — one canonical protocol
+**[Project Mesh](https://github.com/konkomaji/project-mesh)**, one canonical protocol
 implementation, so any other app that wants to build on this can depend on the same
 core instead of a fork of this one. Read the
 [whitepaper](https://github.com/konkomaji/project-mesh/blob/main/WHITEPAPER.md) or the
