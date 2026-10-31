@@ -175,7 +175,7 @@ p { margin: 0 0 16px; max-width: 68ch; }
 .card:hover {
   border-radius: 34px 20px 34px 20px;
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -18px rgba(18, 96, 143, .35);
+  box-shadow: 0 12px 28px -18px rgba(63, 87, 66, .35);
 }
 
 .card .shape-accent {
@@ -184,8 +184,10 @@ p { margin: 0 0 16px; max-width: 68ch; }
   margin-bottom: 14px;
   background: var(--brand-blue);
 }
+/* --emergency never appears here: it's reserved for panic wipe only, DESIGN-BRIEF.md §6,
+   never decorative. Rotation uses the 4 non-reserved palette colours instead. */
 .card:nth-child(4n+1) .shape-accent { clip-path: var(--shape-clover4); background: var(--deep-blue); }
-.card:nth-child(4n+2) .shape-accent { clip-path: var(--shape-burst8); background: var(--emergency); }
+.card:nth-child(4n+2) .shape-accent { clip-path: var(--shape-burst8); background: var(--caution); }
 .card:nth-child(4n+3) .shape-accent { clip-path: var(--shape-scallop12); background: var(--connected); }
 .card:nth-child(4n+4) .shape-accent { clip-path: var(--shape-cookie9); background: var(--brand-blue); }
 
