@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy: Betar</title>
-<meta name="description" content="Betar collects nothing. There is no server, no account, no phone number, no analytics, no advertising, and nothing written in the app ever leaves the phones it travels between.">
+<meta name="description" content="Betar collects nothing. No server, no account, no phone number, no analytics, no advertising. Location is only ever shared once, when you choose to, never in the background.">
 <link rel="canonical" href="https://konkomaji.github.io/betar/privacy.html">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="assets/betar-logo-compact.svg">
@@ -45,7 +45,7 @@
   <div class="wrap">
     <section>
       <h1>Privacy</h1>
-      <p class="lede">The short version: Betar collects nothing. There is no server, and nothing written in the app ever leaves the phones it travels between.</p>
+      <p class="lede">The short version: Betar collects nothing. There is no server, no account, and no phone number, ever.</p>
     </section>
 
     <section>
@@ -54,23 +54,28 @@
         <div class="card"><h3>No account</h3><p>No signup, no email, no phone number, no login.</p></div>
         <div class="card"><h3>No analytics</h3><p>No usage tracking, no crash reports sent anywhere.</p></div>
         <div class="card"><h3>No advertising</h3><p>Nothing to sell, nothing to target.</p></div>
-        <div class="card"><h3>No internet permission</h3><p>The app does not request it at all. There is nowhere for your data to go.</p></div>
+        <div class="card"><h3>No server logs</h3><p>There is no server, so there is nothing keeping a record of who you talked to or what you posted.</p></div>
       </div>
     </section>
 
     <section>
       <h2>What is stored, and where</h2>
-      <p>A device identity and its keys are generated on first launch and kept only on the device, encrypted at rest. Messages you send or receive are kept on your device and on the devices that carry them until they reach where they are going, or until you delete them. Nothing is uploaded to a server, because there is no server.</p>
+      <p>A device identity and its keys are generated on first launch and kept only on the device, encrypted at rest. Direct messages, groups and channels are end-to-end encrypted before they ever leave your phone. A public feed post is, by its nature, meant to be seen: it travels the mesh and, once a relay bridge is reached, the open Nostr relay network, same as any other post on that network. Nothing you mark private is ever uploaded anywhere, because there is no server for it to go to.</p>
     </section>
 
     <section>
-      <h2>What nearby phones can and cannot see</h2>
-      <p>A nearby phone can see that your device is present and can pass along messages addressed through it, the same way any phone in the mesh does. It cannot read a message that is not addressed to it: messages are encrypted for their recipient before they ever leave your phone.</p>
+      <h2>Location: one tap, one time</h2>
+      <p>Betar never shares your location unless you tap the share button inside a specific chat. That single tap sends your location once, to that conversation only. There is no continuous or background location sharing anywhere in the app.</p>
+    </section>
+
+    <section>
+      <h2>What nearby phones and relays can and cannot see</h2>
+      <p>A nearby phone can see that your device is present and can pass along messages addressed through it, the same way any phone in the mesh does. It cannot read a direct message, group message, or channel message that is not addressed to it: those are encrypted for their recipient before they ever leave your phone. A relay bridging your feed posts to the internet only ever sees what a feed post already is in public: a post.</p>
     </section>
 
     <section>
       <h2>Permissions, and why</h2>
-      <p>Betar asks for Bluetooth and Wi-Fi Direct permissions to find and talk to nearby phones, and location permission only where the operating system requires it for that same nearby discovery, not to track where you are. It does not ask for internet access, contacts, or anything unrelated to passing messages between nearby devices.</p>
+      <p>Betar asks for Bluetooth and Wi-Fi Direct permissions to find and talk to nearby phones, location permission only where the operating system requires it for that same nearby discovery, not to track where you are, and internet access so your device can bridge to the open Nostr relay network when you choose a public feed room that needs it. It does not ask for contacts or anything unrelated to those two jobs.</p>
     </section>
 
     <section>
@@ -80,7 +85,7 @@
 
     <section>
       <h2>How to check this yourself</h2>
-      <p>Every claim on this page is verifiable in the source code, and the app requests no internet permission at all, which anyone can confirm by reading its manifest.</p>
+      <p>Every claim on this page is verifiable in the source code, which anyone can read, build, and check against what the app actually does.</p>
       <p class="actions"><a class="btn" href="https://github.com/konkomaji/betar">Read the source</a></p>
     </section>
   </div>
@@ -95,7 +100,7 @@
       <a href="docs.html">Documents</a>
       <a href="https://github.com/konkomaji/betar">Source code</a>
     </nav>
-    <p>Betar is open source software released under the AGPL-3.0 license. No individual or company is named here: attribution goes to the project and its public source.</p>
+    <p>Betar is open source software released under the AGPL-3.0 license. Developed by <a href="https://konkomaji.com/">Konko Maji</a>.</p>
   </div>
 </footer>
 

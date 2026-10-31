@@ -1,21 +1,25 @@
 # Betar
 
-> Betar is communication and safety infrastructure for places the network does not reach: no SIM, no internet, no router, no cell tower. Phones pass messages directly to each other over Bluetooth and Wi-Fi Direct, hop by hop, until a message reaches the person it was meant for.
+> Betar is a censorship-resistant social and chat app: no server, no account to ban, no company to sell out. Phones talk directly to each other over Bluetooth and Wi-Fi Direct, and bridge to the open Nostr relay network the moment any device reaches the internet.
 
-Betar is Bengali for wireless (be-, without, plus tar, wire). It is built on Project Mesh, an open protocol and Rust core released under the AGPL-3.0-or-later license. There is no server, no account, no phone number, and no internet permission requested by the app.
+Betar is Bengali for wireless (be-, without, plus tar, wire). It is built on Project Mesh, an open protocol and Rust core released under the AGPL-3.0-or-later license. There is no server, no account, no phone number, ever.
 
-Betar carries: direct and group messaging, emergency alerts with a five-category picker, a community notice and help board, and an offline map. Delivery is best effort and is shown honestly as Waiting, Travelling, Spreading, or Delivered, never as a guaranteed checkmark.
+Betar carries: a public Feed of location-scoped rooms (geohash-based, block to country precision, chronological, no algorithm), direct messages, groups and passphrase-protected channels (all end-to-end encrypted), Community Notes fact-checking (two source links plus a short explanation, publicly and deterministically scored, no central moderator), one-shot location sharing, and panic wipe.
 
-Betar is not a replacement for emergency services where they exist, and has not yet had an independent security review.
+Betar has not yet had an independent security review. No content can be removed from the mesh or relay network once it spreads, by anyone, including the people who built it; Community Notes lets each person's own app locally hide or warn on flagged content instead.
+
+Betar ships on F-Droid and as a direct APK first, not an app store, because app stores are themselves a chokepoint: Bitchat, the app that inspired Betar, was removed from Google Play and the App Store in India on 2026-10-03, and from Apple's China App Store in April 2026.
 
 ## Pages
 
-- [Home](index.html): the promise, what it carries, delivery states, FAQ.
+- [Home](index.html): the tagline, why this exists, how it works, what's inside, FAQ.
 - [About](about.html): the name, the Jagadish Chandra Bose tribute, how Betar relates to Project Mesh.
-- [Safety and limits](safety.html): what best-effort delivery means and what Betar cannot do.
+- [Safety and limits](safety.html): best-effort delivery, no content takedown, one-shot location only.
 - [Privacy](privacy.html): what Betar collects (nothing) and why.
 - [Documents](docs.html): license and links to the technical documentation in the source repository.
 
 ## Source
 
 https://github.com/konkomaji/betar
+
+Developed by Konko Maji: https://konkomaji.com/

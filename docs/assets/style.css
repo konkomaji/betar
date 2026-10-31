@@ -6,21 +6,24 @@
    feel matches the app's Material 3 Expressive language rather than approximating it. */
 
 :root {
-  --brand-blue: #4BA3E0;
-  --deep-blue: #12608F;
-  --off-white-blue: #EEF4F9;
-  --lifted-surface: #F7FAFD;
-  --ink: #101A22;
-  --slate: #4A5B67;
-  --slate-dark: #3A4B57;
-  --secondary-container: #DCE9F5;
-  --on-secondary-container: #0B3A57;
-  --outline: #C4D3DE;
-  --emergency: #C8102E;
-  --connected: #2E7D32;
-  --connected-container: #DCEEDC;
-  --caution: #9A6700;
-  --caution-container: #F6EBD2;
+  /* Recoloured 2026-10-31 for the Civic Calm palette (locked app design system). Variable
+     names kept as-is so every reference below still works; only values changed, from the
+     pre-pivot brand blue to warm sage and cream. */
+  --brand-blue: #5F7D64;
+  --deep-blue: #3F5742;
+  --off-white-blue: #FAF6EF;
+  --lifted-surface: #FFFDF9;
+  --ink: #2F2B26;
+  --slate: #6B6459;
+  --slate-dark: #4A443B;
+  --secondary-container: #E7EFE7;
+  --on-secondary-container: #3F5742;
+  --outline: #E4DBCB;
+  --emergency: #AE5B46;
+  --connected: #5F7D64;
+  --connected-container: #E7EFE7;
+  --caution: #8A5B27;
+  --caution-container: #F4E6D4;
   --max-width: 1080px;
 
   /* Exact clip-path polygons for the design system's category shapes (48-point sampling of
@@ -35,16 +38,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --off-white-blue: #0E161C;
-    --lifted-surface: #16212A;
-    --ink: #DEE6EC;
-    --slate: #A9BAC7;
-    --slate-dark: #C4D3DE;
-    --outline: #344450;
-    --brand-blue: #6FB6E8;
-    --deep-blue: #8FCBF2;
-    --secondary-container: #253645;
-    --on-secondary-container: #DCE9F5;
+    --off-white-blue: #1C1A16;
+    --lifted-surface: #262320;
+    --ink: #EFE9DD;
+    --slate: #B8B0A0;
+    --slate-dark: #D4CCBC;
+    --outline: #3C382F;
+    --brand-blue: #8FAE93;
+    --deep-blue: #A9C7AD;
+    --secondary-container: #324236;
+    --on-secondary-container: #E7EFE7;
   }
 }
 
