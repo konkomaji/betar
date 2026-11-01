@@ -32,10 +32,14 @@ import app.betar.comm.R
 import kotlinx.coroutines.launch
 
 /**
- * DESIGN-BRIEF.md §9 screen 2: three swipeable illustrated panels, eight words or fewer each,
- * with a read-aloud button. Copy is the exact three lines from DESIGN-BRIEF.md §9's own
- * onboarding description, not invented. The illustration itself is a placeholder block (this
- * pass has no illustration asset pipeline), left honestly blank rather than faked.
+ * Three swipeable illustrated panels, rewritten 2026-11-01 for the pivot (disaster-safety app
+ * to censorship-resistant social and chat platform). The three old strings
+ * (R.string.onboarding_panel_1/2/3) were generic enough to survive content-wise, but didn't
+ * carry the new tagline, so this screen uses local literals instead of those resource strings;
+ * a later pass should fold these into strings.xml/values-bn for real localization, not attempted
+ * here since a parallel pass owns that shared file this session. The illustration itself is a
+ * placeholder block (this pass has no illustration asset pipeline), left honestly blank rather
+ * than faked.
  *
  * Read-aloud is a stub: no TTS engine is wired up yet, so the button is present (per the
  * brief's accessibility requirement, "every icon has a spoken label") but does nothing on tap
@@ -44,7 +48,11 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun IntroPagerScreen(onFinished: () -> Unit) {
-    val panels = listOf(R.string.onboarding_panel_1, R.string.onboarding_panel_2, R.string.onboarding_panel_3)
+    val panels = listOf(
+        "Social and chat that keeps working, no matter who tries to shut it off.",
+        "Your phone talks to nearby phones directly. They relay for each other too, so a message can reach someone far outside your own radio range over time.",
+        "No server, no account to ban, no phone number, no email. Just a key pair generated on your own device.",
+    )
     val pagerState = rememberPagerState(pageCount = { panels.size })
     val scope = rememberCoroutineScope()
 
@@ -75,7 +83,7 @@ fun IntroPagerScreen(onFinished: () -> Unit) {
                 )
                 androidx.compose.foundation.layout.Spacer(Modifier.height(24.dp))
                 Text(
-                    stringResource(panels[page]),
+                    panels[page],
                     style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center,
                 )
@@ -87,6 +95,7 @@ fun IntroPagerScreen(onFinished: () -> Unit) {
                         .padding(horizontal = 22.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val playColor = MaterialTheme.colorScheme.primary
                     IconButton(onClick = { /* TODO: no TTS engine wired yet, see class doc */ }, modifier = Modifier.size(24.dp)) {
                         // No material-icons dependency in this project (out of this screen's
                         // scope to add); a plain triangle stands in for a play glyph.
@@ -97,7 +106,7 @@ fun IntroPagerScreen(onFinished: () -> Unit) {
                                 lineTo(0f, size.height)
                                 close()
                             }
-                            drawPath(path, color = Color(0xFF12608F))
+                            drawPath(path, color = playColor)
                         }
                     }
                     androidx.compose.foundation.layout.Spacer(Modifier.size(10.dp))

@@ -107,7 +107,7 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onShowMyCode: () -> Unit, onB
             modifier = Modifier
                 .size(260.dp)
                 .clip(MaterialTheme.shapes.extraLarge)
-                .background(Color(0xFF0B1A24)),
+                .background(MaterialTheme.colorScheme.inverseSurface),
             contentAlignment = Alignment.Center,
         ) {
             if (cameraGranted) {
@@ -115,7 +115,7 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onShowMyCode: () -> Unit, onB
             } else {
                 Text(
                     stringResource(R.string.chats_scan_camera_not_wired),
-                    color = Color(0xFF9FB6C6),
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
                     style = MaterialTheme.typography.labelMedium,
                 )
             }
@@ -135,13 +135,13 @@ fun ScanCodeScreen(onManualAdd: (Contact) -> Unit, onShowMyCode: () -> Unit, onB
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.medium)
-                    .background(Color(0xFFF6EBD2))
+                    .background(MaterialTheme.colorScheme.errorContainer)
                     .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     stringResource(R.string.chats_scan_camera_denied),
-                    color = Color(0xFF5C3D00),
+                    color = MaterialTheme.colorScheme.onErrorContainer,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

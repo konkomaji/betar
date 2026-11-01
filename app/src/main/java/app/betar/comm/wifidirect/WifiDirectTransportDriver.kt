@@ -56,8 +56,8 @@ private const val TAG = "MeshWifiDirect"
  *
  * **Written and compile-verified only -- not run against real Wi-Fi Direct hardware or radios.**
  * This dev environment has no physical Android device and Wi-Fi Direct cannot be meaningfully
- * exercised on the AVD emulator (no virtual Wi-Fi Direct radio), so — like the BLE driver's first
- * pass before a real device existed — this is unverified beyond "it builds," stated plainly per
+ * exercised on the AVD emulator (no virtual Wi-Fi Direct radio), so, like the BLE driver's first
+ * pass before a real device existed, this is unverified beyond "it builds," stated plainly per
  * `docs/IMPLEMENTATION-STATUS.md`'s convention. **Not wired into [app.betar.comm.MeshCoordinator]
  * or any UI yet**: `MeshCoordinator` still hardwires `BleTransportDriver` as the sole
  * [FfiMeshTransport] handed to `FfiMeshNode`; running BLE and Wi-Fi Direct simultaneously needs a

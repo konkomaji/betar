@@ -27,7 +27,7 @@ private const val NOTIFICATION_ID = 1
  *
  * Deliberately thin: owns no mesh logic itself, only the process-lifetime/notification plumbing
  * Android requires of a foreground service. All real mesh behavior stays in [MeshCoordinator]
- * (owned by [MeshApplication], shared with this service and [MainActivity]) — starting this
+ * (owned by [MeshApplication], shared with this service and [MainActivity]). Starting this
  * service is now how [MainActivity] starts the mesh, rather than calling
  * `coordinator.start()` directly, so the mesh's lifetime is tied to the service's, not the
  * activity's.

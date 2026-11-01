@@ -71,17 +71,14 @@ fun ConversationListScreen(
                 }
             }
         }
-        // A plain .padding(20.dp) put this FAB directly under BetarScaffold's persistent SOS
-        // FAB (same BottomEnd corner, near-identical bounds confirmed via uiautomator dump --
-        // SOS drawn on top ate every tap, so "new conversation" was unreachable). The mockup
-        // (scrEmpty() in design/Betar Chats and Onboarding.dc.html) already places this button
-        // at bottom:158 against SOS's own bottom:96, i.e. stacked above it with clearance --
-        // matched here instead of the flat corner padding.
+        // Plain corner padding. The persistent SOS FAB this used to stack above
+        // (BetarScaffold no longer draws one, the pivot removed the emergency flow entirely)
+        // is gone, so there is nothing left to clear.
         FloatingActionButton(
             onClick = onOpenNewConversation,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 20.dp, bottom = 92.dp),
+                .padding(end = 20.dp, bottom = 20.dp),
         ) {
             Text("+", style = MaterialTheme.typography.headlineSmall)
         }

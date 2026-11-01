@@ -82,17 +82,3 @@ object BetarPolygonShapes {
     val hexagon: Shape = regularShape(n = 6, rot = (-Math.PI / 2).toFloat())
     val diamond: Shape = DiamondShape
 }
-
-/**
- * DESIGN-BRIEF.md §6: "Give every emergency and supply category its own shape as well as its
- * own pictogram, so a category is recognisable by silhouette alone." Mapping transcribed from
- * design/Betar Design System.dc.html's `cats()` table: medical=clover, trapped=pentagon,
- * fire=burst, danger=diamond, other=cookie.
- */
-object BetarCategoryShapes {
-    val medical: Shape = BetarPolygonShapes.clover4
-    val trapped: Shape = BetarPolygonShapes.pentagon
-    val fire: Shape = BetarPolygonShapes.burst8
-    val danger: Shape = BetarPolygonShapes.diamond
-    val other: Shape = BetarPolygonShapes.cookie9
-}

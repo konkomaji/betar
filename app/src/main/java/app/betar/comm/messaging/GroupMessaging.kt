@@ -41,7 +41,7 @@ class GroupSession(val label: String, internal val handle: FfiMlsGroupHandle) {
 }
 
 /**
- * MLS groups (RFC 9420) — `CRYPTOGRAPHY.md` §6, wired via `FfiMlsMember`/`FfiMlsGroupHandle`
+ * MLS groups (RFC 9420): `CRYPTOGRAPHY.md` §6, wired via `FfiMlsMember`/`FfiMlsGroupHandle`
  * (`core/src/ffi_groups.rs`, exported earlier this session). Unlike [ChannelMessenger] (anyone
  * with a shared passphrase can join with zero coordination), MLS groups have real membership:
  * joining requires the founder/an existing member to add you from your published `KeyPackage`,
@@ -52,7 +52,7 @@ class GroupSession(val label: String, internal val handle: FfiMlsGroupHandle) {
  * is shared as hex text for someone to paste into [addMember]; the resulting Commit and Welcome
  * come back as hex text too. **Real gap, not silently glossed over:** distributing the Commit to
  * every *other* existing member (so they stay in sync with the new epoch) has no automated
- * transport yet — this pass only wires application-message traffic (`seal_as_envelope`/
+ * transport yet, this pass only wires application-message traffic (`seal_as_envelope`/
  * `open_from_envelope`, `Addressing::Group`) through the mesh automatically, same as
  * [ChannelMessenger]. Commit distribution to the rest of the group is [processCommit], exposed as
  * a manual paste-and-apply action, not an automatic mesh broadcast.
@@ -68,7 +68,7 @@ class GroupSession(val label: String, internal val handle: FfiMlsGroupHandle) {
  * `FfiMlsGroupHandle::loadGroupFromDisk`.
  *
  * **Not done, stated plainly:** unsigned application content is not a concern here (MLS
- * application messages are inherently signed by the sending member's credential — unlike
+ * application messages are inherently signed by the sending member's credential, unlike
  * Broadcast/Channel, this is the one messaging mode that already has real sender authenticity);
  * no member-removal/self-update/external-commit UI (the underlying `groups.rs` doesn't support
  * them yet either); no QR-code KeyPackage/Welcome exchange.

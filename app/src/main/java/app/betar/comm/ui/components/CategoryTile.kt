@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -31,12 +30,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 /**
- * DESIGN-BRIEF.md §9's category picker: "Five very large tiles, each with its own shape,
- * pictogram and word." Also used for the Board/help-and-supply category grid (§9 screens
- * 21-24). States (resting/pressed/selected/unavailable) and colours transcribed from
- * design/Betar Design System.dc.html's `tileStates` table. Tiles are 160x132dp per that file's
- * own note ("so it can be hit one handed, in the rain, without looking"), comfortably above the
- * 56dp minimum touch target DESIGN-BRIEF.md §5.7 requires.
+ * General-purpose large tile with its own shape, pictogram and word -- used by the new-chat
+ * sheet's three options (scan code / join channel / create group) and anywhere else a
+ * shape-distinguished choice tile fits. Tiles are 160x132dp, comfortably above the 56dp minimum
+ * touch target, large enough to hit one-handed without close attention.
+ *
+ * States (resting/pressed/selected/unavailable) rewritten 2026-11-01 to reference
+ * `MaterialTheme.colorScheme` roles instead of hardcoded hex: the previous version was still
+ * the literal pre-pivot brand-blue-era palette, untouched by the Civic Calm recolor, and used
+ * the old emergency red as a generic "selected" colour, the same decorative misuse of the
+ * reserved emergency role already fixed on the website. `primary` (now sage) replaces that.
  */
 @Composable
 fun CategoryTile(
@@ -49,23 +52,24 @@ fun CategoryTile(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
+    val colors = MaterialTheme.colorScheme
 
     val tileBg = when {
-        !available -> Color(0xFFEDF1F5)
-        selected -> Color(0xFFC8102E)
-        pressed -> Color(0xFFF0D9DD)
-        else -> Color(0xFFF7FAFD)
+        !available -> colors.surfaceVariant
+        selected -> colors.primary
+        pressed -> colors.primaryContainer
+        else -> colors.surface
     }
     val shapeFill = when {
-        !available -> Color(0xFFA8BAC7)
-        selected -> Color.White
-        pressed -> Color(0xFF8C0B20)
-        else -> Color(0xFFC8102E)
+        !available -> colors.outline
+        selected -> colors.onPrimary
+        pressed -> colors.primary
+        else -> colors.primary
     }
     val fg = when {
-        !available -> Color(0xFF7A8892)
-        selected -> Color.White
-        else -> Color(0xFF101A22)
+        !available -> colors.onSurfaceVariant
+        selected -> colors.onPrimary
+        else -> colors.onSurface
     }
 
     val animatedBg by animateColorAsState(tileBg, label = "tile-bg")

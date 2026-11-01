@@ -56,7 +56,7 @@ fun LanguagePickerScreen(onLanguageSelected: (String) -> Unit) {
         modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.size(56.dp).clip(BetarPolygonShapes.cookie9).background(Color(0xFF4BA3E0)))
+        Box(Modifier.size(56.dp).clip(BetarPolygonShapes.cookie9).background(MaterialTheme.colorScheme.tertiary))
         androidx.compose.foundation.layout.Spacer(Modifier.height(12.dp))
         Text("Betar", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
         androidx.compose.foundation.layout.Spacer(Modifier.height(24.dp))

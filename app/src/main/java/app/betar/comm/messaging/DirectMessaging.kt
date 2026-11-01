@@ -28,7 +28,7 @@ private const val FINGERPRINT_BYTES = 32
 private const val DIRECT_TTL_HOPS: UByte = 8u
 private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOCOL.md's example 24-72h range
 
-// MAGIC_PREKEY_BUNDLE lives in CivicPost.kt (shared magic-byte registry), not here -- see its doc
+// MAGIC_PREKEY_BUNDLE lives in AppPost.kt (shared magic-byte registry), not here -- see its doc
 // comment for why: BroadcastMessaging.kt's exclusion check needs to know about every reserved
 // magic byte, and a private-here constant already let that check silently miss this one once.
 private const val PREKEY_INITIAL_BATCH: UInt = 10u
@@ -68,16 +68,16 @@ class Contact(val fingerprintHex: String) {
  * `Envelope.sealed` fully opaque, per `docs/ARCHITECTURE.md` §1): a Direct envelope's `sealed`
  * bytes are `[msg_type: 1 byte][sender_fingerprint: 32 bytes][payload]`. The sender fingerprint
  * is needed because Noise `XX` deliberately hides static identity keys until partway through the
- * handshake (that's the whole point of `XX`'s identity-hiding property, `CRYPTOGRAPHY.md` §4.1)
- * — the *envelope's* `Addressing::Direct` target is the *recipient*, so without this prefix the
+ * handshake (that's the whole point of `XX`'s identity-hiding property, `CRYPTOGRAPHY.md` §4.1).
+ * The *envelope's* `Addressing::Direct` target is the *recipient*, so without this prefix the
  * receiver of a first handshake message would have no way to know which contact it came from.
  * This doesn't newly leak much: Direct addressing already reveals "an envelope for fingerprint X
  * exists" to every relay; naming the sender too is a small addition to that same surface, not a
  * new category of exposure, and application ciphertext integrity is Double-Ratchet-AEAD-backed
  * regardless of whether this routing hint is honest.
  *
- * **Who initiates:** both sides may `addContact()` each other around the same time, so — same
- * pattern already used for the BLE dual-role connect race (`ble/BlePeerRegistry.kt`) — whichever
+ * **Who initiates:** both sides may `addContact()` each other around the same time, so, same
+ * pattern already used for the BLE dual-role connect race (`ble/BlePeerRegistry.kt`), whichever
  * fingerprint sorts lower initiates the Noise handshake; the other waits for message 1.
  *
  * **Receiving is polling-based**, not event-driven: `FfiMeshNode` has no "a new envelope
@@ -91,21 +91,21 @@ class Contact(val fingerprintHex: String) {
  * a restored contact starts at `NO_SESSION` and needs a fresh Noise handshake next contact
  * window, same as any other new contact; only the fact that you'd already added them survives.
  * Persisting the live ratchet session itself is a separate, larger task (it's forward-secret key
- * material, not inert metadata like a fingerprint — serializing it to disk is a real security
- * design question, not attempted this pass) — not silently folded into "Direct persists now."
- * No QR-code trust establishment (`CRYPTOGRAPHY.md` §3's ideal is scanning a QR in person — this
+ * material, not inert metadata like a fingerprint, serializing it to disk is a real security
+ * design question, not attempted this pass), not silently folded into "Direct persists now."
+ * No QR-code trust establishment (`CRYPTOGRAPHY.md` §3's ideal is scanning a QR in person, this
  * pass only supports pasting a fingerprint hex, with the safety string still available for
  * spoken/visual comparison).
  *
  * **Async (offline-first-contact) bootstrap, wired this pass:** the interactive Noise handshake
- * above requires both parties to have a mesh contact window open around the same time — this
+ * above requires both parties to have a mesh contact window open around the same time, this
  * device's own [FfiHybridPrekeyPool] (hybrid X3DH + PQXDH, `core/src/ffi_prekey.rs`) is published
- * as a magic-byte-prefixed Broadcast envelope (`MAGIC_PREKEY_BUNDLE`, mirrors `CivicPost.kt`'s
+ * as a magic-byte-prefixed Broadcast envelope (`MAGIC_PREKEY_BUNDLE`, mirrors `AppPost.kt`'s
  * framing) so a contact who's never online at the same time can still bootstrap a session:
  * whoever last received this device's bundle can [initiateAsync] against it, which composes a
  * ready-to-use session locally and sends the resulting "first contact" message
  * (`MSG_TYPE_ASYNC_INIT`) through the ordinary store-and-forward mesh for this device to consume
- * whenever it's next in contact — no live round trip needed on either side. Deliberately **opt-in
+ * whenever it's next in contact, no live round trip needed on either side. Deliberately **opt-in
  * per contact**, not auto-fired alongside every interactive attempt, to avoid two different
  * session-establishment mechanisms racing for the same contact.
  *

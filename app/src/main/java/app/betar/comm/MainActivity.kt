@@ -12,8 +12,8 @@ import app.betar.comm.ui.theme.ThemeMode
 
 /**
  * Entry point. The real screen tree lives in [app.betar.comm.ui.BetarApp]
- * (onboarding gate, then the five-destination shell with the emergency flow reachable from its
- * persistent SOS button) -- this class now only owns the theme wrapper.
+ * (onboarding gate, then the four-destination shell: Feed, Nearby, Chats, You) -- this class
+ * now only owns the theme wrapper.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

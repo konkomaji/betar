@@ -95,7 +95,7 @@ fun LanguageScreen(modifier: Modifier = Modifier) {
                     Text(
                         lang.english,
                         style = MaterialTheme.typography.labelMedium,
-                        color = if (isOn) Color(0xFFBFDDF3) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (isOn) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 if (isOn) {

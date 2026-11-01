@@ -34,16 +34,16 @@ fun DocumentsIndexScreen(
     onOpenPermissions: () -> Unit = {},
     onOpenLicenses: () -> Unit = {},
     onOpenAbout: () -> Unit = {},
-    onOpenStormGuide: () -> Unit = {},
+    onOpenGuide: () -> Unit = {},
 ) {
     val rows = listOf(
+        Triple(stringResource(R.string.doc_guide_title), stringResource(R.string.documents_index_guide_hint), onOpenGuide),
         Triple(stringResource(R.string.doc_privacy_title), stringResource(R.string.documents_index_privacy_hint), onOpenPrivacy),
         Triple(stringResource(R.string.doc_terms_title), stringResource(R.string.documents_index_terms_hint), onOpenTerms),
         Triple(stringResource(R.string.doc_safety_title), stringResource(R.string.documents_index_safety_hint), onOpenSafety),
         Triple(stringResource(R.string.doc_permissions_title), stringResource(R.string.documents_index_permissions_hint), onOpenPermissions),
         Triple(stringResource(R.string.doc_licenses_title), stringResource(R.string.documents_index_licenses_hint), onOpenLicenses),
         Triple(stringResource(R.string.doc_about_title), stringResource(R.string.documents_index_about_hint), onOpenAbout),
-        Triple(stringResource(R.string.doc_storm_guide_title), stringResource(R.string.documents_index_storm_guide_hint), onOpenStormGuide),
     )
 
     LazyColumn(contentPadding = PaddingValues(20.dp)) {

@@ -2,13 +2,11 @@ package app.betar.comm
 
 import android.app.Application
 import app.betar.comm.messaging.BroadcastMessenger
-import app.betar.comm.messaging.BulletinMessenger
 import app.betar.comm.messaging.ChannelMessenger
 import app.betar.comm.messaging.DirectMessenger
+import app.betar.comm.messaging.FeedMessenger
 import app.betar.comm.messaging.GroupMessenger
-import app.betar.comm.messaging.MapPinMessenger
-import app.betar.comm.messaging.ResourceMessenger
-import app.betar.comm.messaging.SosMessenger
+import app.betar.comm.messaging.NotesMessenger
 import uniffi.mesh_core.FfiIdentity
 
 /**
@@ -19,12 +17,20 @@ import uniffi.mesh_core.FfiIdentity
  * so the mesh keeps running while backgrounded, see `docs/IMPLEMENTATION-STATUS.md`.
  *
  * [identity]: a single stable identity for the whole app session, used by [directMessenger] for
- * Direct-message addressing and the handshake initiator tie-break. **Persisted across restarts**
- * via [KeystoreIdentityStore] -- the fingerprint stays stable and Direct contacts are no longer
- * silently orphaned by every process restart, the biggest gap this session's own product-review
- * demo surfaced. [groupMessenger]'s MLS groups and [directMessenger]'s hybrid prekey pool persist
- * across restarts too (Keystore-wrapped signers/secrets, AEAD-sealed group snapshots) -- see
- * their own class docs.
+ * Direct-message addressing and the handshake initiator tie-break, and as the source of the
+ * short fingerprint ID shown throughout onboarding and Profile (see `docs/THREAT-MODEL.md`'s
+ * identity-system section: the ID is a derivation of this key, never a separately issued one).
+ * **Persisted across restarts** via [KeystoreIdentityStore] -- the fingerprint stays stable and
+ * Direct contacts are no longer silently orphaned by every process restart, the biggest gap
+ * this session's own product-review demo surfaced. [groupMessenger]'s MLS groups and
+ * [directMessenger]'s hybrid prekey pool persist across restarts too (Keystore-wrapped
+ * signers/secrets, AEAD-sealed group snapshots) -- see their own class docs.
+ *
+ * Pivoted 2026-11-01: [sosMessenger]/[bulletinMessenger]/[resourceMessenger]/[mapMessenger]
+ * (SOS, disaster bulletin board, community resource board, offline map pins) are removed, not
+ * repurposed, those features are cut. [feedMessenger] and [notesMessenger] replace them for the
+ * new geohash-scoped Feed and Community Notes features, both built on `AppPost.kt`'s wire
+ * framing, the direct successor to the old `CivicPost.kt`.
  */
 class MeshApplication : Application() {
     val coordinator: MeshCoordinator by lazy { MeshCoordinator(this) }
@@ -33,8 +39,6 @@ class MeshApplication : Application() {
     val broadcastMessenger: BroadcastMessenger by lazy { BroadcastMessenger(coordinator) }
     val channelMessenger: ChannelMessenger by lazy { ChannelMessenger(this, coordinator) }
     val groupMessenger: GroupMessenger by lazy { GroupMessenger(this, identity, coordinator) }
-    val sosMessenger: SosMessenger by lazy { SosMessenger(coordinator) }
-    val bulletinMessenger: BulletinMessenger by lazy { BulletinMessenger(coordinator) }
-    val resourceMessenger: ResourceMessenger by lazy { ResourceMessenger(coordinator) }
-    val mapMessenger: MapPinMessenger by lazy { MapPinMessenger(coordinator) }
+    val feedMessenger: FeedMessenger by lazy { FeedMessenger(coordinator) }
+    val notesMessenger: NotesMessenger by lazy { NotesMessenger(coordinator) }
 }

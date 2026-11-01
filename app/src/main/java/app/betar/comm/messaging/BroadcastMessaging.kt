@@ -24,8 +24,8 @@ data class BroadcastPost(val text: String, val idHex: String)
  * Real signing is a separate, contained follow-up once `FfiIdentity::sign` is exported -- not
  * bundled into this pass silently.
  *
- * Excludes anything matching [isReservedBroadcastMagic] (SOS/bulletin/resource-board posts, and
- * `DirectMessaging.kt`'s prekey-bundle announcement -- see `CivicPost.kt`) so those don't leak
+ * Excludes anything matching [isReservedBroadcastMagic] (Feed posts, Community Notes, and
+ * `DirectMessaging.kt`'s prekey-bundle announcement -- see `AppPost.kt`) so those don't leak
  * into this plain-chat feed as garbled text.
  */
 class BroadcastMessenger(private val coordinator: MeshCoordinator) {

@@ -24,7 +24,7 @@ private const val TAG = "OemBatteryGuidance"
  * **Honest limit:** the vendor-specific component names below are reasoned from
  * publicly-documented, community-collected values (the standard reference point every
  * cross-platform background-service library uses, since no OEM publishes an official API for
- * this) — **not verified against every OEM/OS-version combination**, and will drift as vendors
+ * this), **not verified against every OEM/OS-version combination**, and will drift as vendors
  * rename or remove these screens across updates. Flagged plainly rather than presented as
  * guaranteed to work, matching this project's convention for every other untested-at-scale
  * default (rate limits, puzzle difficulty, Argon2id parameters, BLE connection cap).

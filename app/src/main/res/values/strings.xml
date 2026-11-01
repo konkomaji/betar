@@ -23,12 +23,12 @@
     <string name="onboarding_permission_nearby_title">Nearby devices</string>
     <string name="onboarding_permission_nearby_body">So your phone can see other phones and hand messages to them.</string>
     <string name="onboarding_permission_location_title">Location while using</string>
-    <string name="onboarding_permission_location_body">Only to put your alert on the map. Off unless you turn it on.</string>
+    <string name="onboarding_permission_location_body">Only to tag a post to a location-scoped room, or to share your location once in a chat. Off unless you choose it, never continuous.</string>
     <string name="onboarding_permission_mic_title">Microphone</string>
     <string name="onboarding_permission_mic_body">So you can send a voice note instead of typing.</string>
     <string name="onboarding_permission_notifications_title">Notifications</string>
     <string name="onboarding_permission_notifications_body">So you hear an alert when the phone is in your pocket.</string>
-    <string name="onboarding_permission_no_internet_note">Betar does not ask for internet at all. It cannot, and that is on purpose.</string>
+    <string name="onboarding_permission_no_internet_note">Betar never needs your internet connection to work with people nearby. If any device near you reaches the internet, it bridges content further, but that is never required.</string>
     <string name="onboarding_permissions_allow_button">Allow these</string>
     <string name="onboarding_battery_title">Keep Betar awake</string>
     <string name="onboarding_battery_warning">Your phone stops apps to save battery. Betar has to stay awake to carry messages.</string>
@@ -96,34 +96,6 @@
     <string name="group_apply_commit_button">Apply</string>
     <string name="group_apply_commit_failed">Commit didn\'t apply -- wrong group or stale epoch</string>
 
-    <!-- Offline map (rendering pipeline only this pass; see MapScreen.kt's class doc) -->
-    <string name="map_title">Offline map (preview)</string>
-    <string name="map_subtitle">Renders with zero network calls -- no real map data loaded yet, see class doc.</string>
-
-    <!-- Map tab real screens (DESIGN-BRIEF.md §9 screens 30-32) -->
-    <string name="map_offline_tiles_label">offline tiles, stored on this phone</string>
-    <string name="map_empty_illustration_label">Illustration: a folded paper map being handed over</string>
-    <string name="map_empty_title">No map of this area yet</string>
-    <string name="map_empty_body">Maps are carried between phones like everything else.</string>
-    <string name="map_empty_source_has_data">Has this area\'s map data</string>
-    <string name="map_empty_take_button">Take the map from %1$s</string>
-    <string name="map_drop_pin_title">Drop a pin</string>
-    <string name="map_drop_pin_category_label">Category</string>
-    <string name="map_drop_pin_button">Drop pin</string>
-
-    <!-- Civic broadcast features: SOS, disaster bulletin board, community resource board -->
-    <string name="sos_title">Emergency SOS</string>
-    <string name="sos_subtitle">One-tap high-priority broadcast -- no device location this pass, see class doc.</string>
-    <string name="sos_whats_happening_label">What\'s happening</string>
-    <string name="sos_send_button">Send SOS</string>
-    <string name="sos_acknowledged">Acknowledged</string>
-    <string name="sos_not_acknowledged">Not yet acknowledged</string>
-    <string name="bulletin_title">Disaster bulletin board</string>
-    <string name="bulletin_label">Bulletin</string>
-    <string name="resource_title">Community resource board</string>
-    <string name="resource_details_label">Details</string>
-    <string name="post_prefixed_category">[%1$s] %2$s</string>
-    <string name="resource_post_prefixed">[%1$s/%2$s] %3$s</string>
 
     <!-- Shared action labels -->
     <string name="action_post">Post</string>
@@ -133,28 +105,6 @@
     <string name="action_send">Send</string>
     <string name="action_acknowledge">Acknowledge</string>
 
-    <!-- Category glossary: kept consistent across SOS/bulletin/resource board per
-         docs/LOCALIZATION-UX.md SS1's "glossary so safety-critical terms are consistent". -->
-    <string name="category_medical">Medical</string>
-    <string name="category_trapped">Trapped</string>
-    <string name="category_fire">Fire</string>
-    <string name="category_violence">Violence</string>
-    <string name="category_other">Other</string>
-    <string name="category_relief_camp">Relief camp</string>
-    <string name="category_food">Food</string>
-    <string name="category_water">Water</string>
-    <string name="category_medicine">Medicine</string>
-    <string name="category_road_status">Road/bridge status</string>
-    <string name="category_shelter">Shelter</string>
-    <string name="category_missing_person">Missing person</string>
-    <string name="category_transport">Transport</string>
-    <string name="category_tools">Tools</string>
-    <string name="category_blood_donor">Blood donor</string>
-    <string name="category_charging">Charging point</string>
-    <string name="category_labour">Labour</string>
-    <string name="resource_kind_have">Have</string>
-    <string name="resource_kind_need">Need</string>
-    <string name="category_selected">[%1$s]</string>
 
     <!-- Documents (DESIGN-BRIEF.md §9 screens 40-46), real final copy, adapted from the same
          text already published on the public site (docs/privacy.html, docs/safety.html,
@@ -163,12 +113,10 @@
     <string name="doc_stop_reading_button">Stop</string>
 
     <string name="doc_privacy_title">Privacy</string>
-    <string name="doc_privacy_summary">The short version: Betar collects nothing. There is no server, and nothing you write in the app ever leaves the phones it travels between.</string>
     <string name="doc_privacy_no_have_title">What Betar does not have</string>
     <string name="doc_privacy_no_account">No account: no signup, no email, no phone number, no login.</string>
     <string name="doc_privacy_no_analytics">No analytics: no usage tracking, no crash reports sent anywhere.</string>
     <string name="doc_privacy_no_ads">No advertising: nothing to sell, nothing to target.</string>
-    <string name="doc_privacy_no_internet">No internet permission: the app does not request it at all. There is nowhere for your data to go.</string>
     <string name="doc_privacy_stored_title">What is stored, and where</string>
     <string name="doc_privacy_stored_body">A device identity and its keys are generated on first launch and kept only on the device, encrypted at rest. Messages you send or receive are kept on your device and on the devices that carry them until they reach where they are going, or until you delete them. Nothing is uploaded to a server, because there is no server.</string>
     <string name="doc_privacy_nearby_title">What nearby phones can and cannot see</string>
@@ -181,26 +129,19 @@
     <string name="doc_privacy_verify_body">Every claim on this page is verifiable in the source code, and the app requests no internet permission at all, which anyone can confirm.</string>
 
     <string name="doc_terms_title">Terms of use</string>
-    <string name="doc_terms_summary">Short and human: use it well, it comes with no warranty, and it is not an emergency service.</string>
     <string name="doc_terms_acceptable_use_title">Acceptable use</string>
     <string name="doc_terms_acceptable_use_body">Use Betar to reach people nearby when the network cannot. Do not use it to harm, harass or deceive anyone you reach through it.</string>
     <string name="doc_terms_no_warranty_title">No warranty</string>
     <string name="doc_terms_no_warranty_body">The software is provided as is, without warranty of any kind, express or implied.</string>
     <string name="doc_terms_community_title">Community maintained</string>
     <string name="doc_terms_community_body">Betar is maintained by its contributors as open source software, not by a company. No company is named here because none exists.</string>
-    <string name="doc_terms_not_emergency_title">Not an emergency service</string>
-    <string name="doc_terms_not_emergency_body">Betar is not a replacement for emergency services where they exist. See Safety and limits for what it can and cannot do.</string>
 
     <string name="doc_safety_title">Safety and limits</string>
-    <string name="doc_safety_summary">This is the most important document in the app. Read it before you rely on Betar in an emergency.</string>
-    <string name="doc_safety_not_replacement">Betar is not a replacement for emergency services where they exist. If a phone line, ambulance service or emergency broadcast is available to you, use it. Betar is for when none of those reach you.</string>
     <string name="doc_safety_best_effort_title">Delivery is best effort</string>
     <string name="doc_safety_best_effort_body">A message moves only when your phone comes within Bluetooth or Wi-Fi Direct range of another phone running Betar. There is no guarantee a message arrives, and no guarantee of how long it takes: minutes, hours, or never, depending entirely on which phones happen to be nearby and moving.</string>
     <string name="doc_safety_no_range_body">Betar cannot help if no other phone is in range. It carries messages between the phones that are actually present. It cannot conjure a path that does not exist.</string>
     <string name="doc_safety_no_review_title">No independent security review yet</string>
     <string name="doc_safety_no_review_body">The cryptography and protocol design follow established, published approaches, but the implementation has not yet had an independent audit. Treat it as you would any early-stage software handling sensitive communication: useful, actively developed, not yet independently verified.</string>
-    <string name="doc_safety_alert_title">What an emergency alert actually does</string>
-    <string name="doc_safety_alert_body">Sending an alert hands it to nearby phones, the same way any message travels. The app shows real counts (how many phones are carrying it, how many people acknowledged it), never an invented delivered status. Location sharing is off by default; turning it on helps people find you, and also means your location travels with the alert to everyone who receives it.</string>
 
     <string name="doc_permissions_title">Permissions explained</string>
     <string name="doc_permissions_summary">Every permission Betar asks for exists to find and talk to nearby phones. Nothing else.</string>
@@ -209,8 +150,6 @@
     <string name="doc_permissions_location">Location: required by the operating system for nearby-device discovery on some Android versions, not used to track where you are.</string>
     <string name="doc_permissions_notifications">Notifications: to show that mesh relay is running in the background.</string>
     <string name="doc_permissions_battery">Battery optimization exemption: so relay keeps working while the app is backgrounded. Optional.</string>
-    <string name="doc_permissions_no_internet_title">Why there is no internet permission</string>
-    <string name="doc_permissions_no_internet_body">Betar does not request internet access at all. It has no server to talk to, so it does not need one, and anyone can confirm this by reading the app\'s manifest in the source code.</string>
 
     <string name="doc_licenses_title">Open source licenses</string>
     <string name="doc_licenses_summary">Betar is AGPL-3.0: anyone may use, study, change and share it, and must keep a changed version open too.</string>
@@ -218,7 +157,7 @@
     <string name="doc_licenses_third_party_body">Jetpack Compose, Material3 and Navigation Compose (Apache-2.0). AndroidX Core and Activity (Apache-2.0). Material Components for Android (Apache-2.0). JNA (Apache-2.0 or LGPL-2.1, dual licensed). MapLibre Native Android SDK (BSD-2-Clause).</string>
 
     <string name="doc_about_title">About Betar</string>
-    <string name="doc_about_summary">Betar is communication and safety infrastructure that works with no SIM, no internet, no router and no cell tower. It is built on Project Mesh, the open protocol and Rust core that makes it work.</string>
+    <string name="doc_about_summary">Betar is a censorship-resistant social and chat app: no server to ban an account or remove a post, no SIM required, works over Bluetooth and Wi-Fi Direct first. It is built on Project Mesh, the open protocol and Rust core that makes it work.</string>
     <string name="doc_about_name_title">The name</string>
     <string name="doc_about_name_body">Betar (বেতার) is Bengali for wireless: literally be- (without) and tar (wire).</string>
     <string name="doc_about_bose_body">It honours Jagadish Chandra Bose. In November 1895, in Calcutta, he sent radio waves through two walls and a seated man\'s body to ring a bell and set off gunpowder in the next room, a public demonstration of wireless transmission before Marconi\'s own. He worked at millimetre wavelengths a century before ordinary phones got there, and he refused to patent any of it because he believed the work belonged to everyone.</string>
@@ -226,27 +165,20 @@
     <string name="doc_about_license_body">Betar is open source under AGPL-3.0. Same idea, roughly a hundred and thirty years later.</string>
     <string name="doc_about_mesh_title">Betar and Project Mesh</string>
     <string name="doc_about_mesh_body">Project Mesh is the name of the open protocol and the Rust core underneath: identity, encryption, message routing, the pieces that make phone to phone delivery work without a server. Betar is the application built on top of it, and the name most people will actually use.</string>
-    <string name="doc_about_attribution_title">Attribution</string>
-    <string name="doc_about_attribution_body">No individual is named here, and none is named anywhere in the app. Attribution goes to the project and to its source code, which anyone can read, build and check. Translators and contributors are credited as a group, not as named individuals.</string>
     <string name="doc_about_version">Version %1$s</string>
     <string name="doc_about_repo_button">View the source</string>
 
-    <string name="doc_storm_guide_title">How to use this in a storm</string>
-    <string name="doc_storm_guide_summary">A short guide for before and during a storm. No internet needed to read it.</string>
-    <string name="doc_storm_guide_charge">Charge your phone early, before the storm arrives.</string>
-    <string name="doc_storm_guide_relay">Turn relay on and leave it on, so your phone can carry messages for others nearby.</string>
-    <string name="doc_storm_guide_keep_open">Keep the app open, or at least backgrounded and not force-closed, while you are in a shelter.</string>
-    <string name="doc_storm_guide_send_alert">To send an emergency alert: open the SOS button, pick a category, and slide to send.</string>
-    <string name="doc_storm_guide_help_carry">You help others just by having the app open nearby: your phone can carry their messages onward even if you do nothing else.</string>
+    <string name="doc_guide_title">How Betar works</string>
+    <string name="doc_guide_summary">Local mesh, the relay bridge, Feed rooms, Community Notes, your ID, and panic wipe, in plain language.</string>
 
     <string name="documents_index_title">Documents</string>
+    <string name="documents_index_guide_hint">Local mesh, the relay bridge, Feed rooms, Community Notes, and your ID, explained.</string>
     <string name="documents_index_privacy_hint">What Betar collects (nothing) and why.</string>
     <string name="documents_index_terms_hint">Acceptable use, no warranty, community maintained.</string>
     <string name="documents_index_safety_hint">What best effort delivery means, and what Betar cannot do.</string>
     <string name="documents_index_permissions_hint">One card per permission, in plain language.</string>
     <string name="documents_index_licenses_hint">AGPL-3.0 and the third party components inside.</string>
     <string name="documents_index_about_hint">The name, the Bose tribute, and how Betar relates to Project Mesh.</string>
-    <string name="documents_index_storm_guide_hint">A short offline guide for before and during a storm.</string>
 
     <!-- Nearby tab (DESIGN-BRIEF.md §9 screens 18-20) -->
     <string name="nearby_empty_title">No phones nearby yet</string>
@@ -296,82 +228,14 @@
     <string name="chats_group_open_conversation">Open conversation</string>
     <string name="chats_open_group_reminder">Anyone who knows the name and passphrase can read this</string>
 
-    <!-- Emergency flow (DESIGN-BRIEF.md §9 screens 25-29), "the highest stakes flow in the
-         app". Copy transcribed from design/Betar Design System.dc.html's working prototype. -->
-    <string name="emergency_what_is_happening">What is happening?</string>
-    <string name="emergency_press_hold_hint">Press and hold a tile to hear it read out.</string>
-    <string name="emergency_travel_note">Your alert travels phone to phone. It reaches people who are nearby now, and further as phones move. It is not a call to emergency services.</string>
-    <string name="emergency_share_location_title">Share where you are</string>
-    <string name="emergency_share_location_off_by_default">Off by default.</string>
-    <string name="emergency_share_location_on_note">Anyone who receives this alert will see where you were when you sent it. That is how people find you fastest.</string>
-    <string name="emergency_share_location_off_note">Nobody will know where to look for you. Turn this on if you want to be found.</string>
-    <string name="emergency_say_whats_wrong">Say what is wrong</string>
-    <string name="emergency_voice_not_wired_note">Voice notes are not wired up yet in this build. Optional.</string>
-    <string name="emergency_add_words_optional">Add words (optional)</string>
-    <string name="emergency_continue">Continue</string>
-    <string name="emergency_send_to_everyone">Send this alert to everyone nearby</string>
-    <string name="emergency_location_included">Your location is included.</string>
-    <string name="emergency_location_not_included">Your location is not included.</string>
-    <string name="emergency_slide_to_send">Slide to send</string>
-    <string name="emergency_slide_hint">A slide, so it cannot go off in your pocket.</string>
-    <string name="emergency_alert_travelling">Your alert is travelling</string>
-    <string name="emergency_marked_resolved">Marked resolved</string>
-    <string name="emergency_still_looking">Still looking for phones nearby</string>
-    <string name="emergency_connected_to_n_phones">Connected to %1$d phones nearby right now</string>
-    <string name="emergency_acknowledged">Someone has acknowledged</string>
-    <string name="emergency_not_acknowledged">Nobody has acknowledged yet</string>
-    <string name="emergency_disclaimer_note">This shows phones your device can currently reach, not proof this exact alert reached them. That count can go down as phones move away. It is what is true right now, not a promise.</string>
-    <string name="emergency_i_am_safe">I am safe now</string>
-    <string name="emergency_resolved">Resolved</string>
-    <string name="emergency_cancel_alert">Cancel this alert</string>
-
-    <!-- Board (DESIGN-BRIEF.md §9 screens 21-24): Alerts, Notices, Help behind one segmented
-         control. Category labels reuse the existing category_*/resource_kind_* strings above. -->
-    <string name="board_tab_alerts">Alerts</string>
-    <string name="board_tab_notices">Notices</string>
-    <string name="board_tab_help">Help</string>
-    <string name="board_alerts_empty_title">No emergencies nearby</string>
-    <string name="board_alerts_empty_body">Alerts from other phones show here as they arrive. Keep the app running so your phone can pick them up and pass them on.</string>
-    <string name="board_i_am_coming_to_help">I am coming to help</string>
-    <string name="board_notices_empty_title">No notices yet</string>
-    <string name="board_notices_empty_body">Notices from nearby phones show here as they arrive.</string>
-    <string name="board_help_empty_title">Nothing posted yet</string>
-    <string name="board_help_empty_body">Have something to offer, or something you need? Put up a notice.</string>
-    <string name="board_put_up_notice">Put up a notice</string>
-    <string name="board_pick_picture_first">Pick a picture first</string>
-    <string name="board_add_words_optional">Add words (optional)</string>
-    <string name="board_put_it_up">Put it up</string>
-    <string name="board_time_just_now">just now</string>
-    <string name="board_time_minutes_ago">%1$d min ago</string>
-    <string name="board_time_hours_ago">%1$d h ago</string>
-    <string name="board_time_days_ago">%1$d d ago</string>
-
     <!-- You tab (DESIGN-BRIEF.md §9 screens 33-39) -->
     <string name="you_row_language">Language</string>
-    <string name="you_row_readiness">Ready for a storm</string>
-    <string name="you_row_carrying">Carrying for others</string>
     <string name="you_row_appearance">Appearance</string>
     <string name="you_row_privacy">Privacy</string>
     <string name="you_scannable_code_placeholder">Scannable code</string>
     <string name="you_verification_code_label">Short verification code</string>
     <string name="you_copy_identity_button">Copy</string>
     <string name="you_language_note">Changing this changes the app straight away. Nothing is downloaded.</string>
-    <string name="you_readiness_bluetooth">Bluetooth is on</string>
-    <string name="you_readiness_ready">Ready</string>
-    <string name="you_readiness_bluetooth_off">Turn Bluetooth on in the mesh screen</string>
-    <string name="you_readiness_permissions">Nearby permission given</string>
-    <string name="you_readiness_permissions_missing">Needs your permission</string>
-    <string name="you_readiness_background">Betar can stay awake</string>
-    <string name="you_readiness_background_blocked">Your phone is shutting it down</string>
-    <string name="you_readiness_notifications">Notifications on</string>
-    <string name="you_readiness_notifications_off">Not allowed yet</string>
-    <string name="you_readiness_needs_fixing">Something needs fixing</string>
-    <string name="you_readiness_check_before_storm">Check this list before bad weather, while you still have time.</string>
-    <string name="you_readiness_fix_button">Fix</string>
-    <string name="you_carrying_headline">You are holding %1$d messages for people around you</string>
-    <string name="you_carrying_body">This is a real contribution: your phone keeps other people\'s messages moving even when you are not part of the conversation.</string>
-    <string name="you_carrying_storage_title">Storage set aside</string>
-    <string name="you_carrying_storage_body">How much space Betar can use to carry messages for others.</string>
     <string name="you_appearance_light">Light</string>
     <string name="you_appearance_dark">Dark</string>
     <string name="you_appearance_follow_system">Follow phone</string>
@@ -381,9 +245,9 @@
     <string name="you_privacy_decoy_title">Decoy passphrase</string>
     <string name="you_privacy_decoy_body">A second passphrase that opens an ordinary looking, empty Betar.</string>
     <string name="you_privacy_erase_title">Erase everything</string>
-    <string name="you_privacy_erase_body">Removes your messages, your nickname, what you are carrying and the keys underneath. It cannot be undone, and there is no copy anywhere else.</string>
+    <string name="you_privacy_erase_body">Removes your messages, your username and the keys underneath, and permanently retires your ID. Opening Betar again after that creates a brand new one. It cannot be undone, and there is no copy anywhere else.</string>
     <string name="you_privacy_wiped_title">Everything is gone</string>
-    <string name="you_privacy_wiped_body">Your messages, your nickname, what you were carrying and the keys underneath have been removed from this phone. There is no copy anywhere else.</string>
+    <string name="you_privacy_wiped_body">Your messages, your username and the keys underneath have been removed from this phone, and your ID is retired for good. There is no copy anywhere else.</string>
     <string name="you_privacy_hold_to_erase">Hold to erase</string>
     <string name="you_privacy_keep_holding">Keep holding…</string>
     <string name="you_privacy_wipe_done">Done</string>

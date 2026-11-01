@@ -33,33 +33,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.betar.comm.MeshApplication
 import app.betar.comm.R
+import app.betar.comm.ui.screens.onboarding.IdentityStore
 import app.betar.comm.ui.theme.BetarPolygonShapes
 
-private const val NICKNAME_PREFS = "betar_nickname"
-private const val NICKNAME_KEY = "nickname"
-
-/** No nickname concept exists at the FFI/backend layer yet -- this is a real, local-only,
- * unencrypted (non-sensitive) preference, not a synced or backend-known value. */
-private fun loadOrGenerateNickname(context: Context, fallbackSeed: String): String {
-    val prefs = context.getSharedPreferences(NICKNAME_PREFS, Context.MODE_PRIVATE)
-    prefs.getString(NICKNAME_KEY, null)?.let { return it }
-    val generated = "Traveller-${fallbackSeed.take(4)}"
-    prefs.edit().putString(NICKNAME_KEY, generated).apply()
-    return generated
-}
-
-private fun saveNickname(context: Context, nickname: String) {
-    context.getSharedPreferences(NICKNAME_PREFS, Context.MODE_PRIVATE).edit()
-        .putString(NICKNAME_KEY, nickname).apply()
-}
-
-/** DESIGN-BRIEF.md §9 screen 33 (identity card) plus the settings list that fans out to
- * screens 34-39. Row copy/layout transcribed from design/Betar Group and Settings.dc.html. */
+/** Identity card plus the settings list. Pivoted 2026-11-01: Readiness and Carrying rows
+ * (disaster-specific) are removed, not repurposed.
+ *
+ * Consolidated 2026-11-01 onto [IdentityStore] (`ui/screens/onboarding/IdentityStore.kt`),
+ * the same store onboarding's identity step uses. This screen used to carry its own private,
+ * separately-keyed nickname store, which could disagree with onboarding's about the user's
+ * name depending on which screen last wrote it, a real bug flagged while building the
+ * onboarding rework and left for this screen to fix. One store now, not two. */
 @Composable
 fun YouHomeScreen(
     onOpenLanguage: () -> Unit,
-    onOpenReadiness: () -> Unit,
-    onOpenCarrying: () -> Unit,
     onOpenAppearance: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenDocuments: () -> Unit,
@@ -67,15 +54,13 @@ fun YouHomeScreen(
 ) {
     val context = LocalContext.current
     val app = remember { context.applicationContext as MeshApplication }
-    var nickname by remember { mutableStateOf(loadOrGenerateNickname(context, app.identity.fingerprintHex())) }
+    var username by remember { mutableStateOf(IdentityStore.loadOrGenerate(context)) }
 
     // Computed here, in the composable function body, rather than inside the LazyColumn's
     // builder lambda: LazyListScope's content lambda is not itself @Composable (only item{}/
     // items{} content is), so stringResource() can't be called directly inside it.
     val rows = listOf(
         Triple(stringResource(R.string.you_row_language), BetarPolygonShapes.hexagon, onOpenLanguage),
-        Triple(stringResource(R.string.you_row_readiness), BetarPolygonShapes.diamond, onOpenReadiness),
-        Triple(stringResource(R.string.you_row_carrying), BetarPolygonShapes.clover4, onOpenCarrying),
         Triple(stringResource(R.string.you_row_appearance), BetarPolygonShapes.cookie9, onOpenAppearance),
         Triple(stringResource(R.string.you_row_privacy), BetarPolygonShapes.pentagon, onOpenPrivacy),
         Triple(stringResource(R.string.documents_index_title), BetarPolygonShapes.scallop12, onOpenDocuments),
@@ -88,10 +73,16 @@ fun YouHomeScreen(
     ) {
         item {
             IdentityCard(
-                nickname = nickname,
+                username = username,
+                shortId = IdentityStore.shortIdFrom(app.identity.fingerprintHex()),
                 fingerprintHex = app.identity.fingerprintHex(),
                 safetyString = app.identity.safetyString(),
-                onNicknameChange = { nickname = it; saveNickname(context, it) },
+                onUsernameChange = { candidate ->
+                    if (IdentityStore.isValidUsername(candidate)) {
+                        username = candidate
+                        if (candidate.isNotEmpty()) IdentityStore.save(context, candidate)
+                    }
+                },
             )
         }
         items(rows) { (label, shape, onClick) ->
@@ -102,10 +93,11 @@ fun YouHomeScreen(
 
 @Composable
 private fun IdentityCard(
-    nickname: String,
+    username: String,
+    shortId: String,
     fingerprintHex: String,
     safetyString: String,
-    onNicknameChange: (String) -> Unit,
+    onUsernameChange: (String) -> Unit,
 ) {
     val context = LocalContext.current
     Column(
@@ -115,10 +107,25 @@ private fun IdentityCard(
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp),
     ) {
-        androidx.compose.foundation.text.BasicTextField(
-            value = nickname,
-            onValueChange = onNicknameChange,
-            textStyle = MaterialTheme.typography.headlineSmall.copy(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold),
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            androidx.compose.foundation.text.BasicTextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                textStyle = MaterialTheme.typography.headlineSmall.copy(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold),
+                modifier = Modifier.weight(1f, fill = false),
+            )
+            Spacer(Modifier.size(8.dp))
+            Text(
+                "· $shortId",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        Text(
+            "ID is permanent on this device, a fingerprint of your key, not a separately issued number.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.size(12.dp))
         Box(

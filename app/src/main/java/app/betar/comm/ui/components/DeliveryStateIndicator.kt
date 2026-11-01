@@ -12,12 +12,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import app.betar.comm.ui.theme.BetarColors
 
 /**
- * DESIGN-BRIEF.md §5.4's four-state honest delivery indicator: "Never show a checkmark that
- * implies delivery is guaranteed." Node/link coordinates and colours transcribed verbatim from
- * design/Betar Design System.dc.html's `glyph(kind)` function (a 32x32 unit hop graph: filled
- * node = phone the message reached, hollow node = phone it hasn't reached yet).
+ * Four-state honest delivery indicator: never show a checkmark that implies delivery is
+ * guaranteed. A 32x32 unit hop graph: filled node = phone the message reached, hollow node =
+ * phone it hasn't reached yet.
+ *
+ * Rewritten 2026-11-01 to reference theme roles: this was still the literal pre-pivot hex
+ * (exact matches to the old `NeutralSlate`/`DeepBlue`/`ConnectedGreen` constants), so `glyphFor`
+ * is now `@Composable` to read them.
  */
 enum class DeliveryState { Waiting, Travelling, Spreading, Delivered }
 
@@ -25,27 +29,32 @@ private data class GlyphNode(val x: Float, val y: Float, val r: Float, val fille
 private data class GlyphLink(val x1: Float, val y1: Float, val x2: Float, val y2: Float)
 private data class Glyph(val color: Color, val links: List<GlyphLink>, val nodes: List<GlyphNode>)
 
-private fun glyphFor(state: DeliveryState): Glyph = when (state) {
-    DeliveryState.Waiting -> Glyph(
-        color = Color(0xFF4A5B67),
-        links = emptyList(),
-        nodes = listOf(GlyphNode(16f, 16f, 4.5f, filled = false)),
-    )
-    DeliveryState.Travelling -> Glyph(
-        color = Color(0xFF12608F),
-        links = listOf(GlyphLink(10f, 20f, 22f, 12f)),
-        nodes = listOf(GlyphNode(9f, 21f, 4f, filled = true), GlyphNode(23f, 11f, 4f, filled = false)),
-    )
-    DeliveryState.Spreading -> Glyph(
-        color = Color(0xFF12608F),
-        links = listOf(GlyphLink(8f, 22f, 16f, 8f), GlyphLink(8f, 22f, 25f, 20f), GlyphLink(16f, 8f, 25f, 20f)),
-        nodes = listOf(GlyphNode(8f, 23f, 3.6f, filled = true), GlyphNode(16f, 7f, 3.6f, filled = true), GlyphNode(26f, 20f, 3.6f, filled = false)),
-    )
-    DeliveryState.Delivered -> Glyph(
-        color = Color(0xFF2E7D32),
-        links = listOf(GlyphLink(8f, 22f, 16f, 8f), GlyphLink(16f, 8f, 25f, 20f), GlyphLink(8f, 22f, 25f, 20f)),
-        nodes = listOf(GlyphNode(8f, 23f, 3.6f, filled = true), GlyphNode(16f, 7f, 3.6f, filled = true), GlyphNode(26f, 20f, 5.6f, filled = true)),
-    )
+@Composable
+private fun glyphFor(state: DeliveryState): Glyph {
+    val colors = MaterialTheme.colorScheme
+    val connected = BetarColors.extended.connected
+    return when (state) {
+        DeliveryState.Waiting -> Glyph(
+            color = colors.onSurfaceVariant,
+            links = emptyList(),
+            nodes = listOf(GlyphNode(16f, 16f, 4.5f, filled = false)),
+        )
+        DeliveryState.Travelling -> Glyph(
+            color = colors.primary,
+            links = listOf(GlyphLink(10f, 20f, 22f, 12f)),
+            nodes = listOf(GlyphNode(9f, 21f, 4f, filled = true), GlyphNode(23f, 11f, 4f, filled = false)),
+        )
+        DeliveryState.Spreading -> Glyph(
+            color = colors.primary,
+            links = listOf(GlyphLink(8f, 22f, 16f, 8f), GlyphLink(8f, 22f, 25f, 20f), GlyphLink(16f, 8f, 25f, 20f)),
+            nodes = listOf(GlyphNode(8f, 23f, 3.6f, filled = true), GlyphNode(16f, 7f, 3.6f, filled = true), GlyphNode(26f, 20f, 3.6f, filled = false)),
+        )
+        DeliveryState.Delivered -> Glyph(
+            color = connected,
+            links = listOf(GlyphLink(8f, 22f, 16f, 8f), GlyphLink(16f, 8f, 25f, 20f), GlyphLink(8f, 22f, 25f, 20f)),
+            nodes = listOf(GlyphNode(8f, 23f, 3.6f, filled = true), GlyphNode(16f, 7f, 3.6f, filled = true), GlyphNode(26f, 20f, 5.6f, filled = true)),
+        )
+    }
 }
 
 fun DeliveryState.label(): String = when (this) {

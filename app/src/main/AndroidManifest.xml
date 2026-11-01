@@ -2,9 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Deliberately no INTERNET permission: Project Mesh has no server and no cloud dependency
-         by design (docs/ARCHITECTURE.md §1, docs/DISTRIBUTION.md §1). Add only if/when an
-         explicitly opt-in feature genuinely needs it, never by default. -->
+    <!-- Added 2026-11-01 for the pivot's relay bridge: the moment any device nearby reaches the
+         internet, it bridges local mesh content to the open Nostr relay network and back
+         (docs/ARCHITECTURE.md §2). This is the "explicitly opt-in feature that genuinely needs
+         it" the old no-INTERNET comment here anticipated, not a default internet dependency --
+         the mesh itself still needs none of this, offline-first stays the primary path, this
+         permission only lets the bridge use the internet when it happens to be there. No
+         server exists on the other end of it; it talks to the open relay network, nothing
+         Betar itself operates or controls. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Legacy Bluetooth model, API < 31. ACCESS_FINE_LOCATION's ceiling is 32, not 30:
          BLE only needs it through API 30, but Wi-Fi Direct service discovery (WifiDirectTransportDriver)

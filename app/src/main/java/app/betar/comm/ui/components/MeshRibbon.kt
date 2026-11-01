@@ -26,12 +26,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.betar.comm.ui.theme.BetarColors
 
 /**
- * DESIGN-BRIEF.md §8's "mesh ribbon": "a thin strip under the app bar on every screen ...
- * showing Off, Looking, or Connected with a count, plus a small permanent mark meaning no
- * network in use." Colours and copy transcribed from design/Betar Design System.dc.html's
- * `ribbonStates` table.
+ * "A thin strip under the app bar on every screen, showing Off, Looking, or Connected with a
+ * count, plus a small permanent mark meaning no network in use."
+ *
+ * Colours rewritten 2026-11-01: this was still 100% the literal pre-pivot brand-blue hex, the
+ * single most visible place that recolor got missed, since it's pinned above everything. Now
+ * references the real theme, including [BetarColors.extended]'s dedicated `connected` role,
+ * which exists for exactly this.
  *
  * The ripple in [MeshRibbonState.Looking] and [MeshRibbonState.Connected] only animates while
  * that state is current, per the design file's own note: "the ripple animates on state change
@@ -48,10 +52,12 @@ sealed class MeshRibbonState {
 
 @Composable
 fun MeshRibbon(state: MeshRibbonState, modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
+    val extended = BetarColors.extended
     val (bg, fg, dot) = when (state) {
-        is MeshRibbonState.Off -> Triple(Color(0xFFE7EDF2), Color(0xFF4A5B67), Color(0xFF8A99A4))
-        is MeshRibbonState.Looking -> Triple(Color(0xFFDCE9F5), Color(0xFF12608F), Color(0xFF4BA3E0))
-        is MeshRibbonState.Connected -> Triple(Color(0xFFDCEEDC), Color(0xFF1B5E20), Color(0xFF2E7D32))
+        is MeshRibbonState.Off -> Triple(colors.surfaceVariant, colors.onSurfaceVariant, colors.outline)
+        is MeshRibbonState.Looking -> Triple(colors.primaryContainer, colors.onPrimaryContainer, colors.primary)
+        is MeshRibbonState.Connected -> Triple(extended.connectedContainer, extended.onConnectedContainer, extended.connected)
     }
     val label = when (state) {
         is MeshRibbonState.Off -> "Off, tap to start looking"

@@ -1,7 +1,6 @@
 package app.betar.comm.ui.nav
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.Box
@@ -9,11 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -30,16 +26,16 @@ import app.betar.comm.ui.components.MeshRibbon
 import app.betar.comm.ui.components.MeshRibbonState
 
 /**
- * The app-wide shell: [MeshRibbon] pinned above everything (DESIGN-BRIEF.md §8: "That ribbon is
- * how the core promise stays visible on every screen"), the five-tab bottom nav, and a
- * persistent emergency button ("never scrolls away and is never hidden behind a menu").
+ * The app-wide shell: [MeshRibbon] pinned above everything, the four-tab bottom nav. No
+ * global floating action button: "new post" (Feed) and "new chat" (Chats) are each that
+ * screen's own FAB now, same as the locked Civic Calm mockup, since there's no single
+ * always-available action every screen shares anymore now that the emergency button is gone.
  */
 @Composable
 fun BetarScaffold(
     current: BetarDestination,
     ribbonState: MeshRibbonState,
     onDestinationSelected: (BetarDestination) -> Unit,
-    onEmergencyClick: () -> Unit,
     content: @Composable (padding: PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -49,16 +45,6 @@ fun BetarScaffold(
         // where the clock overlapped the ribbon's text, not assumed from reading the code.
         topBar = { MeshRibbon(state = ribbonState, modifier = Modifier.statusBarsPadding().padding(12.dp)) },
         bottomBar = { BetarBottomNav(current = current, onSelected = onDestinationSelected) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onEmergencyClick,
-                containerColor = Color(0xFFC8102E),
-                contentColor = Color.White,
-                modifier = Modifier.semantics { contentDescription = "Emergency SOS" },
-            ) {
-                Text("SOS", fontWeight = FontWeight.ExtraBold)
-            }
-        },
     ) { padding -> content(padding) }
 }
 
@@ -84,7 +70,7 @@ private fun BetarBottomNav(current: BetarDestination, onSelected: (BetarDestinat
                     modifier = Modifier
                         .size(28.dp)
                         .clip(dest.icon)
-                        .background(if (selected) MaterialTheme.colorScheme.primary else Color(0xFF5A6B77)),
+                        .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant),
                 )
                 Text(
                     dest.label,

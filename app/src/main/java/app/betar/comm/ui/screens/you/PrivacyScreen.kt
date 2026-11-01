@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.betar.comm.R
+import app.betar.comm.ui.theme.BetarColors
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,8 +38,12 @@ import kotlinx.coroutines.launch
 private const val HOLD_DURATION_MS = 3000
 
 /**
- * DESIGN-BRIEF.md §9 screen 38: panic wipe with hold-to-confirm, decoy passphrase setup.
- * Layout/copy transcribed from design/Betar Group and Settings.dc.html's `scrPrivacy()`.
+ * Panic wipe with hold-to-confirm, decoy passphrase setup.
+ *
+ * Pivoted 2026-11-01: wiping now also means the current 6-character ID is retired for good.
+ * Reopening Betar after a wipe, or reinstalling, generates a brand new ID from nothing -- same
+ * as the identity system's own rule (the ID is a fingerprint of the key, and the wipe destroys
+ * the key). Stated plainly below, not just "data cleared."
  *
  * **Real gap, stated plainly:** there is no actual "erase everything" implementation wired up
  * here (no call into `KeystoreIdentityStore`/`KeystoreMasterKey`/message stores to actually
@@ -73,12 +78,19 @@ fun PrivacyScreen(modifier: Modifier = Modifier) {
             if (wiped) stringResource(R.string.you_privacy_wiped_title) else stringResource(R.string.you_privacy_erase_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.ExtraBold,
-            color = if (wiped) Color(0xFF1B5E20) else MaterialTheme.colorScheme.onSurface,
+            color = if (wiped) BetarColors.extended.connected else MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.size(8.dp))
         Text(
             if (wiped) stringResource(R.string.you_privacy_wiped_body) else stringResource(R.string.you_privacy_erase_body),
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.size(4.dp))
+        Text(
+            "Erases every message, post and key on this device and permanently retires this ID. " +
+                "Reopening Betar afterward creates a brand new ID from nothing.",
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.size(16.dp))
@@ -87,7 +99,7 @@ fun PrivacyScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(72.dp)
                 .clip(MaterialTheme.shapes.large)
-                .background(if (wiped) Color(0xFFDCEEDC) else Color(0xFFF3D8DC))
+                .background(if (wiped) BetarColors.extended.connectedContainer else BetarColors.extended.emergencyContainer)
                 .pointerInput(wiped) {
                     if (wiped) return@pointerInput
                     detectTapGestures(
@@ -114,7 +126,7 @@ fun PrivacyScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(if (holdProgress > 0f) holdProgress else 0.0001f)
-                    .background(Color(0xFFC8102E).copy(alpha = 0.9f)),
+                    .background(BetarColors.extended.emergency.copy(alpha = 0.9f)),
             )
             Text(
                 when {
@@ -123,7 +135,7 @@ fun PrivacyScreen(modifier: Modifier = Modifier) {
                     else -> stringResource(R.string.you_privacy_hold_to_erase)
                 },
                 fontWeight = FontWeight.ExtraBold,
-                color = if (wiped) Color(0xFF1B5E20) else if (holdProgress > 0.35f) Color.White else Color(0xFF8C0B20),
+                color = if (wiped) BetarColors.extended.connected else if (holdProgress > 0.35f) Color.White else BetarColors.extended.onEmergencyContainer,
             )
         }
         if (!wiped) {

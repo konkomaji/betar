@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,12 +45,12 @@ fun BatteryGuidanceScreen(onDone: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.large)
-                .background(Color(0xFFF6EBD2))
+                .background(MaterialTheme.colorScheme.errorContainer)
                 .padding(16.dp),
         ) {
-            Box(Modifier.size(24.dp).clip(BetarPolygonShapes.diamond).background(Color(0xFF9A6700)))
+            Box(Modifier.size(24.dp).clip(BetarPolygonShapes.diamond).background(MaterialTheme.colorScheme.error))
             androidx.compose.foundation.layout.Spacer(Modifier.size(12.dp))
-            Text(stringResource(R.string.onboarding_battery_warning), style = MaterialTheme.typography.bodyMedium, color = Color(0xFF5C3D00))
+            Text(stringResource(R.string.onboarding_battery_warning), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onErrorContainer)
         }
         androidx.compose.foundation.layout.Spacer(Modifier.height(20.dp))
 
