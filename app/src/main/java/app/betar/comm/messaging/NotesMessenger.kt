@@ -3,6 +3,7 @@ package app.betar.comm.messaging
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import app.betar.comm.MeshCoordinator
+import uniffi.mesh_core.FfiIdentity
 import uniffi.mesh_core.envelopePack
 import uniffi.mesh_core.envelopeUnpack
 
@@ -19,6 +20,9 @@ data class CommunityNote(
     val explanation: String,
     val idHex: String,
     val origin: ContentOrigin = ContentOrigin.Mesh,
+    /** See [DecodedAppPost.signerKeyHex]/[DecodedAppPost.signatureValid]'s own docs. */
+    val signerKeyHex: String? = null,
+    val signatureValid: Boolean = false,
 )
 
 /**
@@ -36,10 +40,12 @@ data class CommunityNote(
  * design calls for a deterministic, publicly computable bridging score (`docs/FEATURES.md`) so
  * no single scorer is authoritative, that computation does not exist anywhere yet, Rust or
  * Kotlin, not stubbed here with a fake number. This class only stores and surfaces notes as
- * submitted, in submission order, nothing ranks them. No signature either, same gap every other
- * Broadcast-based messenger in this codebase already has.
+ * submitted, in submission order, nothing ranks them.
+ *
+ * **Signed as of 2026-11-01** (`AppPost.kt`'s `signAppPostPayload`/`stripAppPostSignature`):
+ * every note this device submits is signed with [identity]'s long-term Ed25519 key.
  */
-class NotesMessenger(private val coordinator: MeshCoordinator) {
+class NotesMessenger(private val identity: FfiIdentity, private val coordinator: MeshCoordinator) {
     val notes = mutableStateListOf<CommunityNote>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
@@ -52,7 +58,8 @@ class NotesMessenger(private val coordinator: MeshCoordinator) {
         if (explanation.isEmpty() || explanation.length > EXPLANATION_MAX_LENGTH) return false
         val now = nowSecondsShared()
         val encodedText = listOf(postId, link1, link2, explanation).joinToString(FIELD_SEP.toString())
-        val payload = encodeAppPostPayload(MAGIC_NOTE, roomPrecision = 0, location = null, text = encodedText)
+        val unsignedPayload = encodeAppPostPayload(MAGIC_NOTE, roomPrecision = 0, location = null, text = encodedText)
+        val payload = signAppPostPayload(identity, unsignedPayload)
         val bytes = envelopePack(
             addressingTag = 0u, // Broadcast
             addressingTarget = null,
@@ -83,11 +90,17 @@ class NotesMessenger(private val coordinator: MeshCoordinator) {
                 continue
             }
             if (parsed.addressingTag != 0.toUByte()) continue // not Broadcast
-            val decoded = decodeAppPostPayload(parsed.sealed) ?: continue
+            val (unsigned, signerKeyHex, signatureValid) = stripAppPostSignature(parsed.sealed)
+            val decoded = decodeAppPostPayload(unsigned) ?: continue
             if (decoded.magic != MAGIC_NOTE) continue
             val fields = decoded.text.split(FIELD_SEP)
             if (fields.size != 4) continue
-            notes.add(CommunityNote(fields[0], fields[1], fields[2], fields[3], parsed.idHex))
+            notes.add(
+                CommunityNote(
+                    fields[0], fields[1], fields[2], fields[3], parsed.idHex,
+                    signerKeyHex = signerKeyHex, signatureValid = signatureValid,
+                ),
+            )
         }
     }
 }

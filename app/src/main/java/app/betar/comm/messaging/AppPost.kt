@@ -1,7 +1,10 @@
 package app.betar.comm.messaging
 
+import app.betar.comm.nostr.toHexString
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import uniffi.mesh_core.FfiIdentity
+import uniffi.mesh_core.verifyContentSignature
 
 /**
  * Shared app-layer wire framing for reserved Broadcast content: Feed posts and Community Notes
@@ -33,11 +36,24 @@ import java.nio.ByteOrder
  * against any payload actually produced by this app.
  *
  * **Not done, stated plainly:** no geohash derivation from device location yet (needs a location
- * permission + `FusedLocationProvider` flow, same gap the old file had). Also **unsigned**, same
- * gap already flagged for plain broadcast chat: `FfiIdentity` has no `sign`/`verify` exported
- * over FFI yet. Community Notes' own requirement (2 source links + a 150 character explanation)
- * is enforced client-side in the compose UI, not in this wire format, since the routing layer
- * never inspects sealed content by design (`docs/ROUTING-PROTOCOL.md` §2).
+ * permission + `FusedLocationProvider` flow, same gap the old file had). Community Notes' own
+ * requirement (2 source links + a 150 character explanation) is enforced client-side in the
+ * compose UI, not in this wire format, since the routing layer never inspects sealed content by
+ * design (`docs/ROUTING-PROTOCOL.md` §2).
+ *
+ * **Signing, added 2026-11-01** ([signAppPostPayload]/[verifyAppPostSignature], now that
+ * `FfiIdentity.sign`/`verifyContentSignature` are exported over FFI): a 32-byte verifying key
+ * plus a 64-byte Ed25519 signature are appended after everything [encodeAppPostPayload] already
+ * produces, covering those exact bytes, not re-framed into the fixed header above, so this is a
+ * pure append that doesn't disturb [decodeAppPostPayload]'s existing layout. The signature does
+ * **not** establish who a poster "really is" (there is no name or follow list here, Feed and
+ * Notes stay pseudonymous by design); what it establishes is that every signed item from one
+ * device carries the same verifying key until that device wipes or reinstalls, so
+ * `RatingsMessenger.kt`'s scoring can dedupe by signer instead of by raw envelope count, closing
+ * the gap this file used to state plainly: "nothing stops one device submitting many ratings
+ * under no identity to move a score." A device can still mint a fresh identity and start over,
+ * so this raises the cost of ballot-stuffing, it does not eliminate it; stated plainly rather
+ * than oversold.
  */
 const val MAGIC_POST: Byte = 0xF1.toByte()
 const val MAGIC_NOTE: Byte = 0xF2.toByte()
@@ -69,7 +85,51 @@ data class GeoPoint(val latitude: Double, val longitude: Double)
  *  something a user can actually verify per-item, not just a line in the docs. */
 enum class ContentOrigin { Mesh, Relay }
 
-data class DecodedAppPost(val magic: Byte, val roomPrecision: Int, val location: GeoPoint?, val imageBytes: ByteArray?, val text: String)
+data class DecodedAppPost(
+    val magic: Byte,
+    val roomPrecision: Int,
+    val location: GeoPoint?,
+    val imageBytes: ByteArray?,
+    val text: String,
+    /** Hex-encoded 32-byte Ed25519 verifying key of whoever signed this, or null if the payload
+     *  predates signing or was too short to carry a signature at all (an old build's post, or a
+     *  malformed one). Not an identity in any stronger sense than "the same key signed every
+     *  item that shares this value" -- see [signAppPostPayload]'s own doc. */
+    val signerKeyHex: String? = null,
+    /** True only if [signerKeyHex] is non-null AND the attached signature actually verifies
+     *  against the exact bytes this struct's other fields were decoded from. Callers that care
+     *  about signature validity (`RatingsMessenger.kt`'s dedup) must check this explicitly;
+     *  decoding never fails just because a signature is missing or invalid, since this app
+     *  still accepts unsigned legacy-shaped payloads. */
+    val signatureValid: Boolean = false,
+)
+
+private const val SIGNER_KEY_SIZE = 32
+private const val SIGNATURE_SIZE = 64
+private const val SIGNED_SUFFIX_SIZE = SIGNER_KEY_SIZE + SIGNATURE_SIZE
+
+/** Append a signature over `unsignedPayload` (the exact output of [encodeAppPostPayload]), so a
+ *  receiver can verify which device's identity key produced it. Call this on the result of
+ *  [encodeAppPostPayload], not on arbitrary bytes, and hand the result (not the unsigned bytes)
+ *  to `envelopePack`. */
+fun signAppPostPayload(identity: FfiIdentity, unsignedPayload: ByteArray): ByteArray =
+    unsignedPayload + identity.verifyingKeyBytes() + identity.sign(unsignedPayload)
+
+/** Split a signed payload (produced by [signAppPostPayload]) back into its unsigned bytes plus
+ *  verification results, *before* calling [decodeAppPostPayload] on the unsigned remainder.
+ *  Every payload this app produces carries the suffix; one too short to hold it is treated as
+ *  malformed (unsigned, unverified), not as an older valid format -- there is no real prior
+ *  release that ever broadcast this wire shape without it, so there is nothing to stay
+ *  compatible with. */
+fun stripAppPostSignature(bytes: ByteArray): Triple<ByteArray, String?, Boolean> {
+    if (bytes.size <= SIGNED_SUFFIX_SIZE) return Triple(bytes, null, false)
+    val splitAt = bytes.size - SIGNED_SUFFIX_SIZE
+    val unsigned = bytes.copyOfRange(0, splitAt)
+    val signerKey = bytes.copyOfRange(splitAt, splitAt + SIGNER_KEY_SIZE)
+    val signature = bytes.copyOfRange(splitAt + SIGNER_KEY_SIZE, bytes.size)
+    val valid = verifyContentSignature(signerKey, unsigned, signature)
+    return Triple(unsigned, signerKey.toHexString(), valid)
+}
 
 /** True for any reserved (non-plain-chat) magic-byte-prefixed Broadcast payload -- Feed posts,
  *  Community Notes, or the prekey-bundle announcement. `BroadcastMessaging.kt` excludes

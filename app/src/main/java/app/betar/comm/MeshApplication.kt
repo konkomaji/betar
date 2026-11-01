@@ -41,14 +41,14 @@ class MeshApplication : Application() {
     val broadcastMessenger: BroadcastMessenger by lazy { BroadcastMessenger(coordinator) }
     val channelMessenger: ChannelMessenger by lazy { ChannelMessenger(this, coordinator) }
     val groupMessenger: GroupMessenger by lazy { GroupMessenger(this, identity, coordinator) }
-    val feedMessenger: FeedMessenger by lazy { FeedMessenger(coordinator) }
-    val notesMessenger: NotesMessenger by lazy { NotesMessenger(coordinator) }
-    val ratingsMessenger: RatingsMessenger by lazy { RatingsMessenger(coordinator) }
+    val feedMessenger: FeedMessenger by lazy { FeedMessenger(identity, coordinator) }
+    val notesMessenger: NotesMessenger by lazy { NotesMessenger(identity, coordinator) }
+    val ratingsMessenger: RatingsMessenger by lazy { RatingsMessenger(identity, coordinator) }
 
     /** The relay bridge (`nostr/RelayBridge.kt`): connects [feedMessenger]/[notesMessenger] to
      *  the open Nostr relay network whenever this device has internet. Lazy for the same
      *  reason [coordinator] is: constructing it touches `ConnectivityManager` and generates/
      *  loads a Keystore-wrapped Nostr identity, neither of which should happen before
      *  [MainActivity] is ready. */
-    val relayBridge: RelayBridge by lazy { RelayBridge(this, feedMessenger, notesMessenger) }
+    val relayBridge: RelayBridge by lazy { RelayBridge(this, feedMessenger, notesMessenger, identity, coordinator) }
 }

@@ -3,6 +3,7 @@ package app.betar.comm.messaging
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import app.betar.comm.MeshCoordinator
+import uniffi.mesh_core.FfiIdentity
 import uniffi.mesh_core.envelopePack
 import uniffi.mesh_core.envelopeUnpack
 
@@ -35,6 +36,9 @@ data class FeedPost(
      *  not available over the mesh, only once a relay bridge with blob storage exists, see
      *  `AppPost.kt`'s class doc. */
     val thumbnailBytes: ByteArray? = null,
+    /** See [DecodedAppPost.signerKeyHex]/[DecodedAppPost.signatureValid]'s own docs. */
+    val signerKeyHex: String? = null,
+    val signatureValid: Boolean = false,
 )
 
 /**
@@ -43,14 +47,13 @@ data class FeedPost(
  * [MAGIC_POST] via `AppPost.kt`, same framing pattern `BroadcastMessenger` already uses for
  * plain chat.
  *
+ * **Signed as of 2026-11-01** (`AppPost.kt`'s `signAppPostPayload`/`stripAppPostSignature`):
+ * every post this device composes is signed with [identity]'s long-term Ed25519 key.
+ *
  * **Not done, stated plainly:** no real geohash derivation from device location, `roomPrecision`
- * is whatever the UI passes in, same gap `AppPost.kt` already states. No signature (`FfiIdentity`
- * has no `sign`/`verify` exported over FFI yet, same gap `BroadcastMessenger` has). No relay
- * bridge exists in `core/` yet either, so every post here is mesh-local only regardless of what
- * a "relayed" label might imply, there is nothing on the other side of that bridge to test
- * against yet, not pretended otherwise.
+ * is whatever the UI passes in, same gap `AppPost.kt` already states.
  */
-class FeedMessenger(private val coordinator: MeshCoordinator) {
+class FeedMessenger(private val identity: FfiIdentity, private val coordinator: MeshCoordinator) {
     val posts = mutableStateListOf<FeedPost>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
@@ -61,7 +64,8 @@ class FeedMessenger(private val coordinator: MeshCoordinator) {
     fun post(text: String, roomPrecision: Int, thumbnailBytes: ByteArray? = null): Boolean {
         if (text.isEmpty() || text.length > POST_MAX_LENGTH) return false
         val now = nowSecondsShared()
-        val payload = encodeAppPostPayload(MAGIC_POST, roomPrecision, location = null, imageBytes = thumbnailBytes, text = text)
+        val unsignedPayload = encodeAppPostPayload(MAGIC_POST, roomPrecision, location = null, imageBytes = thumbnailBytes, text = text)
+        val payload = signAppPostPayload(identity, unsignedPayload)
         val bytes = envelopePack(
             addressingTag = 0u, // Broadcast
             addressingTarget = null,
@@ -91,9 +95,21 @@ class FeedMessenger(private val coordinator: MeshCoordinator) {
                 continue
             }
             if (parsed.addressingTag != 0.toUByte()) continue // not Broadcast
-            val decoded = decodeAppPostPayload(parsed.sealed) ?: continue
+            val (unsigned, signerKeyHex, signatureValid) = stripAppPostSignature(parsed.sealed)
+            val decoded = decodeAppPostPayload(unsigned) ?: continue
             if (decoded.magic != MAGIC_POST) continue
-            posts.add(0, FeedPost(decoded.text, parsed.idHex, decoded.roomPrecision, nowSecondsShared(), thumbnailBytes = decoded.imageBytes))
+            posts.add(
+                0,
+                FeedPost(
+                    decoded.text,
+                    parsed.idHex,
+                    decoded.roomPrecision,
+                    nowSecondsShared(),
+                    thumbnailBytes = decoded.imageBytes,
+                    signerKeyHex = signerKeyHex,
+                    signatureValid = signatureValid,
+                ),
+            )
         }
     }
 }

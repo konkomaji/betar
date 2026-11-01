@@ -960,6 +960,20 @@ internal open class UniffiVTableCallbackInterfaceFfiMeshTransport(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
 
@@ -1090,11 +1104,17 @@ internal interface UniffiLib : Library {
     ): Pointer
     fun uniffi_mesh_core_fn_constructor_ffiidentity_generate(uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
+    fun uniffi_mesh_core_fn_method_ffiidentity_agreement_key_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffiidentity_fingerprint_hex(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffiidentity_safety_string(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffiidentity_sign(`ptr`: Pointer,`message`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_method_ffiidentity_to_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_method_ffiidentity_verifying_key_bytes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_clone_ffimeshnode(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
@@ -1226,6 +1246,14 @@ internal interface UniffiLib : Library {
     ): RustBuffer.ByValue
     fun uniffi_mesh_core_fn_func_envelope_unpack(`bytes`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_func_onion_build_packet(`route`: RustBuffer.ByValue,`payload`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_func_onion_hop_count(uniffi_out_err: UniffiRustCallStatus, 
+    ): Int
+    fun uniffi_mesh_core_fn_func_onion_peel_layer(`myIdentity`: Pointer,`packet`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_mesh_core_fn_func_verify_content_signature(`verifyingKey`: RustBuffer.ByValue,`message`: RustBuffer.ByValue,`signature`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): Byte
     fun ffi_mesh_core_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
     fun ffi_mesh_core_rustbuffer_from_bytes(`bytes`: ForeignBytes.ByValue,uniffi_out_err: UniffiRustCallStatus, 
@@ -1342,6 +1370,14 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_func_envelope_unpack(
     ): Short
+    fun uniffi_mesh_core_checksum_func_onion_build_packet(
+    ): Short
+    fun uniffi_mesh_core_checksum_func_onion_hop_count(
+    ): Short
+    fun uniffi_mesh_core_checksum_func_onion_peel_layer(
+    ): Short
+    fun uniffi_mesh_core_checksum_func_verify_content_signature(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffichannel_open(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffichannel_seal(
@@ -1404,11 +1440,17 @@ internal interface UniffiLib : Library {
     ): Short
     fun uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffiidentity_agreement_key_bytes(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_fingerprint_hex(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_safety_string(
     ): Short
+    fun uniffi_mesh_core_checksum_method_ffiidentity_sign(
+    ): Short
     fun uniffi_mesh_core_checksum_method_ffiidentity_to_bytes(
+    ): Short
+    fun uniffi_mesh_core_checksum_method_ffiidentity_verifying_key_bytes(
     ): Short
     fun uniffi_mesh_core_checksum_method_ffimeshnode_all_ids_hex(
     ): Short
@@ -1543,10 +1585,22 @@ private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
 
 @Suppress("UNUSED_PARAMETER")
 private fun uniffiCheckApiChecksums(lib: UniffiLib) {
-    if (lib.uniffi_mesh_core_checksum_func_envelope_pack() != 50516.toShort()) {
+    if (lib.uniffi_mesh_core_checksum_func_envelope_pack() != 9855.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_func_envelope_unpack() != 60722.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_func_onion_build_packet() != 38068.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_func_onion_hop_count() != 12672.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_func_onion_peel_layer() != 47627.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_func_verify_content_signature() != 43729.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffichannel_open() != 51373.toShort()) {
@@ -1642,19 +1696,28 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_mesh_core_checksum_method_ffihybridprekeypool_top_up() != 39147.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_mesh_core_checksum_method_ffiidentity_agreement_key_bytes() != 17139.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_mesh_core_checksum_method_ffiidentity_fingerprint_hex() != 61171.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffiidentity_safety_string() != 36173.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_mesh_core_checksum_method_ffiidentity_sign() != 44891.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_mesh_core_checksum_method_ffiidentity_to_bytes() != 23619.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_mesh_core_checksum_method_ffiidentity_verifying_key_bytes() != 15875.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_all_ids_hex() != 7950.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_compose_local() != 65130.toShort()) {
+    if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_compose_local() != 9935.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimeshnode_contains_hex() != 45842.toShort()) {
@@ -1711,7 +1774,7 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal() != 16363.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal_as_envelope() != 18547.toShort()) {
+    if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_seal_as_envelope() != 62611.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_mesh_core_checksum_method_ffimlsgrouphandle_snapshot_to_disk() != 12729.toShort()) {
@@ -4347,6 +4410,14 @@ public object FfiConverterTypeFfiHybridPrekeyPool: FfiConverter<FfiHybridPrekeyP
 public interface FfiIdentityInterface {
     
     /**
+     * This identity's 32-byte X25519 agreement public key, the same key already published for
+     * Noise/X3DH, reused as this device's [`crate::crypto::onion::RelayAddress`] (optional
+     * onion-routing fallback, `docs/CRYPTOGRAPHY.md` §7.3) rather than minting a second,
+     * separate onion-only keypair with its own discovery mechanism.
+     */
+    fun `agreementKeyBytes`(): kotlin.ByteArray
+    
+    /**
      * Full 64-hex-character fingerprint — the canonical identity value.
      */
     fun `fingerprintHex`(): kotlin.String
@@ -4359,6 +4430,16 @@ public interface FfiIdentityInterface {
     fun `safetyString`(): kotlin.String
     
     /**
+     * Sign arbitrary app-layer content with this identity's long-term Ed25519 key. Added for
+     * content signing on Feed posts, Community Notes, and ratings (`betar-app`'s `AppPost.kt`),
+     * which until now were unsigned Broadcast payloads anyone nearby could fabricate under no
+     * identity at all. Returns the raw 64-byte Ed25519 signature; pair with
+     * [`verifying_key_bytes`](Self::verifying_key_bytes) so a verifier has both halves without
+     * needing this device's unrelated X25519 agreement key.
+     */
+    fun `sign`(`message`: kotlin.ByteArray): kotlin.ByteArray
+    
+    /**
      * Export this identity's raw key material for the native layer to persist (e.g.
      * Android-Keystore-wrapped, matching `MeshCoordinator`'s master-key pattern) and hand back
      * to [`from_bytes`](Self::from_bytes) on the next launch. **The caller is entirely
@@ -4367,6 +4448,13 @@ public interface FfiIdentityInterface {
      * encrypt, store, or transmit them itself.
      */
     fun `toBytes`(): kotlin.ByteArray
+    
+    /**
+     * This identity's 32-byte Ed25519 verifying key, the half a [`sign`](Self::sign) verifier
+     * actually needs (see [`crate::identity::PublicIdentity::verifying_key_bytes`]'s own doc for
+     * why this is deliberately not the full 64-byte `PublicIdentity`).
+     */
+    fun `verifyingKeyBytes`(): kotlin.ByteArray
     
     companion object
 }
@@ -4459,6 +4547,24 @@ open class FfiIdentity: Disposable, AutoCloseable, FfiIdentityInterface {
 
     
     /**
+     * This identity's 32-byte X25519 agreement public key, the same key already published for
+     * Noise/X3DH, reused as this device's [`crate::crypto::onion::RelayAddress`] (optional
+     * onion-routing fallback, `docs/CRYPTOGRAPHY.md` §7.3) rather than minting a second,
+     * separate onion-only keypair with its own discovery mechanism.
+     */override fun `agreementKeyBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffiidentity_agreement_key_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
      * Full 64-hex-character fingerprint — the canonical identity value.
      */override fun `fingerprintHex`(): kotlin.String {
             return FfiConverterString.lift(
@@ -4491,6 +4597,26 @@ open class FfiIdentity: Disposable, AutoCloseable, FfiIdentityInterface {
 
     
     /**
+     * Sign arbitrary app-layer content with this identity's long-term Ed25519 key. Added for
+     * content signing on Feed posts, Community Notes, and ratings (`betar-app`'s `AppPost.kt`),
+     * which until now were unsigned Broadcast payloads anyone nearby could fabricate under no
+     * identity at all. Returns the raw 64-byte Ed25519 signature; pair with
+     * [`verifying_key_bytes`](Self::verifying_key_bytes) so a verifier has both halves without
+     * needing this device's unrelated X25519 agreement key.
+     */override fun `sign`(`message`: kotlin.ByteArray): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffiidentity_sign(
+        it, FfiConverterByteArray.lower(`message`),_status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
      * Export this identity's raw key material for the native layer to persist (e.g.
      * Android-Keystore-wrapped, matching `MeshCoordinator`'s master-key pattern) and hand back
      * to [`from_bytes`](Self::from_bytes) on the next launch. **The caller is entirely
@@ -4502,6 +4628,23 @@ open class FfiIdentity: Disposable, AutoCloseable, FfiIdentityInterface {
     callWithPointer {
     uniffiRustCall() { _status ->
     UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffiidentity_to_bytes(
+        it, _status)
+}
+    }
+    )
+    }
+    
+
+    
+    /**
+     * This identity's 32-byte Ed25519 verifying key, the half a [`sign`](Self::sign) verifier
+     * actually needs (see [`crate::identity::PublicIdentity::verifying_key_bytes`]'s own doc for
+     * why this is deliberately not the full 64-byte `PublicIdentity`).
+     */override fun `verifyingKeyBytes`(): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_method_ffiidentity_verifying_key_bytes(
         it, _status)
 }
     }
@@ -4691,7 +4834,7 @@ public interface FfiMeshNodeInterface {
     fun `allIdsHex`(): List<kotlin.String>
     
     /**
-     * A locally-originated envelope (the user composed a message, an SOS, etc.). Persists it
+     * A locally-originated envelope (the user composed a message, a post, etc.). Persists it
      * and floods it to every currently-connected peer automatically.
      */
     fun `composeLocal`(`envelopeBytes`: kotlin.ByteArray, `now`: kotlin.ULong): Accept
@@ -4843,7 +4986,7 @@ open class FfiMeshNode: Disposable, AutoCloseable, FfiMeshNodeInterface {
 
     
     /**
-     * A locally-originated envelope (the user composed a message, an SOS, etc.). Persists it
+     * A locally-originated envelope (the user composed a message, a post, etc.). Persists it
      * and floods it to every currently-connected peer automatically.
      */
     @Throws(FfiException::class)override fun `composeLocal`(`envelopeBytes`: kotlin.ByteArray, `now`: kotlin.ULong): Accept {
@@ -5562,7 +5705,7 @@ public interface FfiMlsGroupHandleInterface {
      * hand straight to `FfiMeshNode::compose_local` — same design as `FfiChannel::seal` +
      * `envelope_pack` (`ffi.rs`), except the envelope construction happens here since
      * `Addressing::Group`'s selector is derived from live group state, not a passphrase.
-     * `priority_tag`: 0=Sos, 1=Bulletin, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
+     * `priority_tag`: 0=Urgent, 1=Elevated, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
      */
     fun `sealAsEnvelope`(`plaintext`: kotlin.ByteArray, `priorityTag`: kotlin.UByte, `ttlHops`: kotlin.UByte, `expiresAt`: kotlin.ULong): kotlin.ByteArray
     
@@ -5779,7 +5922,7 @@ open class FfiMlsGroupHandle: Disposable, AutoCloseable, FfiMlsGroupHandleInterf
      * hand straight to `FfiMeshNode::compose_local` — same design as `FfiChannel::seal` +
      * `envelope_pack` (`ffi.rs`), except the envelope construction happens here since
      * `Addressing::Group`'s selector is derived from live group state, not a passphrase.
-     * `priority_tag`: 0=Sos, 1=Bulletin, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
+     * `priority_tag`: 0=Urgent, 1=Elevated, 2=Normal, 3=Low (matches `envelope_pack`'s tags).
      */
     @Throws(FfiException::class)override fun `sealAsEnvelope`(`plaintext`: kotlin.ByteArray, `priorityTag`: kotlin.UByte, `ttlHops`: kotlin.UByte, `expiresAt`: kotlin.ULong): kotlin.ByteArray {
             return FfiConverterByteArray.lift(
@@ -7560,6 +7703,85 @@ public object FfiConverterTypeFfiError : FfiConverterRustBuffer<FfiException> {
 
 
 /**
+ * What peeling one onion layer revealed, crossing the FFI boundary (mirrors
+ * [`crate::crypto::onion::PeelResult`], which cannot cross directly since it isn't
+ * UniFFI-annotated).
+ */
+sealed class FfiOnionPeel {
+    
+    data class Final(
+        val `payload`: kotlin.ByteArray) : FfiOnionPeel() {
+        companion object
+    }
+    
+    data class Forward(
+        val `nextHop`: kotlin.ByteArray, 
+        val `packet`: kotlin.ByteArray) : FfiOnionPeel() {
+        companion object
+    }
+    
+
+    
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeFfiOnionPeel : FfiConverterRustBuffer<FfiOnionPeel>{
+    override fun read(buf: ByteBuffer): FfiOnionPeel {
+        return when(buf.getInt()) {
+            1 -> FfiOnionPeel.Final(
+                FfiConverterByteArray.read(buf),
+                )
+            2 -> FfiOnionPeel.Forward(
+                FfiConverterByteArray.read(buf),
+                FfiConverterByteArray.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: FfiOnionPeel) = when(value) {
+        is FfiOnionPeel.Final -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterByteArray.allocationSize(value.`payload`)
+            )
+        }
+        is FfiOnionPeel.Forward -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterByteArray.allocationSize(value.`nextHop`)
+                + FfiConverterByteArray.allocationSize(value.`packet`)
+            )
+        }
+    }
+
+    override fun write(value: FfiOnionPeel, buf: ByteBuffer) {
+        when(value) {
+            is FfiOnionPeel.Final -> {
+                buf.putInt(1)
+                FfiConverterByteArray.write(value.`payload`, buf)
+                Unit
+            }
+            is FfiOnionPeel.Forward -> {
+                buf.putInt(2)
+                FfiConverterByteArray.write(value.`nextHop`, buf)
+                FfiConverterByteArray.write(value.`packet`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+/**
  * One event reported by a native transport driver via [`FfiTransportHub`]'s `on_*` methods.
  * Mirrors [`crate::transport::MeshTransportSink`]'s four callbacks as a single tagged union
  * rather than four separate exported methods' worth of untyped optional fields.
@@ -7878,8 +8100,8 @@ public object FfiConverterSequenceTypeFfiTransportEvent: FfiConverterRustBuffer<
 }
         /**
          * Construct wire-format envelope bytes. `addressing_tag`: 0=Broadcast, 1=Channel, 2=Group,
-         * 3=Direct (the latter three require a 32-byte `addressing_target`). `priority_tag`: 0=Sos,
-         * 1=Bulletin, 2=Normal, 3=Low.
+         * 3=Direct (the latter three require a 32-byte `addressing_target`). `priority_tag`: 0=Urgent,
+         * 1=Elevated, 2=Normal, 3=Low.
          */
     @Throws(FfiException::class) fun `envelopePack`(`addressingTag`: kotlin.UByte, `addressingTarget`: kotlin.ByteArray?, `priorityTag`: kotlin.UByte, `ttlHops`: kotlin.UByte, `expiresAt`: kotlin.ULong, `sealed`: kotlin.ByteArray): kotlin.ByteArray {
             return FfiConverterByteArray.lift(
@@ -7900,6 +8122,69 @@ public object FfiConverterSequenceTypeFfiTransportEvent: FfiConverterRustBuffer<
     uniffiRustCallWithError(FfiException) { _status ->
     UniffiLib.INSTANCE.uniffi_mesh_core_fn_func_envelope_unpack(
         FfiConverterByteArray.lower(`bytes`),_status)
+}
+    )
+    }
+    
+
+        /**
+         * Build a Sphinx-style onion packet (`crate::crypto::onion`, optional Direct-message fallback
+         * routing, `docs/CRYPTOGRAPHY.md` §7.3) carrying `payload` through `route`. `route` must have
+         * exactly [`onion_hop_count`] entries, each a relay's 32-byte X25519 agreement public key
+         * (see [`FfiIdentity::agreement_key_bytes`]), in forwarding order. Route selection — which
+         * relays, in what order — is this call's caller's job, not this function's.
+         */
+    @Throws(FfiException::class) fun `onionBuildPacket`(`route`: List<kotlin.ByteArray>, `payload`: kotlin.ByteArray): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_func_onion_build_packet(
+        FfiConverterSequenceByteArray.lower(`route`),FfiConverterByteArray.lower(`payload`),_status)
+}
+    )
+    }
+    
+
+        /**
+         * Exactly how many hops [`onion_build_packet`] requires `route` to have, every time
+         * (`crate::crypto::onion::HOP_COUNT`) — exported as a function rather than a `const` since
+         * UniFFI does not export plain constants; a native caller should ask this rather than
+         * hard-coding the number twice.
+         */ fun `onionHopCount`(): kotlin.UInt {
+            return FfiConverterUInt.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_func_onion_hop_count(
+        _status)
+}
+    )
+    }
+    
+
+        /**
+         * Peel exactly one layer off `packet` using `my_identity`'s existing agreement key. See
+         * [`crate::crypto::onion::peel_layer`] for the real logic this wraps.
+         */
+    @Throws(FfiException::class) fun `onionPeelLayer`(`myIdentity`: FfiIdentity, `packet`: kotlin.ByteArray): FfiOnionPeel {
+            return FfiConverterTypeFfiOnionPeel.lift(
+    uniffiRustCallWithError(FfiException) { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_func_onion_peel_layer(
+        FfiConverterTypeFfiIdentity.lower(`myIdentity`),FfiConverterByteArray.lower(`packet`),_status)
+}
+    )
+    }
+    
+
+        /**
+         * Verify an app-layer content signature produced by [`FfiIdentity::sign`], given only the
+         * signer's verifying key bytes (e.g. carried alongside a Feed post/Note/rating on the wire) —
+         * a free function, not an [`FfiIdentity`] method, since the verifier generally has no
+         * [`FfiIdentity`] for a remote signer, only these raw bytes. Fails closed: returns `false` on
+         * a malformed key, a malformed signature, or a signature that doesn't match, never panics on
+         * attacker-controlled input.
+         */ fun `verifyContentSignature`(`verifyingKey`: kotlin.ByteArray, `message`: kotlin.ByteArray, `signature`: kotlin.ByteArray): kotlin.Boolean {
+            return FfiConverterBoolean.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_mesh_core_fn_func_verify_content_signature(
+        FfiConverterByteArray.lower(`verifyingKey`),FfiConverterByteArray.lower(`message`),FfiConverterByteArray.lower(`signature`),_status)
 }
     )
     }
