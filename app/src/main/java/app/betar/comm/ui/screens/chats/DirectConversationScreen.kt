@@ -25,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import app.betar.comm.MeshApplication
 import app.betar.comm.R
+import app.betar.comm.location.LocationHelper
 import app.betar.comm.messaging.Contact
 import app.betar.comm.messaging.ContactStatus
 import app.betar.comm.messaging.DirectChatMessage
@@ -45,6 +47,7 @@ import app.betar.comm.ui.components.DeliveryStateIndicator
 import app.betar.comm.ui.components.TrustChip
 import app.betar.comm.ui.components.TrustState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * DESIGN-BRIEF.md §9 screens 11 (unverified, amber banner), 12 (verified), 13 (voice note
@@ -62,7 +65,10 @@ fun DirectConversationScreen(fingerprintHex: String, onBack: () -> Unit) {
     var draft by remember { mutableStateOf("") }
     var recording by remember { mutableStateOf(false) }
     var locationShareOpen by remember { mutableStateOf(false) }
+    var locationSending by remember { mutableStateOf(false) }
     val clipboard = LocalClipboardManager.current
+    val coroutineScope = rememberCoroutineScope()
+    val appContext = LocalContext.current
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -121,8 +127,19 @@ fun DirectConversationScreen(fingerprintHex: String, onBack: () -> Unit) {
 
         if (locationShareOpen) {
             LocationShareConfirmBar(
+                sending = locationSending,
                 onCancel = { locationShareOpen = false },
-                onConfirm = { locationShareOpen = false },
+                onConfirm = {
+                    locationSending = true
+                    coroutineScope.launch {
+                        val location = LocationHelper.getOneShotLocation(appContext)
+                        if (location != null) {
+                            direct.sendLocation(contact, location)
+                        }
+                        locationSending = false
+                        locationShareOpen = false
+                    }
+                },
             )
         } else if (recording) {
             VoiceRecordingBar(onCancel = { recording = false }, onSend = { recording = false })
@@ -162,16 +179,16 @@ fun DirectConversationScreen(fingerprintHex: String, onBack: () -> Unit) {
 }
 
 /**
- * One-shot location share. The confirm step and its copy are real; the actual coordinate read is
- * not wired this pass, same honest-gaps pattern as [VoiceRecordingBar]'s stubbed audio capture
- * below: a `FusedLocationProvider` read plus a location permission flow need adding (and a
- * matching encrypted payload format in `DirectMessaging.kt`, which does not have one yet, see its
- * own class doc) before "Share once" actually sends real coordinates through [DirectMessenger].
- * Confirming here closes the bar without sending anything, flagged rather than silently faking a
- * location.
+ * One-shot location share, wired for real 2026-11-01: a [LocationHelper] read plus
+ * [DirectMessenger.sendLocation]'s encrypted one-shot payload (see `DirectMessaging.kt`'s class
+ * doc for the wire format). If the read fails (no permission, no provider available, timeout),
+ * this closes without sending anything rather than showing a fake/blank location, same
+ * fail-gracefully pattern every other optional-hardware path in this codebase follows; it does
+ * not currently show the user a distinct "that failed" message versus "you cancelled," a real
+ * small UX gap left for a follow-up rather than over-building error handling for a first pass.
  */
 @Composable
-private fun LocationShareConfirmBar(onCancel: () -> Unit, onConfirm: () -> Unit) {
+private fun LocationShareConfirmBar(sending: Boolean, onCancel: () -> Unit, onConfirm: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,12 +197,16 @@ private fun LocationShareConfirmBar(onCancel: () -> Unit, onConfirm: () -> Unit)
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
-            "Share your location once? This sends it one time, not a continuous live share.",
+            if (sending) {
+                "Getting your location…"
+            } else {
+                "Share your location once? This sends it one time, not a continuous live share."
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Button(onClick = onCancel) { Text(stringResource(R.string.action_back)) }
-            Button(onClick = onConfirm) { Text("Share once") }
+            Button(onClick = onCancel, enabled = !sending) { Text(stringResource(R.string.action_back)) }
+            Button(onClick = onConfirm, enabled = !sending) { Text("Share once") }
         }
     }
 }
@@ -208,7 +229,31 @@ private fun MessageBubble(message: DirectChatMessage) {
                     .combinedClickable(onClick = {}, onLongClick = { menuOpen = true })
                     .padding(horizontal = 15.dp, vertical = 12.dp),
             ) {
-                Text(message.text, style = MaterialTheme.typography.bodyLarge)
+                val location = message.location
+                if (location != null) {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("📍", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(Modifier.size(6.dp))
+                            Text(
+                                "Shared location once",
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                        Text(
+                            "%.5f, %.5f".format(location.latitude, location.longitude),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            "A one-time share, not a live position",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    Text(message.text, style = MaterialTheme.typography.bodyLarge)
+                }
             }
             // DESIGN-BRIEF.md §9 screen 17: floating toolbar on long press.
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {

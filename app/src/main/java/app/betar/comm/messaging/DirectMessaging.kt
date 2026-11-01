@@ -25,6 +25,18 @@ private const val MSG_TYPE_HANDSHAKE: Byte = 0
 private const val MSG_TYPE_RATCHET: Byte = 1
 private const val MSG_TYPE_ASYNC_INIT: Byte = 2
 private const val FINGERPRINT_BYTES = 32
+
+// Content-type discriminator INSIDE the ratchet-encrypted plaintext, added 2026-11-01 for
+// one-shot location sharing. Deliberately not a new outer MSG_TYPE: `msg_type` sits unencrypted
+// in the envelope frame (see the class doc's "routing hint" paragraph), so a dedicated
+// MSG_TYPE_LOCATION would leak "a location was shared" as metadata to every relay that handles
+// the envelope, even though the coordinates themselves stay encrypted either way. Location
+// sharing is this project's own stated highest-risk feature; keeping it byte-for-byte
+// indistinguishable from an ordinary text message at the unencrypted frame level is a real
+// privacy property, not a cosmetic choice, worth the extra byte of plaintext framing.
+private const val CONTENT_TYPE_TEXT: Byte = 0
+private const val CONTENT_TYPE_LOCATION: Byte = 1
+private const val LOCATION_PAYLOAD_SIZE = 16 // 2x 8-byte IEEE-754 double, latitude then longitude
 private const val DIRECT_TTL_HOPS: UByte = 8u
 private const val DIRECT_EXPIRES_SECONDS = 72L * 3600L // matches ROUTING-PROTOCOL.md's example 24-72h range
 
@@ -50,7 +62,16 @@ private const val PERSIST_DELIMITER = ","
 
 enum class ContactStatus { NO_SESSION, HANDSHAKING, CONNECTED }
 
-data class DirectChatMessage(val fromMe: Boolean, val text: String, val timestampSeconds: Long)
+data class DirectChatMessage(
+    val fromMe: Boolean,
+    val text: String,
+    val timestampSeconds: Long,
+    /** Set only for a one-shot location share (see [CONTENT_TYPE_LOCATION]). Null for an
+     *  ordinary text message. A one-shot share is a single coordinate pair sent once, never a
+     *  live/ongoing position: there is no mechanism anywhere in this class that sends a second
+     *  update for the same share, by design. */
+    val location: GeoPoint? = null,
+)
 
 class Contact(val fingerprintHex: String) {
     var handshake: FfiHandshake? = null
@@ -75,6 +96,20 @@ class Contact(val fingerprintHex: String) {
  * exists" to every relay; naming the sender too is a small addition to that same surface, not a
  * new category of exposure, and application ciphertext integrity is Double-Ratchet-AEAD-backed
  * regardless of whether this routing hint is honest.
+ *
+ * **Added 2026-11-01, one-shot location sharing:** `MSG_TYPE_RATCHET`'s encrypted *plaintext*
+ * (everything inside `session.encrypt`/`session.decrypt`, invisible to relays either way) now
+ * starts with its own one-byte content-type discriminator: [CONTENT_TYPE_TEXT] (`0`) for an
+ * ordinary message, the plaintext's remaining bytes are UTF-8 text; [CONTENT_TYPE_LOCATION]
+ * (`1`) for a one-shot location share via [DirectMessenger.sendLocation], the remaining 16
+ * bytes are two little-endian IEEE-754 doubles, latitude then longitude. Deliberately a
+ * content-type byte inside the already-encrypted plaintext, not a new outer `MSG_TYPE`: a new
+ * outer type would leak "a location was shared" as unencrypted envelope metadata to every relay
+ * that handles the envelope, even with the coordinates themselves still encrypted, which matters
+ * specifically because continuous/live location sharing is this project's own stated
+ * highest-risk feature (this is the deliberately scoped-down one-shot version of it, see
+ * `docs/THREAT-MODEL.md`). A location share is sent exactly once per [sendLocation] call; there
+ * is no code path anywhere in this class that re-sends an update for the same share.
  *
  * **Who initiates:** both sides may `addContact()` each other around the same time, so, same
  * pattern already used for the BLE dual-role connect race (`ble/BlePeerRegistry.kt`), whichever
@@ -258,11 +293,40 @@ class DirectMessenger(
             return
         }
         try {
-            val sealed = session.encrypt(text.toByteArray(Charsets.UTF_8))
+            val plaintext = ByteArray(1 + text.toByteArray(Charsets.UTF_8).size)
+            plaintext[0] = CONTENT_TYPE_TEXT
+            text.toByteArray(Charsets.UTF_8).copyInto(plaintext, 1)
+            val sealed = session.encrypt(plaintext)
             sendFrame(contact.fingerprintHex, MSG_TYPE_RATCHET, packSealed(sealed))
             contact.messages.add(DirectChatMessage(fromMe = true, text = text, timestampSeconds = nowSeconds()))
         } catch (e: Exception) {
             Log.w(TAG, "sendMessage failed to ${contact.fingerprintHex}", e)
+        }
+    }
+
+    /** Sends [location] once, through the same encrypted ratchet session as an ordinary text
+     *  message (see the content-type-byte note at the top of this file for why this is not a
+     *  new outer message type). There is no follow-up call that updates it: calling this again
+     *  sends a second, entirely separate one-shot share, never an ongoing stream. */
+    fun sendLocation(contact: Contact, location: GeoPoint) {
+        val session = contact.session
+        if (session == null) {
+            Log.w(TAG, "sendLocation: no session yet with ${contact.fingerprintHex}")
+            return
+        }
+        try {
+            val plaintext = ByteArray(1 + LOCATION_PAYLOAD_SIZE)
+            plaintext[0] = CONTENT_TYPE_LOCATION
+            val buf = ByteBuffer.wrap(plaintext, 1, LOCATION_PAYLOAD_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+            buf.putDouble(location.latitude)
+            buf.putDouble(location.longitude)
+            val sealed = session.encrypt(plaintext)
+            sendFrame(contact.fingerprintHex, MSG_TYPE_RATCHET, packSealed(sealed))
+            contact.messages.add(
+                DirectChatMessage(fromMe = true, text = "", timestampSeconds = nowSeconds(), location = location),
+            )
+        } catch (e: Exception) {
+            Log.w(TAG, "sendLocation failed to ${contact.fingerprintHex}", e)
         }
     }
 
@@ -426,9 +490,21 @@ class DirectMessenger(
         val sealed = unpackSealed(payload) ?: return
         try {
             val plaintext = session.decrypt(sealed)
-            contact.messages.add(
-                DirectChatMessage(fromMe = false, text = String(plaintext, Charsets.UTF_8), timestampSeconds = nowSeconds()),
-            )
+            if (plaintext.isEmpty()) return
+            when (plaintext[0]) {
+                CONTENT_TYPE_LOCATION -> {
+                    if (plaintext.size < 1 + LOCATION_PAYLOAD_SIZE) return
+                    val buf = ByteBuffer.wrap(plaintext, 1, LOCATION_PAYLOAD_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+                    val location = GeoPoint(latitude = buf.double, longitude = buf.double)
+                    contact.messages.add(
+                        DirectChatMessage(fromMe = false, text = "", timestampSeconds = nowSeconds(), location = location),
+                    )
+                }
+                else -> { // CONTENT_TYPE_TEXT, or an unrecognized future type treated as text
+                    val text = String(plaintext, 1, plaintext.size - 1, Charsets.UTF_8)
+                    contact.messages.add(DirectChatMessage(fromMe = false, text = text, timestampSeconds = nowSeconds()))
+                }
+            }
         } catch (e: Exception) {
             Log.w(TAG, "decrypt failed from ${contact.fingerprintHex}", e)
         }
@@ -460,6 +536,9 @@ private fun unpackSealed(bytes: ByteArray): FfiSealed? {
 private fun hexToBytes(hex: String): ByteArray =
     ByteArray(hex.length / 2) { i -> ((Character.digit(hex[i * 2], 16) shl 4) + Character.digit(hex[i * 2 + 1], 16)).toByte() }
 
-private fun bytesToHex(bytes: ByteArray): String = bytes.joinToString("") { "%02x".format(it) }
+// `"%02x".format(byte)` sign-extends a negative Byte (0x80-0xFF) before converting, producing
+// an 8-character result instead of 2 -- masking to Int and 0xFF first avoids that, same fix
+// applied to the identical pattern found in nostr/NostrIdentity.kt this same session.
+private fun bytesToHex(bytes: ByteArray): String = bytes.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 
 private fun nowSeconds(): Long = System.currentTimeMillis() / 1000L

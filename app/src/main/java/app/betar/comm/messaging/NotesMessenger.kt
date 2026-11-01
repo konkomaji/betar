@@ -18,6 +18,7 @@ data class CommunityNote(
     val link2: String,
     val explanation: String,
     val idHex: String,
+    val origin: ContentOrigin = ContentOrigin.Mesh,
 )
 
 /**

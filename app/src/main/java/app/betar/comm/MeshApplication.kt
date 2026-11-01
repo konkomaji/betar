@@ -7,6 +7,8 @@ import app.betar.comm.messaging.DirectMessenger
 import app.betar.comm.messaging.FeedMessenger
 import app.betar.comm.messaging.GroupMessenger
 import app.betar.comm.messaging.NotesMessenger
+import app.betar.comm.messaging.RatingsMessenger
+import app.betar.comm.nostr.RelayBridge
 import uniffi.mesh_core.FfiIdentity
 
 /**
@@ -41,4 +43,12 @@ class MeshApplication : Application() {
     val groupMessenger: GroupMessenger by lazy { GroupMessenger(this, identity, coordinator) }
     val feedMessenger: FeedMessenger by lazy { FeedMessenger(coordinator) }
     val notesMessenger: NotesMessenger by lazy { NotesMessenger(coordinator) }
+    val ratingsMessenger: RatingsMessenger by lazy { RatingsMessenger(coordinator) }
+
+    /** The relay bridge (`nostr/RelayBridge.kt`): connects [feedMessenger]/[notesMessenger] to
+     *  the open Nostr relay network whenever this device has internet. Lazy for the same
+     *  reason [coordinator] is: constructing it touches `ConnectivityManager` and generates/
+     *  loads a Keystore-wrapped Nostr identity, neither of which should happen before
+     *  [MainActivity] is ready. */
+    val relayBridge: RelayBridge by lazy { RelayBridge(this, feedMessenger, notesMessenger) }
 }

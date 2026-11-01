@@ -5,7 +5,7 @@
     <!-- Added 2026-11-01 for the pivot's relay bridge: the moment any device nearby reaches the
          internet, it bridges local mesh content to the open Nostr relay network and back
          (docs/ARCHITECTURE.md §2). This is the "explicitly opt-in feature that genuinely needs
-         it" the old no-INTERNET comment here anticipated, not a default internet dependency --
+         it" the old no-INTERNET comment here anticipated, not a default internet dependency;
          the mesh itself still needs none of this, offline-first stays the primary path, this
          permission only lets the bridge use the internet when it happens to be there. No
          server exists on the other end of it; it talks to the open relay network, nothing
@@ -13,12 +13,22 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Legacy Bluetooth model, API < 31. ACCESS_FINE_LOCATION's ceiling is 32, not 30:
-         BLE only needs it through API 30, but Wi-Fi Direct service discovery (WifiDirectTransportDriver)
-         needs it through API 32, until NEARBY_WIFI_DEVICES (API 33+, below) takes over. -->
+    <!-- Legacy Bluetooth model, API < 31. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="32" />
+
+    <!-- ACCESS_FINE_LOCATION, uncapped: a single declaration covers two separate needs, so it
+         can't carry a maxSdkVersion ceiling even though the first of them would otherwise want
+         one. (1) The legacy Bluetooth model's own need for it: BLE through API 30, Wi-Fi
+         Direct service discovery (WifiDirectTransportDriver) through API 32, until
+         NEARBY_WIFI_DEVICES (API 33+, below) takes over; previously declared here with
+         maxSdkVersion="32". (2) Added 2026-11-01: the Feed composer's "use my location" action
+         (app/betar/comm/location/LocationHelper.kt) needs a real device location read, one-shot,
+         user-triggered, to derive a geohash for room selection, on every API level this app
+         supports, not just through 32. A second, duplicate ACCESS_FINE_LOCATION element with no
+         maxSdkVersion would make the capped one above redundant without actually removing it, so
+         it's merged into this single uncapped line instead of coexisting with it. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- Current Bluetooth permission model, API 31+ (Android 12+) -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"

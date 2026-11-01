@@ -30,8 +30,8 @@ android {
         // docs/LOCALIZATION-UX.md, not for API surface reasons.
         minSdk = 26
         targetSdk = 35 // Android 15
-        versionCode = 4
-        versionName = "0.1.3-prealpha"
+        versionCode = 5
+        versionName = "0.2.0-prebeta"
 
         // Bengali paused, English-only for now (per user decision, not a deletion): restricts
         // what actually gets packaged into the APK without touching values-bn/strings.xml
@@ -122,12 +122,6 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     // Required at runtime by UniFFI-generated Kotlin bindings (JNA-based FFI, not raw JNI).
     implementation("net.java.dev.jna:jna:5.15.0@aar")
-    // Offline maps (FEATURES.md §3): renders entirely from a local style + local tile sources,
-    // no remote style/tile server required -- matches this app's "no INTERNET permission" stance
-    // (AndroidManifest.xml). This pass wires up the SDK itself; real MBTiles/PMTiles regional
-    // tile packs are a separate follow-up (see MapScreen.kt's doc comment).
-    implementation("org.maplibre.gl:android-sdk:11.13.0")
-
     // QR scan-to-add (DESIGN-BRIEF.md §9 screens 9-10): CameraX for the live preview + frame
     // analysis, ZXing's plain `core` artifact (pure Java, Apache 2.0, no Android Camera API of
     // its own, no Google Play Services dependency) for both decode and encode. Deliberately not
@@ -140,6 +134,21 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
     implementation("androidx.camera:camera-view:$cameraxVersion")
     implementation("com.google.zxing:core:3.5.3")
+
+    // Relay bridge (ARCHITECTURE.md §2): WebSocket client for talking to the open Nostr relay
+    // network. OkHttp's WebSocket support, not a dedicated Nostr library, since the actual
+    // NIP-01 protocol logic (event serialization, signing) lives in this module's own
+    // nostr/ package, hand-rolled against the spec rather than trusting a third-party client
+    // library's own interpretation of it. No Play Services dependency, F-Droid-safe.
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // Nostr identity is a separate secp256k1/BIP-340 keypair, NOT this app's own Ed25519/X25519
+    // mesh identity (core/src/identity.rs): Nostr requires Schnorr signatures over secp256k1,
+    // a different curve entirely, so the two identities cannot be the same key material.
+    // ACINQ's secp256k1-kmp wraps the real libsecp256k1 (the same library Bitcoin Core and most
+    // real Nostr clients use), not a hand-rolled elliptic-curve implementation, deliberately:
+    // reimplementing EC signing math from scratch is exactly the kind of mistake this project
+    // does not take shortcuts on.
+    implementation("fr.acinq.secp256k1:secp256k1-kmp-jni-android:0.24.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

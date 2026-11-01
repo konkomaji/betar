@@ -17,9 +17,10 @@ import app.betar.comm.R
  *
  * Fixed 2026-11-01, two things:
  * 1. Version string was hard-coded to 0.1.1-prealpha, stale against `app/build.gradle.kts`'s
- *    real `versionName` (0.1.3-prealpha). Still a hard-coded literal, not `BuildConfig
- *    .VERSION_NAME` (this module lacks `buildFeatures.buildConfig = true`), same real gap as
- *    before, just corrected to the current value rather than left further stale.
+ *    real `versionName` (now 0.2.0-prebeta, bumped the same day for the pivot release). Still
+ *    a hard-coded literal, not `BuildConfig.VERSION_NAME` (this module lacks
+ *    `buildFeatures.buildConfig = true`), same real gap as before, just corrected to the
+ *    current value rather than left further stale.
  * 2. The attribution section said "no individual is named here, and none is named anywhere in
  *    the app" -- that was this project's standing rule before the pivot. The rule reversed by
  *    explicit instruction this session: every surface now credits Konko Maji by name. Replaced
@@ -27,7 +28,7 @@ import app.betar.comm.R
  *    file this session); `doc_about_attribution_title`/`doc_about_attribution_body` are no
  *    longer referenced by this screen.
  */
-private const val DISPLAYED_VERSION = "0.1.3-prealpha"
+private const val DISPLAYED_VERSION = "0.2.0-prebeta"
 private const val REPO_URL = "https://github.com/konkomaji/project-mesh"
 private const val DEVELOPER_URL = "https://konkomaji.com/"
 

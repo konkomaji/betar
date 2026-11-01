@@ -129,7 +129,7 @@ private fun MainExperience() {
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when (current) {
-                BetarDestination.Feed -> FeedTab(app.feedMessenger, app.notesMessenger)
+                BetarDestination.Feed -> FeedTab(app.feedMessenger, app.notesMessenger, app.relayBridge, app.ratingsMessenger)
                 BetarDestination.Nearby -> NearbyScreen()
                 BetarDestination.Chats -> ChatsTab()
                 BetarDestination.You -> YouTab()

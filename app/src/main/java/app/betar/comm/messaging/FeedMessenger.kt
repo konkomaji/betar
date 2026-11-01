@@ -20,7 +20,22 @@ object RoomPrecision {
     const val COUNTRY = 3
 }
 
-data class FeedPost(val text: String, val idHex: String, val roomPrecision: Int, val postedAtSeconds: Long)
+// Known caveat, not fixed here: Kotlin data classes compare ByteArray properties by reference,
+// not content, so two FeedPost instances with pixel-identical thumbnailBytes from two different
+// decode calls are not `==`. Harmless for this class's current use (list display, no
+// deduplication keyed on the whole data class, dedup is by idHex), flagged so it's not a silent
+// trap for whoever next relies on FeedPost equality for something it doesn't actually guarantee.
+data class FeedPost(
+    val text: String,
+    val idHex: String,
+    val roomPrecision: Int,
+    val postedAtSeconds: Long,
+    val origin: ContentOrigin = ContentOrigin.Mesh,
+    /** A small mesh-local JPEG thumbnail, or null if the post has no image. Full resolution is
+     *  not available over the mesh, only once a relay bridge with blob storage exists, see
+     *  `AppPost.kt`'s class doc. */
+    val thumbnailBytes: ByteArray? = null,
+)
 
 /**
  * Feed posts: geohash-scoped public rooms (`FEATURES.md`), the direct successor to the cut
@@ -39,11 +54,14 @@ class FeedMessenger(private val coordinator: MeshCoordinator) {
     val posts = mutableStateListOf<FeedPost>()
     private val seenEnvelopeIds = mutableSetOf<String>()
 
-    /** Returns true if posted, false if `text` is empty or over [POST_MAX_LENGTH] characters. */
-    fun post(text: String, roomPrecision: Int): Boolean {
+    /** Returns true if posted, false if `text` is empty or over [POST_MAX_LENGTH] characters.
+     *  [thumbnailBytes], if given, should already be a small re-encoded thumbnail (see
+     *  `FeedTab.kt`'s composer), not a full-resolution image -- this function does not resize
+     *  or compress anything itself, it only carries whatever bytes it is handed. */
+    fun post(text: String, roomPrecision: Int, thumbnailBytes: ByteArray? = null): Boolean {
         if (text.isEmpty() || text.length > POST_MAX_LENGTH) return false
         val now = nowSecondsShared()
-        val payload = encodeAppPostPayload(MAGIC_POST, roomPrecision, location = null, text = text)
+        val payload = encodeAppPostPayload(MAGIC_POST, roomPrecision, location = null, imageBytes = thumbnailBytes, text = text)
         val bytes = envelopePack(
             addressingTag = 0u, // Broadcast
             addressingTarget = null,
@@ -75,7 +93,7 @@ class FeedMessenger(private val coordinator: MeshCoordinator) {
             if (parsed.addressingTag != 0.toUByte()) continue // not Broadcast
             val decoded = decodeAppPostPayload(parsed.sealed) ?: continue
             if (decoded.magic != MAGIC_POST) continue
-            posts.add(0, FeedPost(decoded.text, parsed.idHex, decoded.roomPrecision, nowSecondsShared()))
+            posts.add(0, FeedPost(decoded.text, parsed.idHex, decoded.roomPrecision, nowSecondsShared(), thumbnailBytes = decoded.imageBytes))
         }
     }
 }

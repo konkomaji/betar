@@ -5,10 +5,10 @@
 
 **Social and chat that keeps working, no matter who tries to shut it off.**
 
-[![Status](https://img.shields.io/badge/status-pre--alpha-orange)](https://github.com/konkomaji/project-mesh/blob/main/docs/IMPLEMENTATION-STATUS.md)
+[![Status](https://img.shields.io/badge/status-pre--beta-orange)](https://github.com/konkomaji/project-mesh/blob/main/docs/IMPLEMENTATION-STATUS.md)
 [![Code licence](https://img.shields.io/badge/code%20licence-AGPL--3.0--or--later-lightgrey)](LICENSE)
 
-**[Get it on F-Droid](https://f-droid.org/)** &middot; **[Download the APK](https://github.com/konkomaji/betar/releases)** &middot; **[betar's website](https://konkomaji.github.io/betar/)**
+**[Get it on F-Droid](https://f-droid.org/)** &middot; **[Download the APK](https://github.com/konkomaji/betar/releases)** &middot; **[betar's website](https://konkomaji.github.io/betar/)** &middot; **[Changelog](CHANGELOG.md)**
 
 **Developed by [Konko Maji](https://konkomaji.com/)**
 
