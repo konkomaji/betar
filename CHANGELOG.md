@@ -45,12 +45,21 @@ summarized here.
   fingerprint of the user's real key, not a separately issued number. An optional, editable,
   explicitly non-unique display username alongside it.
 - **Image attachment** in Feed posts: a small mesh-local thumbnail (Android's own Photo Picker,
-  no new dependency). Full resolution is not available over the mesh; it's meant to travel over
-  the relay bridge via a content-addressed blob store once that exists, not this release.
+  no new dependency), plus full-resolution delivery once a relay bridge exists, over a Blossom
+  blob server (BUD-01/02/11). No default Blossom server is asserted to be live.
 - **One-shot location sharing** in Direct chat threads, sent through the same end-to-end
   encrypted channel as every other message, never broadcast in the clear. Explicitly one-shot,
   not continuous tracking, this project's own stated highest-risk feature stays unbuilt on
   purpose.
+- **Content signing**: Feed posts, Community Notes, and ratings are signed with the device's
+  long-term key. Rating scores now dedupe by verified signer instead of raw broadcast count;
+  stops unlimited distinct-looking ratings from one device, not a device that wipes/reinstalls
+  for a fresh identity.
+- **A Sphinx-style onion-routing fallback** (`core/src/crypto/onion.rs`), built ahead of its own
+  Phase 2 schedule on explicit request. Real, tested crypto; not wired into the default
+  Direct-message send path, no route selection or mesh-forwarding wiring yet, stated plainly as
+  a real, currently-unmitigated gap against real Sphinx's fixed-packet-size property (see
+  `docs/CRYPTOGRAPHY.md` §7.3).
 - A real `INTERNET` permission (the manifest deliberately had none before, correct for the old
   fully-offline app, wrong now that the relay bridge needs it).
 - A "How it works" guide screen covering the mesh, the relay bridge, Feed rooms, Community
@@ -74,10 +83,12 @@ summarized here.
 
 ### Known gaps at this release
 No independent security audit. No two-device hardware verification (unchanged from every
-earlier release, same host-capacity limit). No F-Droid submission yet. Feed posts, Community
-Notes, and ratings are all unsigned, same gap plain broadcast chat already had. Full-resolution
-image delivery over the relay bridge doesn't exist yet. The Nostr relay bridge doesn't relay
-content it received back onto the mesh for offline peers, that's its own larger follow-up.
+earlier release, same host-capacity limit). No F-Droid submission yet. No Gradle/Kotlin compile
+check and no on-device verification of anything built this release (no Android SDK available in
+this environment this session). Plain broadcast chat is still unsigned (content signing covers
+Feed/Notes/ratings only). The onion-routing fallback has no route selection, no mesh-forwarding
+wiring, and its packet size shrinks per hop rather than staying constant, a real gap against
+real Sphinx's own guarantee. No default Blossom server is confirmed live.
 
 ## [0.1.3-prealpha] - 2026-07-27
 
