@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -90,12 +91,18 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    // Kotlin 2.3's Gradle plugin removed the old `kotlinOptions { jvmTarget = ... }` DSL
+    // ("Using 'jvmTarget: String' is an error") -- moved to `compilerOptions`, which lives
+    // under the `kotlin {}` extension, not `android {}`, see the block below `android {}`.
 
     packaging {
         resources.excludes.add("META-INF/*")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
