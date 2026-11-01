@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Betar adaptive-icon background layer: solid brand blue, edge to edge. Built inverted per
+<!-- Betar adaptive-icon background layer: solid sage field, edge to edge. Built inverted per
      docs/DESIGN-BRIEF.md §7: an adaptive icon's foreground sits on this background layer rather
      than on the wallpaper, so it cannot have a true hole the way docs/assets/betar-logo.svg
      does. Same geometry, opposite construction: field colour lives here, the wire's absence is
-     drawn as an off-white mark in ic_launcher_foreground.xml instead of a transparent cut. -->
+     drawn as a cream mark in ic_launcher_foreground.xml instead of a transparent cut.
+     Recoloured 2026-11-01 for the Civic Calm palette: was #4BA3E0 (pre-pivot brand blue), now
+     #5F7D64 (sage dark), matching docs/assets/betar-logo.svg's own recolor this session. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:fillColor="#4BA3E0"
+        android:fillColor="#5F7D64"
         android:pathData="M0,0 L108,0 L108,108 L0,108 Z" />
 </vector>

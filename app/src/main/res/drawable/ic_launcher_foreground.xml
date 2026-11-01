@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Betar mark, inverted for the adaptive-icon foreground layer: the two wire bars painted in
-     the off-white ground colour (#EEF4F9) on the transparent foreground, over the solid brand
-     blue background layer, rather than a real transparent hole (docs/assets/betar-logo.svg's
+     the cream ground colour (#FAF6EF) on the transparent foreground, over the solid sage
+     background layer, rather than a real transparent hole (docs/assets/betar-logo.svg's
      construction, which an adaptive icon's foreground-over-background layering can't do).
      Geometry copied exactly from that file: bars at y=54, stroke width 14, round caps,
      M27,54 L39,54 and M69,54 L81,54: visually the same 20-46 / 62-88 bars docs/DESIGN-BRIEF.md
-     §7 describes. -->
+     §7 describes. Recoloured 2026-11-01 for the Civic Calm palette: was #EEF4F9 (pre-pivot
+     off-white-blue), now #FAF6EF (cream), matching docs/assets/betar-logo.svg's own recolor. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -13,7 +14,7 @@
     android:viewportHeight="108">
     <path
         android:fillColor="#00000000"
-        android:strokeColor="#EEF4F9"
+        android:strokeColor="#FAF6EF"
         android:strokeWidth="14"
         android:strokeLineCap="round"
         android:pathData="M27,54 L39,54 M69,54 L81,54" />
